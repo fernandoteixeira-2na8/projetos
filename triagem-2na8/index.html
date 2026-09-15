@@ -1,0 +1,991 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Triagem 2na8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>
+:root{
+  --paper:#F1F2F5; --surface:#FFFFFF; --surface-2:#E8EAF0; --sunk:#FAFAFC;
+  --ink:#15171F; --ink-2:#4A5060; --ink-3:#787F90;
+  --line:#D7DAE3; --line-2:#C3C8D4;
+  --accent:#1F49D6; --accent-soft:#E3E8FB; --accent-ink:#1A3AAE;
+  --go:#17663F; --go-soft:#DDF0E6;
+  --hold:#8F5A05; --hold-soft:#F7EBD6;
+  --stop:#A8201A; --stop-soft:#F8E3E1;
+  --ff-display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --ff-ui:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  --ff-read:'Newsreader',Georgia,'Times New Roman',serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1118; --surface:#181B24; --surface-2:#222633; --sunk:#14171F;
+    --ink:#E9EBF1; --ink-2:#AAB1C0; --ink-3:#7F8798;
+    --line:#2B303D; --line-2:#3A4152;
+    --accent:#8DA6FF; --accent-soft:#1D2740; --accent-ink:#B3C4FF;
+    --go:#54CC8D; --go-soft:#14301F;
+    --hold:#E0A93A; --hold-soft:#32250D;
+    --stop:#F0817A; --stop-soft:#3A1917;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1118; --surface:#181B24; --surface-2:#222633; --sunk:#14171F;
+  --ink:#E9EBF1; --ink-2:#AAB1C0; --ink-3:#7F8798;
+  --line:#2B303D; --line-2:#3A4152;
+  --accent:#8DA6FF; --accent-soft:#1D2740; --accent-ink:#B3C4FF;
+  --go:#54CC8D; --go-soft:#14301F;
+  --hold:#E0A93A; --hold-soft:#32250D;
+  --stop:#F0817A; --stop-soft:#3A1917;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--ff-ui); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--ff-display); font-weight:700; text-wrap:balance; margin:0; letter-spacing:-.015em}
+p{margin:0}
+button{font:inherit; color:inherit}
+
+/* ---------- topo ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--surface); border-bottom:1px solid var(--line);
+}
+.topbar-in{
+  max-width:1120px; margin:0 auto; padding:10px 20px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:baseline; gap:9px; margin-right:auto}
+.brand strong{font-family:var(--ff-display); font-size:17px; letter-spacing:-.02em}
+.brand span{font-size:11px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.12em}
+.livescore{display:flex; align-items:center; gap:10px}
+.livescore .num{
+  font-family:var(--ff-display); font-size:26px; font-weight:700;
+  font-variant-numeric:tabular-nums; line-height:1;
+}
+.livescore .num small{font-size:13px; color:var(--ink-3); font-weight:600}
+.livescore .num.idle{color:var(--ink-3); font-size:18px}
+.verdict{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:5px 12px 5px 10px; border-radius:100px;
+  font-size:12.5px; font-weight:600; letter-spacing:.01em;
+  border:1px solid transparent; white-space:nowrap;
+}
+.verdict::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor}
+.v-none{background:var(--surface-2); color:var(--ink-3); border-color:var(--line)}
+.v-go{background:var(--go-soft); color:var(--go); border-color:color-mix(in srgb,var(--go) 35%,transparent)}
+.v-warm{background:var(--accent-soft); color:var(--accent-ink); border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.v-hold{background:var(--hold-soft); color:var(--hold); border-color:color-mix(in srgb,var(--hold) 35%,transparent)}
+.v-out{background:var(--stop-soft); color:var(--stop); border-color:color-mix(in srgb,var(--stop) 35%,transparent)}
+
+/* ---------- abas ---------- */
+.tabs{
+  max-width:1120px; margin:0 auto; padding:0 20px;
+  display:flex; gap:2px; overflow-x:auto;
+}
+.tab{
+  appearance:none; background:none; border:0; cursor:pointer;
+  padding:13px 14px 11px; font-size:14px; font-weight:500; color:var(--ink-3);
+  border-bottom:2px solid transparent; white-space:nowrap;
+}
+.tab:hover{color:var(--ink-2)}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent); font-weight:600}
+.tab:focus-visible{outline:2px solid var(--accent); outline-offset:-3px; border-radius:4px}
+
+main{max-width:1120px; margin:0 auto; padding:26px 20px 72px}
+.panel[hidden]{display:none!important}
+
+/* ---------- tipografia de conteúdo ---------- */
+.lede{font-family:var(--ff-read); font-size:19px; line-height:1.5; color:var(--ink-2); max-width:62ch}
+.eyebrow{
+  font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3);
+}
+.sec-title{font-size:23px; margin-bottom:6px}
+
+/* ---------- regra de ouro ---------- */
+.charter{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:22px 24px; margin-bottom:28px;
+}
+.charter h2{font-size:20px; margin-bottom:10px}
+.five{list-style:none; padding:0; margin:14px 0 0; display:grid; gap:9px; counter-reset:q}
+.five li{
+  display:grid; grid-template-columns:22px 1fr; gap:11px; align-items:baseline;
+  font-family:var(--ff-read); font-size:17px; line-height:1.45;
+}
+.five li::before{
+  counter-increment:q; content:counter(q);
+  font-family:var(--ff-ui); font-size:11px; font-weight:600; color:var(--accent);
+  border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
+  border-radius:4px; text-align:center; line-height:19px; height:20px;
+}
+.script-quote{
+  margin-top:18px; padding:15px 18px; border-left:3px solid var(--accent);
+  background:var(--sunk); border-radius:0 6px 6px 0;
+  font-family:var(--ff-read); font-size:17px; line-height:1.55; color:var(--ink);
+}
+.script-quote em{color:var(--ink-3); font-style:italic}
+
+/* ---------- blocos do roteiro ---------- */
+.block{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  margin-bottom:14px; overflow:hidden;
+}
+.block-head{
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+  padding:16px 20px 12px; border-bottom:1px solid var(--line);
+}
+.block-n{
+  font-family:var(--ff-display); font-size:12px; font-weight:700; color:var(--accent);
+  letter-spacing:.06em;
+}
+.block-head h3{font-size:18px; margin-right:auto}
+.min{
+  font-size:11.5px; font-weight:600; color:var(--ink-3);
+  font-variant-numeric:tabular-nums; border:1px solid var(--line-2);
+  padding:2px 8px; border-radius:100px;
+}
+.block-body{padding:16px 20px 20px; display:grid; gap:16px}
+.goal{font-size:14px; color:var(--ink-2); max-width:70ch}
+.goal b{color:var(--ink); font-weight:600}
+.qs{list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.qs li{
+  font-family:var(--ff-read); font-size:17px; line-height:1.45;
+  padding-left:16px; border-left:2px solid var(--line-2);
+}
+.qs li b{font-family:var(--ff-ui); font-size:11px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:1px}
+.signals{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media (max-width:620px){.signals{grid-template-columns:1fr}}
+.sig{border-radius:8px; padding:11px 13px; font-size:13.5px; line-height:1.45}
+.sig h4{font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:600;
+  font-family:var(--ff-ui); margin-bottom:5px}
+.sig ul{margin:0; padding-left:16px; display:grid; gap:3px}
+.sig-go{background:var(--go-soft); color:var(--go)}
+.sig-no{background:var(--stop-soft); color:var(--stop)}
+.sig-go ul,.sig-no ul{color:var(--ink-2)}
+:root[data-theme="dark"] .sig-go ul,:root[data-theme="dark"] .sig-no ul{color:var(--ink-2)}
+
+/* ---------- avisos / armadilhas ---------- */
+.traps{list-style:none; padding:0; margin:0; display:grid; gap:1px;
+  background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
+.traps li{background:var(--surface); padding:13px 16px; font-size:14.5px; line-height:1.45}
+.traps li b{color:var(--stop); font-weight:600}
+
+/* ---------- tabela de score ---------- */
+.tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--r); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px}
+th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:600;
+  background:var(--sunk)}
+tr:last-child td{border-bottom:0}
+td.pts{font-variant-numeric:tabular-nums; font-weight:600; white-space:nowrap}
+
+/* ---------- ficha ---------- */
+.ficha-grid{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:18px; align-items:start}
+@media (max-width:900px){.ficha-grid{grid-template-columns:1fr}}
+.ident{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px 20px 18px; margin-bottom:14px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px 14px;
+}
+label.f{display:grid; gap:4px; font-size:11px; font-weight:600; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--ink-3)}
+input[type="text"],input[type="date"],textarea,select{
+  font-family:var(--ff-ui); font-size:14.5px; color:var(--ink);
+  background:var(--sunk); border:1px solid var(--line-2); border-radius:7px;
+  padding:8px 10px; width:100%; text-transform:none; letter-spacing:0; font-weight:400;
+}
+textarea{resize:vertical; min-height:74px; line-height:1.5}
+input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:2px solid var(--accent); outline-offset:1px; border-color:transparent}
+.dim{border-top:1px dashed var(--line-2); padding-top:14px; display:grid; gap:9px}
+.dim-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.dim-head h4{font-family:var(--ff-display); font-size:15px; font-weight:600; margin-right:auto}
+.dim-max{font-size:11px; color:var(--ink-3); font-weight:600; font-variant-numeric:tabular-nums}
+.levels{display:grid; gap:6px}
+.lvl{
+  display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:start;
+  border:1px solid var(--line); border-radius:8px; padding:9px 11px; cursor:pointer;
+  font-size:13.5px; line-height:1.4; background:var(--sunk);
+}
+.lvl:hover{border-color:var(--line-2)}
+.lvl input{accent-color:var(--accent); margin:2px 0 0}
+.lvl .p{font-variant-numeric:tabular-nums; font-size:12px; font-weight:600; color:var(--ink-3)}
+.lvl:has(input:checked){border-color:var(--accent); background:var(--accent-soft)}
+.lvl:has(input:checked) .p{color:var(--accent-ink)}
+.lvl:has(input:focus-visible){outline:2px solid var(--accent); outline-offset:1px}
+
+/* ---------- painel lateral ---------- */
+.side{position:sticky; top:calc(env(safe-area-inset-top,0px) + 108px); display:grid; gap:12px}
+@media (max-width:900px){.side{position:static}}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:16px 18px}
+.card h4{font-family:var(--ff-display); font-size:14px; font-weight:600; margin-bottom:10px}
+.bars{display:grid; gap:9px}
+.bar-row{display:grid; gap:4px; font-size:12.5px}
+.bar-row .t{display:flex; justify-content:space-between; gap:8px; color:var(--ink-2)}
+.bar-row .t b{font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600}
+.track{height:5px; border-radius:100px; background:var(--surface-2); overflow:hidden}
+.fill{height:100%; background:var(--accent); border-radius:100px; transition:width .2s ease}
+.total{display:flex; align-items:baseline; gap:8px; margin-bottom:4px}
+.total .big{font-family:var(--ff-display); font-size:42px; font-weight:700; line-height:1;
+  font-variant-numeric:tabular-nums}
+.total .of{font-size:13px; color:var(--ink-3); font-weight:600}
+.advice{font-family:var(--ff-read); font-size:15px; line-height:1.5; color:var(--ink-2); margin-top:10px}
+.advice b{color:var(--ink)}
+.kills{display:grid; gap:7px}
+.kill{display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:start;
+  font-size:13px; line-height:1.4; cursor:pointer}
+.kill input{accent-color:var(--stop); margin:2px 0 0}
+.kill:has(input:checked){color:var(--stop); font-weight:500}
+.btn{
+  appearance:none; border:1px solid var(--line-2); background:var(--surface-2);
+  border-radius:8px; padding:9px 14px; font-size:13.5px; font-weight:600; cursor:pointer;
+  text-align:center;
+}
+.btn:hover{border-color:var(--ink-3)}
+.btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+:root[data-theme="dark"] .btn-primary{color:#0F1118}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary{color:#0F1118}}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-row{display:flex; gap:8px; flex-wrap:wrap}
+.btn-row .btn{flex:1 1 auto}
+.note{font-size:12px; color:var(--ink-3); line-height:1.45}
+
+/* ---------- briefing de hoje ---------- */
+.hyp{display:grid; gap:10px; margin:0; padding:0; list-style:none}
+.hyp li{
+  background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
+  border-radius:0 8px 8px 0; padding:13px 16px; font-size:14.5px; line-height:1.5;
+}
+.hyp li b{font-weight:600}
+.branches{display:grid; gap:10px}
+.branch{border:1px solid var(--line); border-radius:var(--r); padding:14px 16px; background:var(--surface)}
+.branch .tag{font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+  padding:2px 8px; border-radius:100px; display:inline-block; margin-bottom:7px}
+.t-go{background:var(--go-soft); color:var(--go)}
+.t-hold{background:var(--hold-soft); color:var(--hold)}
+.t-out{background:var(--stop-soft); color:var(--stop)}
+.branch p{font-size:14px; line-height:1.5; color:var(--ink-2)}
+.branch p b{color:var(--ink); font-weight:600}
+.math{
+  font-family:var(--ff-ui); font-variant-numeric:tabular-nums; font-size:13.5px;
+  background:var(--sunk); border:1px dashed var(--line-2); border-radius:8px;
+  padding:12px 14px; line-height:1.6; color:var(--ink-2);
+}
+.math b{color:var(--ink)}
+
+/* ---------- histórico ---------- */
+.hist{display:grid; gap:8px}
+.hrow{
+  display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center;
+  background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:11px 15px;
+}
+.hrow .who{display:grid; gap:1px; min-width:0}
+.hrow .who strong{font-size:14.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.hrow .who span{font-size:12px; color:var(--ink-3)}
+.hrow .sc{font-family:var(--ff-display); font-size:19px; font-weight:700; font-variant-numeric:tabular-nums}
+.empty{
+  border:1px dashed var(--line-2); border-radius:var(--r); padding:26px 20px;
+  text-align:center; color:var(--ink-3); font-size:14px;
+}
+.stack{display:grid; gap:14px}
+.stack-lg{display:grid; gap:26px}
+.toast{
+  position:fixed; left:50%; transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 22px); z-index:60;
+  background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:100px;
+  font-size:13.5px; font-weight:500; box-shadow:0 6px 24px rgba(0,0,0,.22);
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><strong>Triagem 2na8</strong><span>pré-vendas</span></div>
+    <div class="livescore">
+      <div class="num" id="top-score">—<small>/100</small></div>
+      <span class="verdict v-none" id="top-verdict">sem avaliação</span>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Seções">
+    <button class="tab" role="tab" id="tab-roteiro" aria-selected="true" aria-controls="p-roteiro">Roteiro</button>
+    <button class="tab" role="tab" id="tab-ficha" aria-selected="false" aria-controls="p-ficha">Ficha da call</button>
+    <button class="tab" role="tab" id="tab-hoje" aria-selected="false" aria-controls="p-hoje">Call de hoje</button>
+    <button class="tab" role="tab" id="tab-score" aria-selected="false" aria-controls="p-score">Critérios</button>
+    <button class="tab" role="tab" id="tab-hist" aria-selected="false" aria-controls="p-hist">Histórico</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ ROTEIRO ============ -->
+  <section class="panel" id="p-roteiro" role="tabpanel" aria-labelledby="tab-roteiro">
+    <div class="charter">
+      <p class="eyebrow">A regra da call</p>
+      <h2>Em 40 minutos você precisa sair com cinco respostas</h2>
+      <p class="lede" style="margin-top:8px">Se a conversa foi agradável e você não tem essas cinco, a call falhou. Discovery em software é isso: trocar simpatia por informação decisória.</p>
+      <ol class="five">
+        <li>Esse negócio gera caixa suficiente para pagar de R$ 35 a 80 mil sem sufocar?</li>
+        <li>Existe uma dor com número, ou é uma vontade bem contada?</li>
+        <li>Por que agora — e o que acontece com ele se não fizer nada?</li>
+        <li>Quem decide, e como essa pessoa decidiu a última compra parecida?</li>
+        <li>Isso precisa mesmo ser construído, ou já existe pronto no mercado?</li>
+      </ol>
+      <div class="script-quote">
+        <p class="eyebrow" style="margin-bottom:7px">Abertura — decore esta</p>
+        “Essa conversa é de diagnóstico, não de venda. Vou te fazer umas perguntas sobre o seu negócio e, no fim, te dou uma resposta direta: ou faz sentido a gente trabalhar junto e eu te digo o caminho, ou não faz e eu te digo o porquê e o que eu faria no seu lugar. Fechado? Só te peço uma coisa — quanto mais número você me der, mais útil eu consigo ser.”
+        <p style="margin-top:10px; font-size:14px; font-family:var(--ff-ui); color:var(--ink-2)"><em>É essa frase que te dá licença para perguntar de faturamento no minuto 6 e para dizer não no minuto 38. Sem ela, você vira consultor gratuito.</em></p>
+      </div>
+    </div>
+
+    <div id="roteiro-blocos"></div>
+
+    <div class="stack" style="margin-top:26px">
+      <div>
+        <p class="eyebrow">Erros que estragam a call</p>
+        <h3 class="sec-title">Seis coisas que você não faz</h3>
+      </div>
+      <ul class="traps">
+        <li><b>Falar da 2na8 antes do minuto 30.</b> Apresentação de empresa é resposta, não abertura. Quem abre falando de si entrega munição para o lead comparar preço.</li>
+        <li><b>Aceitar “quero um app” como escopo.</b> App é meio. Sem o resultado de negócio por trás, qualquer estimativa que você der estará errada.</li>
+        <li><b>Dar preço sem ancorar faixa antes.</b> Ancorar é você dizer o número primeiro, como referência de mercado. Sem isso, o lead ancora em R$ 8 mil de freelancer.</li>
+        <li><b>Encerrar sem data no calendário.</b> “Te mando essa semana” não é próximo passo. Próximo passo tem dia, hora e nome de quem estará na sala.</li>
+        <li><b>Não perguntar faturamento por educação.</b> Você não está sendo indelicado — está sendo responsável com o dinheiro dele e com a agenda do seu time.</li>
+        <li><b>Prometer proposta para todo mundo.</b> Proposta custa caro. Ela é consequência de escopo alinhado, não de simpatia.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ FICHA ============ -->
+  <section class="panel" id="p-ficha" role="tabpanel" aria-labelledby="tab-ficha" hidden>
+    <div class="ficha-grid">
+      <div>
+        <div class="ident">
+          <label class="f">Lead / empresa
+            <input type="text" id="f-lead" placeholder="Nome do negócio">
+          </label>
+          <label class="f">Quem está na call
+            <input type="text" id="f-contato" placeholder="Nome e cargo">
+          </label>
+          <label class="f">Data
+            <input type="date" id="f-data">
+          </label>
+          <label class="f">Origem do lead
+            <input type="text" id="f-origem" placeholder="Meta Ads, indicação…">
+          </label>
+          <label class="f">Faturamento mensal aprox.
+            <input type="text" id="f-fat" placeholder="R$">
+          </label>
+          <label class="f">Clientes / alunos ativos
+            <input type="text" id="f-clientes" placeholder="quantidade">
+          </label>
+          <label class="f">Tamanho da equipe
+            <input type="text" id="f-equipe" placeholder="pessoas">
+          </label>
+          <label class="f">O que ele pediu, em 1 frase
+            <input type="text" id="f-pedido" placeholder="“quero um app de…”">
+          </label>
+        </div>
+        <div id="ficha-blocos"></div>
+      </div>
+
+      <aside class="side">
+        <div class="card">
+          <div class="total">
+            <span class="big" id="side-score">0</span><span class="of">/ 100</span>
+          </div>
+          <span class="verdict v-none" id="side-verdict">sem avaliação</span>
+          <p class="advice" id="side-advice">Preencha as avaliações ao longo da call. O veredito aparece aqui e vira a frase que você usa no fechamento.</p>
+        </div>
+        <div class="card">
+          <h4>Dimensões</h4>
+          <div class="bars" id="side-bars"></div>
+        </div>
+        <div class="card">
+          <h4>Kill switches</h4>
+          <p class="note" style="margin-bottom:9px">Qualquer um marcado desqualifica, independente do score.</p>
+          <div class="kills" id="side-kills"></div>
+        </div>
+        <div class="card">
+          <h4>Fechamento</h4>
+          <label class="f">Próximo passo combinado
+            <input type="text" id="f-proximo" placeholder="Ex.: proposta dia 18, call de revisão dia 22">
+          </label>
+          <div class="btn-row" style="margin-top:12px">
+            <button class="btn btn-primary" id="btn-save" type="button">Salvar ficha</button>
+            <button class="btn" id="btn-copy" type="button">Copiar resumo</button>
+          </div>
+          <div class="btn-row" style="margin-top:8px">
+            <button class="btn" id="btn-new" type="button">Limpar e começar outra</button>
+          </div>
+          <p class="note" id="save-note" style="margin-top:10px">O rascunho fica salvo neste navegador enquanto você preenche.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ CALL DE HOJE ============ -->
+  <section class="panel" id="p-hoje" role="tabpanel" aria-labelledby="tab-hoje" hidden>
+    <div class="stack-lg">
+      <div>
+        <p class="eyebrow">Briefing · criadora de conteúdo · app ou comunidade</p>
+        <h2 class="sec-title">Mãe Moderna na Cozinha</h2>
+        <p class="lede">Ela já vende — tem alunas. A pergunta da call não é “o que construir”, é <em>se</em> construir: descobrir se existe tese de receita recorrente por trás do pedido, ou se é um app que vai nascer vazio.</p>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Hipóteses a testar (não são conclusões)</p>
+        <ul class="hyp">
+          <li><b>“App ou comunidade” quase sempre esconde uma de três coisas.</b> (a) Quer transformar venda pontual de curso em receita recorrente. (b) O grupo de WhatsApp virou ingovernável e ela está perdendo aluna. (c) Posicionamento — “ter um app” como prova de autoridade. Só (a) e (b) pagam um projeto; (c) você desqualifica com elegância.</li>
+          <li><b>Infoprodutor tem caixa sazonal.</b> O dinheiro entra em lançamento. Descobrir quando foi o último e quando é o próximo define não só <em>se</em> ela pode pagar, mas <em>quando</em> e em quantas parcelas.</li>
+          <li><b>O risco real é o app nascer vazio.</b> Se ela não tem nenhuma comunidade rodando hoje, construir do zero é pular etapa — e um produto sem gente dentro vira um caso ruim no seu portfólio.</li>
+          <li><b>“App” pode significar duas coisas com custos muito diferentes.</b> Baixar na loja ou um lugar próprio que abre no celular. A diferença entre as duas é o dobro do orçamento. Isso precisa ficar claro antes do minuto 25.</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Dez perguntas específicas — além do roteiro padrão</p>
+        <ol class="qs" style="padding-left:18px">
+          <li>Quantas alunas você tem no total, e quantas estão ativas nos últimos 30 dias?</li>
+          <li>Qual o preço do curso e como ele é vendido — lançamento, perpétuo ou assinatura?</li>
+          <li>Quanto entrou no último lançamento e quando é o próximo?</li>
+          <li>Hoje suas alunas conversam entre si em algum lugar? Onde, quantas e como está o engajamento?</li>
+          <li>O que te incomoda nesse lugar onde elas estão hoje?</li>
+          <li>Quando você diz app, você quer que ela baixe na loja, ou quer um lugar seu que abre no celular?</li>
+          <li>A comunidade seria um bônus do curso ou um produto pago à parte?</li>
+          <li>Se fosse assinatura: quanto você cobraria e quantas alunas você acha que pagariam?</li>
+          <li>Quem cuidaria dessa comunidade no dia a dia — você ou alguém do seu time?</li>
+          <li>Você já pagou por alguma ferramenta assim? O que te fez sair ou não usar?</li>
+        </ol>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">A conta que você faz ao vivo com ela</p>
+        <div class="math">
+          Depois da pergunta 8, abra a calculadora na frente dela:<br>
+          <b>assinantes × mensalidade = MRR</b> → 200 × R$ 47 = <b>R$ 9.400/mês</b><br>
+          <b>projeto ÷ MRR = meses até se pagar</b> → R$ 55.000 ÷ 9.400 = <b>~6 meses</b><br><br>
+          Esse é o momento mais forte da call. Se o número fecha, o orçamento deixa de ser gasto e vira investimento com prazo. Se não fecha, ela mesma chega à conclusão de que ainda não é hora — e você sai como quem foi honesto, não como quem não vendeu.
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Três desfechos — escolha um até o minuto 38</p>
+        <div class="branches">
+          <div class="branch">
+            <span class="tag t-go">tem projeto</span>
+            <p><b>Comunidade já roda com engajamento e ela quer monetizar como assinatura.</b> Primeira entrega enxuta em web app — login, conteúdo, feed, cobrança recorrente — na faixa de R$ 35 a 55 mil, 3 a 4 meses. App de loja fica para a fase 2, depois que a assinatura provar retenção. Próximo passo: escopo em duas semanas, proposta na sequência.</p>
+          </div>
+          <div class="branch">
+            <span class="tag t-hold">não agora</span>
+            <p><b>Menos de 300 alunas ativas e nenhuma comunidade rodando.</b> Recomende validar em ferramenta de prateleira por 3 a 6 meses e retomar quando tiver 150 assinantes pagando. Se houver espaço, ofereça uma consultoria curta de arquitetura de produto e monetização — remunerada, com prazo, e abatida no projeto quando ele vier.</p>
+          </div>
+          <div class="branch">
+            <span class="tag t-out">não é cliente</span>
+            <p><b>Quer app na loja por posicionamento, sem tese de receita, com orçamento abaixo da faixa.</b> Diga isso na call, com a alternativa: “no seu lugar, eu colocaria esse dinheiro em conteúdo e em uma comunidade de prateleira, e só construiria quando ela estiver cheia”. Você perde o projeto e ganha a indicação.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Armadilha específica desta call</p>
+        <ul class="traps">
+          <li><b>A conversa vai querer virar lista de funcionalidades.</b> Toda vez que ela descrever uma tela, devolva para o negócio: <em>“entendi — e essa tela resolve qual problema: trazer aluna nova, ou manter a que já está?”</em>. Se a resposta não for nenhum dos dois, a funcionalidade não entra na fase 1.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CRITÉRIOS ============ -->
+  <section class="panel" id="p-score" role="tabpanel" aria-labelledby="tab-score" hidden>
+    <div class="stack-lg">
+      <div>
+        <p class="eyebrow">Como o lead é pontuado</p>
+        <h2 class="sec-title">Seis dimensões, 100 pontos</h2>
+        <p class="lede">Os pesos não são iguais de propósito: capacidade de pagar e dor com número decidem mais da metade da nota, porque são eles que separam projeto de conversa boa.</p>
+      </div>
+      <div class="tablewrap"><table id="tbl-dims"><thead><tr><th>Dimensão</th><th>Peso</th><th>O que sustenta a nota cheia</th></tr></thead><tbody></tbody></table></div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Faixas e o que fazer em cada uma</p>
+        <div class="tablewrap"><table><thead><tr><th>Faixa</th><th>Leitura</th><th>Ação</th></tr></thead><tbody>
+          <tr><td class="pts" style="color:var(--go)">75–100</td><td>Quente</td><td>Proposta. Com 85+, decisor sozinho na call, faixa aceita e primeira entrega definida em uma frase, você pode estruturar a proposta ali mesmo.</td></tr>
+          <tr><td class="pts" style="color:var(--accent-ink)">50–74</td><td>Morno</td><td>Workshop de escopo remunerado (R$ 4–8 mil, abatido no projeto) ou segunda call com material. Proposta cega aqui é desperdício.</td></tr>
+          <tr><td class="pts" style="color:var(--hold)">30–49</td><td>Frio</td><td>Nutrição com condição explícita e data: “quando você tiver X, me procura” — e você agenda o follow-up antes de desligar.</td></tr>
+          <tr><td class="pts" style="color:var(--stop)">0–29</td><td>Fora</td><td>Devolutiva honesta na call, com a alternativa que você faria no lugar dele. Encerra em 5 minutos.</td></tr>
+        </tbody></table></div>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Kill switches — desqualificam sozinhos</p>
+        <ul class="traps" id="kill-list"></ul>
+      </div>
+
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">A regra técnica da 2na8</p>
+        <div class="charter" style="margin:0">
+          <h2 style="font-size:18px">Software sob medida só se justifica em três casos</h2>
+          <ol class="five" style="margin-top:12px">
+            <li>A ferramenta de prateleira trava uma tese de receita — ela impede cobrar, medir ou escalar do jeito que o negócio precisa.</li>
+            <li>O dado ou o processo é o diferencial competitivo, e entregá-lo a um terceiro é entregar o negócio.</li>
+            <li>O volume tornou a prateleira mais cara que construir, com conta que fecha em até 24 meses.</li>
+          </ol>
+          <p class="goal" style="margin-top:14px"><b>Se nenhuma das três se aplica, a resposta honesta é “não construa”.</b> Dizer isso custa um projeto e compra uma indicação — e evita o pior ativo que uma software house pode ter: um cliente que pagou por algo que não precisava.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HISTÓRICO ============ -->
+  <section class="panel" id="p-hist" role="tabpanel" aria-labelledby="tab-hist" hidden>
+    <div class="stack">
+      <div>
+        <p class="eyebrow">Fichas salvas</p>
+        <h2 class="sec-title">Histórico de triagem</h2>
+      </div>
+      <div id="hist-body"><div class="empty">Carregando…</div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ==================== modelo ==================== */
+const DIMS = [
+  { id:'grana', nome:'Capacidade de investimento', max:25,
+    cheia:'Aceitou a faixa sem hesitar e sabe de onde sai o dinheiro.',
+    niveis:[
+      {p:0,  t:'Sem receita, não sabe dizer, ou a faixa foi rejeitada'},
+      {p:10, t:'Tem receita, mas a faixa assustou; fala em “começar bem pequeno”'},
+      {p:18, t:'Faixa aceita com ressalva — quer parcelar ou dividir em fases'},
+      {p:25, t:'Faixa aceita sem hesitação e a verba está identificada'}
+    ]},
+  { id:'dor', nome:'Dor quantificada', max:20,
+    cheia:'Número claro e recorrente, e já tentou resolver antes.',
+    niveis:[
+      {p:0,  t:'É vontade ou ideia; não sabe dizer o que o problema custa'},
+      {p:8,  t:'Descreve a dor com clareza, mas não coloca número nenhum'},
+      {p:14, t:'Dá um número estimado — horas por mês, R$ ou clientes perdidos'},
+      {p:20, t:'Número claro e recorrente, e já gastou dinheiro tentando resolver'}
+    ]},
+  { id:'fit', nome:'Precisa ser sob medida', max:15,
+    cheia:'A prateleira trava a receita, ou o dado é o diferencial.',
+    niveis:[
+      {p:0,  t:'Uma ferramenta de prateleira resolve isso hoje, por pouco dinheiro'},
+      {p:6,  t:'Talvez prateleira resolva, mas exigiria integração e customização'},
+      {p:11, t:'A prateleira trava a tese de receita, ou o volume ficou caro demais'},
+      {p:15, t:'O dado ou o processo é o diferencial — não existe pronto'}
+    ]},
+  { id:'urgencia', nome:'Urgência e gatilho', max:15,
+    cheia:'Tem data no calendário que amarra a decisão.',
+    niveis:[
+      {p:0,  t:'Sem gatilho — está “pesquisando”, curiosidade'},
+      {p:5,  t:'Quer “ainda esse ano”, sem nada concreto empurrando'},
+      {p:10, t:'Gatilho claro (algo aconteceu), mas sem data dura'},
+      {p:15, t:'Data no calendário: lançamento, contrato, evento, sazonalidade'}
+    ]},
+  { id:'decisao', nome:'Poder de decisão', max:10,
+    cheia:'Decide sozinho e estava na call.',
+    niveis:[
+      {p:0,  t:'Não é o decisor e não dá acesso a quem é'},
+      {p:4,  t:'Decisor identificado, mas ausente e sem data para entrar'},
+      {p:7,  t:'Decisor na call, com mais alguém a consultar'},
+      {p:10, t:'Decisor na call e decide sozinho'}
+    ]},
+  { id:'operar', nome:'Capacidade de operar depois', max:15,
+    cheia:'Já existe equipe e processo rodando.',
+    niveis:[
+      {p:0,  t:'Não há ninguém para tocar isso depois de entregue'},
+      {p:5,  t:'Só o dono, e ele já não tem tempo para o que faz hoje'},
+      {p:10, t:'Uma pessoa dedicada parcialmente, sem processo definido'},
+      {p:15, t:'Equipe e processo já rodando — o produto entra numa operação viva'}
+    ]}
+];
+
+const KILLS = [
+  { id:'k1', t:'Teto declarado abaixo de R$ 25 mil para escopo de aplicativo' },
+  { id:'k2', t:'Sem receita e sem capital identificado — “vou buscar investidor depois”' },
+  { id:'k3', t:'Procura sócio técnico ou equity no lugar de pagamento' },
+  { id:'k4', t:'Prazo impossível e inegociável — aplicativo completo em menos de 8 semanas' },
+  { id:'k5', t:'Quer que a 2na8 valide a ideia antes de haver contrato' }
+];
+
+const BLOCOS = [
+  { n:'Bloco 1', id:'receita', titulo:'Motor de receita', min:'7 min',
+    goal:'Descobrir se existe um negócio ou apenas uma audiência. Aqui você calibra o teto do projeto antes de qualquer conversa sobre escopo.',
+    dims:[],
+    qs:[
+      {q:'Me explica como o dinheiro entra hoje: o que você vende, por quanto, e para quantas pessoas por mês?'},
+      {q:'Desses produtos, qual é o que realmente paga a conta?'},
+      {q:'Quantas pessoas trabalham com você hoje e quem faz o quê?'},
+      {q:'Como o cliente te encontra? Qual canal traz mais?'},
+      {q:'Faturamento aproximado dos últimos 12 meses — a ordem de grandeza já me ajuda.', tag:'não pule'}
+    ],
+    verde:['Receita recorrente ou previsível','Equipe de três ou mais','Já contratou serviço profissional antes'],
+    vermelho:['“Ainda não faturei”','Receita só de lançamento, sem base','Opera sozinho e sem processo nenhum']
+  },
+  { n:'Bloco 2', id:'dor', titulo:'Gatilho e dor', min:'8 min',
+    goal:'Separar dor de vontade. A pergunta de abertura deste bloco é a mais importante da call inteira — ela revela se existe pressão real ou se você é só mais uma pesquisa de mercado.',
+    dims:['dor','urgencia'],
+    qs:[
+      {q:'O que aconteceu nas últimas semanas para você procurar isso agora?', tag:'a pergunta da call'},
+      {q:'Como você resolve isso hoje? Me descreve o passo a passo, quem faz e quanto tempo leva.'},
+      {q:'Quanto isso custa por mês — em horas da equipe, em dinheiro, ou em cliente que você perde?'},
+      {q:'Se a gente não fizer nada, como isso está daqui a doze meses?'},
+      {q:'Já tentou resolver antes? O que deu errado?'}
+    ],
+    verde:['Consegue colocar número na dor','Já gastou dinheiro tentando resolver','O gatilho tem data'],
+    vermelho:['Não sabe estimar o custo do problema','“Sempre foi assim, mas incomoda”','Nada mudou — só bateu vontade']
+  },
+  { n:'Bloco 3', id:'solucao', titulo:'Desconstruir a solução', min:'8 min',
+    goal:'O lead chega com a solução pronta na cabeça. Seu trabalho é voltar um passo: do que ele quer construir para o resultado que ele quer alcançar — e testar honestamente se isso já existe pronto.',
+    dims:['fit','operar'],
+    qs:[
+      {q:'Me conta o que você imagina. Descreve como se eu fosse o usuário abrindo isso pela primeira vez.'},
+      {q:'Quem vai usar, quantas pessoas, e quantas vezes por semana?'},
+      {q:'O que essa pessoa consegue fazer aí que ela não consegue fazer hoje?'},
+      {q:'Por que isso precisa ser seu e não uma ferramenta de prateleira?', tag:'teste de fit'},
+      {q:'Se a gente entregasse só uma coisa em sessenta dias, qual seria?', tag:'testa priorização'},
+      {q:'Quem toca isso depois que estiver no ar — quem alimenta, modera e dá suporte?'}
+    ],
+    verde:['Consegue nomear a primeira entrega em uma frase','Já usou prateleira e bateu num limite concreto','Tem gente para operar'],
+    vermelho:['Descreve telas, nunca resultados','Nunca testou nada mais simples','Ninguém para tocar depois da entrega']
+  },
+  { n:'Bloco 4', id:'valor', titulo:'Valor e impacto', min:'5 min',
+    goal:'Construir a ponte para o preço. Você quer que o próprio lead diga o número que o problema vale, antes de você dizer o número que a solução custa.',
+    dims:[],
+    qs:[
+      {q:'Se isso funcionar do jeito que você imagina, o que muda no número? Receita nova, custo que some, tempo que volta?'},
+      {q:'Em quanto tempo você acha que isso teria que se pagar para valer a pena?'},
+      {q:'Quanto vale resolver isso — não o preço do software, o valor do problema resolvido?'}
+    ],
+    verde:['Faz a conta junto com você','Fala em retorno, não em custo'],
+    vermelho:['“Não sei, depende”, três vezes seguidas','Só quer saber quanto custa']
+  },
+  { n:'Bloco 5', id:'decisao', titulo:'Decisão, orçamento e prazo', min:'7 min',
+    goal:'BANT sem rodeio. Ancore a faixa você mesmo, antes de perguntar o orçamento dele — quem diz o primeiro número define a régua da conversa.',
+    dims:['grana','decisao'],
+    qs:[
+      {q:'Além de você, quem mais precisa dizer sim?'},
+      {q:'Como vocês decidiram a última compra parecida com essa?', tag:'revela o processo real'},
+      {q:'Deixa eu te dar uma referência antes de perguntar: projetos como o que você descreveu ficam entre R$ 35 e 80 mil, em 3 a 5 meses. Isso está dentro do que você tinha em mente, ou te assustou?', tag:'ancoragem'},
+      {q:'Esse investimento sai de onde — caixa, faturamento do mês, reserva, sócio?'},
+      {q:'Tem alguma data no calendário que amarra isso?'},
+      {q:'Se a gente fechasse escopo em duas semanas, o que impediria você de começar?', tag:'pergunta do obstáculo'}
+    ],
+    verde:['Reage à faixa sem recuar','Sabe de onde sai o dinheiro','Decide sozinho ou traz o sócio agora'],
+    vermelho:['Desvia da faixa duas vezes','“Preciso ver com meu marido/sócio” sem nome nem data','Quer orçamento por e-mail e some']
+  },
+  { n:'Bloco 6', id:'fecho', titulo:'Devolutiva e próximo passo', min:'4 min',
+    goal:'Você prometeu uma resposta direta na abertura. Entregue. Escolha um dos três desfechos e diga em voz alta — inclusive o não.',
+    dims:[],
+    qs:[
+      {q:'Avança: “Faz sentido. O próximo passo é [proposta / workshop de escopo], eu te mando até [dia] e a gente marca 30 minutos no dia [x] para revisar juntos.”', tag:'desfecho 1'},
+      {q:'Condicional: “Faz sentido, mas tem um ponto: [x]. Eu sugiro resolver isso primeiro. Quando [condição], a gente retoma — posso te procurar em [prazo]?”', tag:'desfecho 2'},
+      {q:'Não: “Vou ser direto: contratar desenvolvimento agora não é o melhor uso do seu dinheiro. No seu lugar eu faria [alternativa]. Se em [prazo] isso estiver travando, aí sim vale a conversa.”', tag:'desfecho 3'},
+      {q:'E sempre: “Posso te mandar por escrito um resumo do que eu entendi?”', tag:'fecha com documento'}
+    ],
+    verde:['Saiu com data marcada','O lead repetiu com as próprias palavras o que foi combinado'],
+    vermelho:['“Qualquer coisa a gente se fala”','Você prometeu proposta sem escopo alinhado']
+  }
+];
+
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dimById = id => DIMS.find(d => d.id===id);
+
+/* ==================== roteiro ==================== */
+document.getElementById('roteiro-blocos').innerHTML = BLOCOS.map(b => `
+  <article class="block">
+    <div class="block-head">
+      <span class="block-n">${esc(b.n)}</span>
+      <h3>${esc(b.titulo)}</h3>
+      <span class="min">${esc(b.min)}</span>
+    </div>
+    <div class="block-body">
+      <p class="goal">${esc(b.goal)}</p>
+      <ul class="qs">
+        ${b.qs.map(q => `<li>${q.tag?`<b>${esc(q.tag)}</b>`:''}${esc(q.q)}</li>`).join('')}
+      </ul>
+      <div class="signals">
+        <div class="sig sig-go"><h4>Sinal verde</h4><ul>${b.verde.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+        <div class="sig sig-no"><h4>Sinal vermelho</h4><ul>${b.vermelho.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+      </div>
+    </div>
+  </article>`).join('');
+
+/* ==================== critérios ==================== */
+document.querySelector('#tbl-dims tbody').innerHTML = DIMS.map(d => `
+  <tr><td><b>${esc(d.nome)}</b></td><td class="pts">${d.max}</td><td>${esc(d.cheia)}</td></tr>`).join('');
+document.getElementById('kill-list').innerHTML = KILLS.map(k => `<li>${esc(k.t)}</li>`).join('');
+
+/* ==================== ficha ==================== */
+document.getElementById('ficha-blocos').innerHTML = BLOCOS.map(b => `
+  <article class="block">
+    <div class="block-head">
+      <span class="block-n">${esc(b.n)}</span>
+      <h3>${esc(b.titulo)}</h3>
+      <span class="min">${esc(b.min)}</span>
+    </div>
+    <div class="block-body">
+      <ul class="qs">${b.qs.map(q => `<li>${q.tag?`<b>${esc(q.tag)}</b>`:''}${esc(q.q)}</li>`).join('')}</ul>
+      <label class="f">Anotações
+        <textarea id="nota-${b.id}" data-nota="${b.id}" placeholder="O que ele respondeu — números, palavras dele, o que ficou em aberto"></textarea>
+      </label>
+      ${b.dims.map(id => { const d = dimById(id); return `
+        <div class="dim">
+          <div class="dim-head"><h4>${esc(d.nome)}</h4><span class="dim-max">até ${d.max} pts</span></div>
+          <div class="levels">
+            ${d.niveis.map((n,i) => `
+              <label class="lvl" for="dim-${d.id}-${i}">
+                <input type="radio" id="dim-${d.id}-${i}" name="dim-${d.id}" value="${n.p}" data-dim="${d.id}">
+                <span>${esc(n.t)}</span>
+                <span class="p">${n.p}</span>
+              </label>`).join('')}
+          </div>
+        </div>`; }).join('')}
+    </div>
+  </article>`).join('');
+
+document.getElementById('side-bars').innerHTML = DIMS.map(d => `
+  <div class="bar-row">
+    <div class="t"><span>${esc(d.nome)}</span><b><span id="bar-v-${d.id}">–</span>/${d.max}</b></div>
+    <div class="track"><div class="fill" id="bar-f-${d.id}" style="width:0%"></div></div>
+  </div>`).join('');
+
+document.getElementById('side-kills').innerHTML = KILLS.map(k => `
+  <label class="kill" for="${k.id}">
+    <input type="checkbox" id="${k.id}" data-kill="${k.id}">
+    <span>${esc(k.t)}</span>
+  </label>`).join('');
+
+/* ==================== score ==================== */
+const FIELDS = ['f-lead','f-contato','f-data','f-origem','f-fat','f-clientes','f-equipe','f-pedido','f-proximo'];
+
+function leitura(){
+  const scores = {}; let algum = false;
+  DIMS.forEach(d => {
+    const sel = document.querySelector(`input[name="dim-${d.id}"]:checked`);
+    if (sel){ scores[d.id] = Number(sel.value); algum = true; } else { scores[d.id] = null; }
+  });
+  const total = DIMS.reduce((s,d) => s + (scores[d.id] ?? 0), 0);
+  const kills = KILLS.filter(k => document.getElementById(k.id).checked);
+  let faixa;
+  if (kills.length) faixa = {cls:'v-out', rot:'Desqualificado', txt:`<b>Kill switch acionado.</b> Não importa a nota: encerre com a devolutiva honesta e indique a alternativa. Você ganha a indicação.`};
+  else if (!algum)  faixa = {cls:'v-none', rot:'sem avaliação', txt:'Preencha as avaliações ao longo da call. O veredito aparece aqui e vira a frase que você usa no fechamento.'};
+  else if (total >= 75) faixa = {cls:'v-go', rot:'Quente · proposta', txt:`<b>Vai para proposta.</b> Com 85+, decisor sozinho na call e primeira entrega definida em uma frase, estruture ali mesmo. Saia com dia e hora da revisão.`};
+  else if (total >= 50) faixa = {cls:'v-warm', rot:'Morno · escopo primeiro', txt:`<b>Workshop de escopo remunerado</b> (R$ 4–8 mil, abatido no projeto) ou segunda call com material. Proposta cega aqui é desperdício.`};
+  else if (total >= 30) faixa = {cls:'v-hold', rot:'Frio · nutrição', txt:`<b>Nutrição com condição explícita.</b> “Quando você tiver [x], me procura” — e agende o follow-up antes de desligar.`};
+  else faixa = {cls:'v-out', rot:'Fora', txt:`<b>Devolutiva honesta na call</b>, com a alternativa que você faria no lugar dele. Encerra em cinco minutos.`};
+  return {scores, total, kills, faixa, algum};
+}
+
+function render(){
+  const {scores, total, faixa, algum} = leitura();
+  DIMS.forEach(d => {
+    const v = scores[d.id];
+    document.getElementById(`bar-v-${d.id}`).textContent = v===null ? '–' : v;
+    document.getElementById(`bar-f-${d.id}`).style.width = ((v ?? 0)/d.max*100) + '%';
+  });
+  document.getElementById('side-score').textContent = total;
+  const topEl = document.getElementById('top-score');
+  topEl.className = 'num' + (algum? '' : ' idle');
+  topEl.innerHTML = (algum? total : '–') + '<small>/100</small>';
+  ['top-verdict','side-verdict'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'verdict ' + faixa.cls;
+    el.textContent = faixa.rot;
+  });
+  document.getElementById('side-advice').innerHTML = faixa.txt;
+  salvarRascunho();
+}
+
+/* ==================== rascunho local ==================== */
+const DRAFT = 'triagem2na8.draft.v1';
+function estado(){
+  const o = {campos:{}, notas:{}, dims:{}, kills:{}};
+  FIELDS.forEach(id => { const el = document.getElementById(id); if (el) o.campos[id] = el.value; });
+  document.querySelectorAll('[data-nota]').forEach(t => o.notas[t.dataset.nota] = t.value);
+  DIMS.forEach(d => { const s = document.querySelector(`input[name="dim-${d.id}"]:checked`); o.dims[d.id] = s? Number(s.value) : null; });
+  KILLS.forEach(k => o.kills[k.id] = document.getElementById(k.id).checked);
+  return o;
+}
+function aplicar(o){
+  if (!o) return;
+  Object.entries(o.campos||{}).forEach(([id,v]) => { const el = document.getElementById(id); if (el) el.value = v; });
+  Object.entries(o.notas||{}).forEach(([id,v]) => { const el = document.getElementById('nota-'+id); if (el) el.value = v; });
+  Object.entries(o.dims||{}).forEach(([id,v]) => {
+    if (v===null || v===undefined) return;
+    const el = document.querySelector(`input[name="dim-${id}"][value="${v}"]`); if (el) el.checked = true;
+  });
+  Object.entries(o.kills||{}).forEach(([id,v]) => { const el = document.getElementById(id); if (el) el.checked = !!v; });
+}
+let draftTimer;
+function salvarRascunho(){
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(() => {
+    try { localStorage.setItem(DRAFT, JSON.stringify(estado())); } catch(e){}
+  }, 400);
+}
+try { const raw = localStorage.getItem(DRAFT); if (raw) aplicar(JSON.parse(raw)); } catch(e){}
+
+/* ==================== abas ==================== */
+const TABS = [['tab-roteiro','p-roteiro'],['tab-ficha','p-ficha'],['tab-hoje','p-hoje'],['tab-score','p-score'],['tab-hist','p-hist']];
+TABS.forEach(([t,p]) => {
+  document.getElementById(t).addEventListener('click', () => {
+    TABS.forEach(([t2,p2]) => {
+      const on = t2===t;
+      document.getElementById(t2).setAttribute('aria-selected', on? 'true':'false');
+      document.getElementById(p2).hidden = !on;
+    });
+    window.scrollTo({top:0, behavior:'instant'});
+  });
+});
+
+/* ==================== resumo ==================== */
+function resumo(){
+  const {scores, total, kills, faixa} = leitura();
+  const g = id => (document.getElementById(id)?.value || '').trim();
+  const L = [];
+  L.push(`TRIAGEM 2na8 — ${g('f-lead') || 'sem nome'}`);
+  L.push(`Data: ${g('f-data') || '—'} | Contato: ${g('f-contato') || '—'} | Origem: ${g('f-origem') || '—'}`);
+  L.push(`Pedido: ${g('f-pedido') || '—'}`);
+  L.push(`Negócio: faturamento ${g('f-fat') || '—'} | clientes ${g('f-clientes') || '—'} | equipe ${g('f-equipe') || '—'}`);
+  L.push('');
+  L.push(`SCORE ${total}/100 — ${faixa.rot.toUpperCase()}`);
+  DIMS.forEach(d => L.push(`  ${d.nome}: ${scores[d.id]===null? 'não avaliado' : scores[d.id]}/${d.max}`));
+  if (kills.length){ L.push(''); L.push('KILL SWITCHES:'); kills.forEach(k => L.push(`  • ${k.t}`)); }
+  L.push('');
+  BLOCOS.forEach(b => {
+    const v = (document.getElementById('nota-'+b.id)?.value || '').trim();
+    if (v) { L.push(`${b.n.toUpperCase()} — ${b.titulo}`); L.push(v); L.push(''); }
+  });
+  L.push(`PRÓXIMO PASSO: ${g('f-proximo') || '— não definido —'}`);
+  return L.join('\n');
+}
+
+let toastT;
+function toast(msg){
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const el = document.createElement('div');
+  el.className = 'toast'; el.setAttribute('role','status'); el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(toastT); toastT = setTimeout(() => el.remove(), 2600);
+}
+
+document.getElementById('btn-copy').addEventListener('click', async () => {
+  const txt = resumo();
+  try { await navigator.clipboard.writeText(txt); toast('Resumo copiado'); }
+  catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Resumo copiado'); }
+    catch(e2){ toast('Não consegui copiar — selecione o texto manualmente'); }
+    ta.remove();
+  }
+});
+
+document.getElementById('btn-new').addEventListener('click', () => {
+  document.querySelectorAll('[data-nota]').forEach(t => t.value = '');
+  FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.querySelectorAll('input[type="radio"][data-dim]').forEach(r => r.checked = false);
+  KILLS.forEach(k => document.getElementById(k.id).checked = false);
+  setHoje();
+  render();
+  toast('Ficha limpa');
+});
+
+function setHoje(){
+  const el = document.getElementById('f-data');
+  if (el && !el.value){
+    const d = new Date();
+    el.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+}
+setHoje();
+
+document.addEventListener('input', e => {
+  if (e.target.matches('input,textarea')) render();
+});
+document.addEventListener('change', e => {
+  if (e.target.matches('input')) render();
+});
+render();
+
+/* ==================== histórico (db) ==================== */
+const histBody = document.getElementById('hist-body');
+const saveBtn = document.getElementById('btn-save');
+const saveNote = document.getElementById('save-note');
+let DB = null;
+
+function fmtData(iso){
+  if (!iso) return '—';
+  const p = String(iso).slice(0,10).split('-');
+  return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+}
+function clsFaixa(total, kills){
+  if (kills) return 'v-out';
+  if (total >= 75) return 'v-go';
+  if (total >= 50) return 'v-warm';
+  if (total >= 30) return 'v-hold';
+  return 'v-out';
+}
+
+function renderHist(docs){
+  if (!docs.length){
+    histBody.innerHTML = '<div class="empty">Nenhuma ficha salva ainda. Preencha a ficha durante a call e clique em <b>Salvar ficha</b>.</div>';
+    return;
+  }
+  histBody.innerHTML = '<div class="hist">' + docs.map(d => `
+    <div class="hrow">
+      <div class="who">
+        <strong>${esc(d.lead || 'sem nome')}</strong>
+        <span>${esc(fmtData(d.data))} · ${esc(d.proximo || 'sem próximo passo')}</span>
+      </div>
+      <span class="sc">${Number(d.total)||0}</span>
+      <span class="verdict ${clsFaixa(Number(d.total)||0, (d.kills||[]).length)}">${esc(d.rotulo || '')}</span>
+    </div>`).join('') + '</div>';
+}
+
+const dbReady = (window.claude && typeof window.claude.use === 'function')
+  ? window.claude.use('db') : Promise.resolve(null);
+
+dbReady.then(db => {
+  if (!db){
+    DB = null;
+    saveBtn.hidden = true;
+    document.getElementById('btn-copy').classList.add('btn-primary');
+    saveNote.textContent = 'O histórico compartilhado não está disponível nesta visualização. O rascunho continua salvo neste navegador.';
+    histBody.innerHTML = '<div class="empty">O histórico compartilhado não está disponível nesta visualização.</div>';
+    return;
+  }
+  DB = db;
+  db.collection('discoveries').orderBy('criadoEm','desc').limit(60).onSnapshot(
+    snap => renderHist(snap.docs.map(d => d.data())),
+    err => { histBody.innerHTML = '<div class="empty">Não consegui carregar o histórico agora. Seu rascunho local está intacto.</div>'; }
+  );
+  saveBtn.addEventListener('click', async () => {
+    const {scores, total, kills, faixa} = leitura();
+    const g = id => (document.getElementById(id)?.value || '').trim();
+    if (!g('f-lead')){ toast('Escreva o nome do lead antes de salvar'); document.getElementById('f-lead').focus(); return; }
+    saveBtn.disabled = true; saveBtn.textContent = 'Salvando…';
+    const notas = {}; BLOCOS.forEach(b => { const v = (document.getElementById('nota-'+b.id)?.value||'').trim(); if (v) notas[b.id] = v; });
+    try {
+      await db.collection('discoveries').doc().set({
+        lead:g('f-lead'), contato:g('f-contato'), data:g('f-data'), origem:g('f-origem'),
+        faturamento:g('f-fat'), clientes:g('f-clientes'), equipe:g('f-equipe'), pedido:g('f-pedido'),
+        proximo:g('f-proximo'), scores, total, rotulo:faixa.rot,
+        kills:kills.map(k => k.t), notas, criadoEm:new Date().toISOString()
+      });
+      toast('Ficha salva no histórico');
+    } catch(err){
+      toast(err && err.code==='quota_exceeded' ? 'Histórico cheio — apague fichas antigas' : 'Não consegui salvar agora. Use “Copiar resumo”.');
+    }
+    saveBtn.disabled = false; saveBtn.textContent = 'Salvar ficha';
+  });
+});
+</script>
+
+</body></html>
