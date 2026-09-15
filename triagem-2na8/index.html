@@ -157,6 +157,9 @@ main{max-width:1120px; margin:0 auto; padding:26px 20px 72px}
 }
 .qs li b{font-family:var(--ff-ui); font-size:11px; font-weight:600; letter-spacing:.08em;
   text-transform:uppercase; color:var(--accent); display:block; margin-bottom:1px}
+.qs.numbered{list-style:decimal; padding-left:24px}
+.qs.numbered li{border-left:0; padding-left:4px}
+.qs.numbered li::marker{font-family:var(--ff-ui); font-size:12px; font-weight:600; color:var(--ink-3)}
 .signals{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 @media (max-width:620px){.signals{grid-template-columns:1fr}}
 .sig{border-radius:8px; padding:11px 13px; font-size:13.5px; line-height:1.45}
@@ -429,74 +432,10 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{
 
   <!-- ============ CALL DE HOJE ============ -->
   <section class="panel" id="p-hoje" role="tabpanel" aria-labelledby="tab-hoje" hidden>
-    <div class="stack-lg">
-      <div>
-        <p class="eyebrow">Briefing · criadora de conteúdo · app ou comunidade</p>
-        <h2 class="sec-title">Mãe Moderna na Cozinha</h2>
-        <p class="lede">Ela já vende — tem alunas. A pergunta da call não é “o que construir”, é <em>se</em> construir: descobrir se existe tese de receita recorrente por trás do pedido, ou se é um app que vai nascer vazio.</p>
-      </div>
-
-      <div>
-        <p class="eyebrow" style="margin-bottom:8px">Hipóteses a testar (não são conclusões)</p>
-        <ul class="hyp">
-          <li><b>“App ou comunidade” quase sempre esconde uma de três coisas.</b> (a) Quer transformar venda pontual de curso em receita recorrente. (b) O grupo de WhatsApp virou ingovernável e ela está perdendo aluna. (c) Posicionamento — “ter um app” como prova de autoridade. Só (a) e (b) pagam um projeto; (c) você desqualifica com elegância.</li>
-          <li><b>Infoprodutor tem caixa sazonal.</b> O dinheiro entra em lançamento. Descobrir quando foi o último e quando é o próximo define não só <em>se</em> ela pode pagar, mas <em>quando</em> e em quantas parcelas.</li>
-          <li><b>O risco real é o app nascer vazio.</b> Se ela não tem nenhuma comunidade rodando hoje, construir do zero é pular etapa — e um produto sem gente dentro vira um caso ruim no seu portfólio.</li>
-          <li><b>“App” pode significar duas coisas com custos muito diferentes.</b> Baixar na loja ou um lugar próprio que abre no celular. A diferença entre as duas é o dobro do orçamento. Isso precisa ficar claro antes do minuto 25.</li>
-        </ul>
-      </div>
-
-      <div>
-        <p class="eyebrow" style="margin-bottom:8px">Dez perguntas específicas — além do roteiro padrão</p>
-        <ol class="qs" style="padding-left:18px">
-          <li>Quantas alunas você tem no total, e quantas estão ativas nos últimos 30 dias?</li>
-          <li>Qual o preço do curso e como ele é vendido — lançamento, perpétuo ou assinatura?</li>
-          <li>Quanto entrou no último lançamento e quando é o próximo?</li>
-          <li>Hoje suas alunas conversam entre si em algum lugar? Onde, quantas e como está o engajamento?</li>
-          <li>O que te incomoda nesse lugar onde elas estão hoje?</li>
-          <li>Quando você diz app, você quer que ela baixe na loja, ou quer um lugar seu que abre no celular?</li>
-          <li>A comunidade seria um bônus do curso ou um produto pago à parte?</li>
-          <li>Se fosse assinatura: quanto você cobraria e quantas alunas você acha que pagariam?</li>
-          <li>Quem cuidaria dessa comunidade no dia a dia — você ou alguém do seu time?</li>
-          <li>Você já pagou por alguma ferramenta assim? O que te fez sair ou não usar?</li>
-        </ol>
-      </div>
-
-      <div>
-        <p class="eyebrow" style="margin-bottom:8px">A conta que você faz ao vivo com ela</p>
-        <div class="math">
-          Depois da pergunta 8, abra a calculadora na frente dela:<br>
-          <b>assinantes × mensalidade = MRR</b> → 200 × R$ 47 = <b>R$ 9.400/mês</b><br>
-          <b>projeto ÷ MRR = meses até se pagar</b> → R$ 55.000 ÷ 9.400 = <b>~6 meses</b><br><br>
-          Esse é o momento mais forte da call. Se o número fecha, o orçamento deixa de ser gasto e vira investimento com prazo. Se não fecha, ela mesma chega à conclusão de que ainda não é hora — e você sai como quem foi honesto, não como quem não vendeu.
-        </div>
-      </div>
-
-      <div>
-        <p class="eyebrow" style="margin-bottom:8px">Três desfechos — escolha um até o minuto 38</p>
-        <div class="branches">
-          <div class="branch">
-            <span class="tag t-go">tem projeto</span>
-            <p><b>Comunidade já roda com engajamento e ela quer monetizar como assinatura.</b> Primeira entrega enxuta em web app — login, conteúdo, feed, cobrança recorrente — na faixa de R$ 35 a 55 mil, 3 a 4 meses. App de loja fica para a fase 2, depois que a assinatura provar retenção. Próximo passo: escopo em duas semanas, proposta na sequência.</p>
-          </div>
-          <div class="branch">
-            <span class="tag t-hold">não agora</span>
-            <p><b>Menos de 300 alunas ativas e nenhuma comunidade rodando.</b> Recomende validar em ferramenta de prateleira por 3 a 6 meses e retomar quando tiver 150 assinantes pagando. Se houver espaço, ofereça uma consultoria curta de arquitetura de produto e monetização — remunerada, com prazo, e abatida no projeto quando ele vier.</p>
-          </div>
-          <div class="branch">
-            <span class="tag t-out">não é cliente</span>
-            <p><b>Quer app na loja por posicionamento, sem tese de receita, com orçamento abaixo da faixa.</b> Diga isso na call, com a alternativa: “no seu lugar, eu colocaria esse dinheiro em conteúdo e em uma comunidade de prateleira, e só construiria quando ela estiver cheia”. Você perde o projeto e ganha a indicação.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <p class="eyebrow" style="margin-bottom:8px">Armadilha específica desta call</p>
-        <ul class="traps">
-          <li><b>A conversa vai querer virar lista de funcionalidades.</b> Toda vez que ela descrever uma tela, devolva para o negócio: <em>“entendi — e essa tela resolve qual problema: trazer aluna nova, ou manter a que já está?”</em>. Se a resposta não for nenhum dos dois, a funcionalidade não entra na fase 1.</li>
-        </ul>
-      </div>
-    </div>
+    <label class="f" style="max-width:360px; margin-bottom:24px">Briefing do lead
+      <select id="f-briefing"></select>
+    </label>
+    <div id="brief-body"></div>
   </section>
 
   <!-- ============ CRITÉRIOS ============ -->
@@ -609,7 +548,8 @@ const KILLS = [
   { id:'k2', t:'Sem receita e sem capital identificado — “vou buscar investidor depois”' },
   { id:'k3', t:'Procura sócio técnico ou equity no lugar de pagamento' },
   { id:'k4', t:'Prazo impossível e inegociável — aplicativo completo em menos de 8 semanas' },
-  { id:'k5', t:'Quer que a 2na8 valide a ideia antes de haver contrato' }
+  { id:'k5', t:'Quer que a 2na8 valide a ideia antes de haver contrato' },
+  { id:'k6', t:'O trabalho depende de um sistema de terceiro que ele não controla, e o fornecedor não coopera' }
 ];
 
 const BLOCOS = [
@@ -692,6 +632,129 @@ const BLOCOS = [
   }
 ];
 
+const BRIEFINGS = [
+  {
+    id:'mw', lead:'MW Imobiliária',
+    eyebrow:'Briefing · imobiliária · SEO ou site novo',
+    titulo:'MW Imobiliária — Nova Petrópolis',
+    lede:'Indicação do Dieter e do Evandro, e o diagnóstico de SEO já foi entregue antes da call. Isso inverte a conversa: você não vai apresentar o problema, ele já leu. Vai descobrir duas coisas — quanto vale um negócio para ele, e quem manda no código do site.',
+    ajustes:[
+      { t:'A faixa de R$ 35 a 80 mil do Bloco 5 não vale aqui.',
+        d:'Esta call tem duas faixas: correção de SEO, R$ 8 a 18 mil em 4 a 6 semanas; site próprio com renderização no servidor, R$ 45 a 90 mil em 3 a 5 meses. Ancore só a faixa que o Bloco 3 indicar — nunca as duas juntas na abertura.' },
+      { t:'O kill switch de teto abaixo de R$ 25 mil não se aplica.',
+        d:'Correção de SEO abaixo disso pode ser projeto legítimo. O kill switch real desta call é o outro: ele não controlar o sistema onde o trabalho precisa ser feito.' },
+      { t:'O Bloco 2 já vem meio respondido.',
+        d:'O relatório descreveu a dor técnica. Não gaste os 8 minutos repetindo o diagnóstico — use o tempo para descobrir quanto essa dor custa em comissão que não entrou.' },
+      { t:'Indicação aumenta a confiança e o risco de preço de amizade.',
+        d:'Se for dar alguma coisa por vir do Dieter e do Evandro, dê em escopo ou em prazo de pagamento, não em preço por hora. Desconto de amizade vira expectativa de amizade no suporte.' }
+    ],
+    hipoteses:[
+      { t:'O site provavelmente não é dele.',
+        d:'Metadados da home no HTML inicial, conteúdo só depois do JavaScript, 601 URLs no sitemap com a mesma data de lastmod e URLs com parâmetros misturadas — isso é a assinatura de plataforma pronta de imobiliária, não de site sob medida. Se for, os dois P0 e o P1 não são seus para corrigir: são do fornecedor dele. Descobrir isso é a primeira coisa da call, porque muda todo o resto.' },
+      { t:'O pedido é SEO, mas a tese de receita é depender menos de portal.',
+        d:'Imobiliária de cidade pequena costuma pagar ZAP, VivaReal e OLX todo mês por lead caro e dividido com o concorrente da esquina. Se ele paga portal, o projeto se compara com essa mensalidade — conta muito mais concreta que “subir no Google”.' },
+      { t:'O número que decide não é tráfego, é comissão.',
+        d:'Um negócio a mais por mês em Nova Petrópolis provavelmente paga a correção de SEO inteira no primeiro mês. Se ele souber o ticket médio e o percentual de cabeça, a decisão sai na call.' },
+      { t:'O relatório foi de graça, e isso corta dos dois lados.',
+        d:'Comprou confiança e queimou ancoragem. Se ele abrir com “e quanto custa fazer isso aí que vocês mandaram”, não dê número antes do Bloco 3 — porque a resposta honesta depende da primeira hipótese.' },
+      { t:'Falta metade do quadro, e ela é a metade que mais vende.',
+        d:'A auditoria foi externa: sem Search Console, sem Google Business Profile, sem Core Web Vitals de campo. Para quem busca “imobiliária em Nova Petrópolis”, o perfil do Google costuma pesar mais que a página de categoria. Pedir esses dois acessos é diagnóstico real e é um pedido barato de fazer ao vivo.' }
+    ],
+    perguntas:[
+      { q:'Quem fez o site de vocês, e quem mexe nele hoje quando precisa mudar alguma coisa?', tag:'a pergunta que destrava a call' },
+      { q:'Vocês pagam mensalidade para manter o site ou o sistema de imóveis no ar? Para quem, e quanto?' },
+      { q:'Se eu precisar mudar o que o site responde numa URL, ou colocar um arquivo no servidor, alguém aí consegue fazer isso — ou tem que pedir para o fornecedor?', tag:'teste de controle' },
+      { q:'Vocês têm Google Search Console e Google Business Profile? Consegue me dar acesso de leitura ainda hoje?', tag:'próximo passo embutido' },
+      { q:'De onde vêm os contatos hoje: portal, indicação, Instagram ou site? Se tivesse que chutar a divisão, como fica?' },
+      { q:'Quanto vocês pagam de portal por mês, somando tudo?' },
+      { q:'Quantos negócios vocês fecham por mês, qual o ticket médio do imóvel e qual o percentual de comissão?', tag:'a conta sai daqui' },
+      { q:'Dos contatos que chegam pelo site, quantos viram visita e quantos viram negócio?' },
+      { q:'O que te fez procurar SEO agora — apareceu concorrente novo, caiu o movimento, ou foi a conversa com o Dieter e o Evandro?' },
+      { q:'Quem cadastra imóvel novo e escreve os textos do site — e essa pessoa tem tempo para isso?' }
+    ],
+    math:{
+      intro:'Depois da pergunta 7, abra a calculadora na frente dele:',
+      linhas:[
+        { label:'ticket médio × comissão = um negócio', conta:'R$ 500.000 × 6% = R$ 30.000' },
+        { label:'correção de SEO ÷ um negócio', conta:'R$ 14.000 ÷ 30.000 = menos de meio negócio' },
+        { label:'portal × 12 meses = lead alugado por ano', conta:'R$ 1.800 × 12 = R$ 21.600/ano, todo ano' }
+      ],
+      nota:'A conta serve para dimensionar a decisão, não para prometer o resultado — veja a primeira armadilha. E se ele não souber o ticket ou a comissão de cabeça, isso é um sinal por si só: quem não sabe quanto vale um negócio também não vai medir o seu trabalho depois, e você vira responsável por um número que ninguém acompanha.'
+    },
+    desfechos:[
+      { tipo:'go', tag:'tem projeto',
+        t:'Ele controla o código, ou a agência dele responde a ele, e já paga portal todo mês.',
+        d:'Comece pela correção de SEO: 4 a 6 semanas, R$ 8 a 18 mil, entregando o plano de ação das três janelas com medição antes e depois no Search Console. O site próprio com renderização no servidor entra como fase 2, proposto com número na mão em vez de achismo. Próximo passo: acesso ao Search Console e ao Business Profile esta semana, proposta em até 7 dias, call de 30 minutos marcada para revisar.' },
+      { tipo:'hold', tag:'vira outro projeto',
+        t:'O site é de plataforma fechada e o fornecedor não vai corrigir.',
+        d:'Então não existe projeto de SEO — existe projeto de site próprio. Diga com todas as letras: “metade do que a gente mandou no relatório você não consegue executar onde o site está hoje”. O caminho honesto é um diagnóstico curto e remunerado, R$ 4 a 8 mil abatidos no projeto, que mapeia o que dá para fazer dentro da plataforma, mede o que o site traz hoje e dimensiona o site próprio com dado real.' },
+      { tipo:'out', tag:'não é cliente',
+        t:'Quer “aparecer em primeiro no Google” por orçamento de agência pequena, não sabe quanto vale um negócio e não tem acesso a nada.',
+        d:'Diga na call: no lugar dele, você arrumaria o Google Business Profile, pediria avaliação para os clientes das últimas vendas e renegociaria o contrato do portal antes de gastar um real com desenvolvimento. Custa o projeto e devolve uma indicação boa para o Dieter e para o Evandro.' }
+    ],
+    armadilhas:[
+      { t:'Prometer posição no Google.',
+        d:'Você não controla ranking, e o próprio relatório diz que não atribui tráfego, posição ou receita aos achados. Venda a correção dos problemas e a medição do antes e depois. “Primeiro lugar em X semanas” transforma um cliente satisfeito em discussão de contrato.' },
+      { t:'Aceitar corrigir o que não é seu.',
+        d:'Se os P0 estão na plataforma de um terceiro, assumir a correção é assumir um prazo que não depende de você. Ou o fornecedor faz, ou o site sai de lá. Não existe terceira opção honesta.' },
+      { t:'Dar preço antes de saber quem manda no código.',
+        d:'É a mesma frase com dois orçamentos possíveis, e a diferença entre eles é de cinco vezes. Perguntar primeiro não é enrolação, é a única forma de o número significar alguma coisa.' }
+    ]
+  },
+  {
+    id:'maemoderna', lead:'Mãe Moderna na Cozinha',
+    eyebrow:'Briefing · criadora de conteúdo · app ou comunidade',
+    titulo:'Mãe Moderna na Cozinha',
+    lede:'Ela já vende — tem alunas. A pergunta da call não é “o que construir”, é se construir: descobrir se existe tese de receita recorrente por trás do pedido, ou se é um app que vai nascer vazio.',
+    ajustes:[],
+    hipoteses:[
+      { t:'“App ou comunidade” quase sempre esconde uma de três coisas.',
+        d:'(a) Quer transformar venda pontual de curso em receita recorrente. (b) O grupo de WhatsApp virou ingovernável e ela está perdendo aluna. (c) Posicionamento — “ter um app” como prova de autoridade. Só (a) e (b) pagam um projeto; (c) você desqualifica com elegância.' },
+      { t:'Infoprodutor tem caixa sazonal.',
+        d:'O dinheiro entra em lançamento. Descobrir quando foi o último e quando é o próximo define não só se ela pode pagar, mas quando e em quantas parcelas.' },
+      { t:'O risco real é o app nascer vazio.',
+        d:'Se ela não tem nenhuma comunidade rodando hoje, construir do zero é pular etapa — e um produto sem gente dentro vira um caso ruim no seu portfólio.' },
+      { t:'“App” pode significar duas coisas com custos muito diferentes.',
+        d:'Baixar na loja ou um lugar próprio que abre no celular. A diferença entre as duas é o dobro do orçamento. Isso precisa ficar claro antes do minuto 25.' }
+    ],
+    perguntas:[
+      { q:'Quantas alunas você tem no total, e quantas estão ativas nos últimos 30 dias?' },
+      { q:'Qual o preço do curso e como ele é vendido — lançamento, perpétuo ou assinatura?' },
+      { q:'Quanto entrou no último lançamento e quando é o próximo?' },
+      { q:'Hoje suas alunas conversam entre si em algum lugar? Onde, quantas e como está o engajamento?' },
+      { q:'O que te incomoda nesse lugar onde elas estão hoje?' },
+      { q:'Quando você diz app, você quer que ela baixe na loja, ou quer um lugar seu que abre no celular?' },
+      { q:'A comunidade seria um bônus do curso ou um produto pago à parte?' },
+      { q:'Se fosse assinatura: quanto você cobraria e quantas alunas você acha que pagariam?' },
+      { q:'Quem cuidaria dessa comunidade no dia a dia — você ou alguém do seu time?' },
+      { q:'Você já pagou por alguma ferramenta assim? O que te fez sair ou não usar?' }
+    ],
+    math:{
+      intro:'Depois da pergunta 8, abra a calculadora na frente dela:',
+      linhas:[
+        { label:'assinantes × mensalidade = MRR', conta:'200 × R$ 47 = R$ 9.400/mês' },
+        { label:'projeto ÷ MRR = meses até se pagar', conta:'R$ 55.000 ÷ 9.400 = ~6 meses' }
+      ],
+      nota:'Esse é o momento mais forte da call. Se o número fecha, o orçamento deixa de ser gasto e vira investimento com prazo. Se não fecha, ela mesma chega à conclusão de que ainda não é hora — e você sai como quem foi honesto, não como quem não vendeu.'
+    },
+    desfechos:[
+      { tipo:'go', tag:'tem projeto',
+        t:'Comunidade já roda com engajamento e ela quer monetizar como assinatura.',
+        d:'Primeira entrega enxuta em web app — login, conteúdo, feed, cobrança recorrente — na faixa de R$ 35 a 55 mil, 3 a 4 meses. App de loja fica para a fase 2, depois que a assinatura provar retenção. Próximo passo: escopo em duas semanas, proposta na sequência.' },
+      { tipo:'hold', tag:'não agora',
+        t:'Menos de 300 alunas ativas e nenhuma comunidade rodando.',
+        d:'Recomende validar em ferramenta de prateleira por 3 a 6 meses e retomar quando tiver 150 assinantes pagando. Se houver espaço, ofereça uma consultoria curta de arquitetura de produto e monetização — remunerada, com prazo, e abatida no projeto quando ele vier.' },
+      { tipo:'out', tag:'não é cliente',
+        t:'Quer app na loja por posicionamento, sem tese de receita, com orçamento abaixo da faixa.',
+        d:'Diga isso na call, com a alternativa: “no seu lugar, eu colocaria esse dinheiro em conteúdo e em uma comunidade de prateleira, e só construiria quando ela estiver cheia”. Você perde o projeto e ganha a indicação.' }
+    ],
+    armadilhas:[
+      { t:'A conversa vai querer virar lista de funcionalidades.',
+        d:'Toda vez que ela descrever uma tela, devolva para o negócio: “entendi — e essa tela resolve qual problema: trazer aluna nova, ou manter a que já está?”. Se a resposta não for nenhum dos dois, a funcionalidade não entra na fase 1.' }
+    ]
+  }
+];
+
 const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dimById = id => DIMS.find(d => d.id===id);
 
@@ -719,6 +782,54 @@ document.getElementById('roteiro-blocos').innerHTML = BLOCOS.map(b => `
 document.querySelector('#tbl-dims tbody').innerHTML = DIMS.map(d => `
   <tr><td><b>${esc(d.nome)}</b></td><td class="pts">${d.max}</td><td>${esc(d.cheia)}</td></tr>`).join('');
 document.getElementById('kill-list').innerHTML = KILLS.map(k => `<li>${esc(k.t)}</li>`).join('');
+
+/* ==================== briefing da call ==================== */
+const secao = (titulo, conteudo) => `
+  <div><p class="eyebrow" style="margin-bottom:8px">${esc(titulo)}</p>${conteudo}</div>`;
+const itens = (lista, cls) => `
+  <ul class="${cls}">${lista.map(x => `<li><b>${esc(x.t)}</b> ${esc(x.d)}</li>`).join('')}</ul>`;
+
+function renderBriefing(b){
+  const out = [`
+    <div>
+      <p class="eyebrow">${esc(b.eyebrow)}</p>
+      <h2 class="sec-title">${esc(b.titulo)}</h2>
+      <p class="lede">${esc(b.lede)}</p>
+    </div>`];
+
+  if (b.ajustes.length)
+    out.push(secao('Ajustes ao roteiro padrão — valem só nesta call', itens(b.ajustes, 'hyp')));
+
+  out.push(secao('Hipóteses a testar (não são conclusões)', itens(b.hipoteses, 'hyp')));
+
+  out.push(secao('Perguntas específicas — além do roteiro padrão', `
+    <ol class="qs numbered">${b.perguntas.map(p =>
+      `<li>${p.tag?`<b>${esc(p.tag)}</b>`:''}${esc(p.q)}</li>`).join('')}</ol>`));
+
+  out.push(secao('A conta que você faz ao vivo', `
+    <div class="math">
+      ${esc(b.math.intro)}<br>
+      ${b.math.linhas.map(l => `<b>${esc(l.label)}</b> → ${esc(l.conta)}`).join('<br>')}
+      <br><br>${esc(b.math.nota)}
+    </div>`));
+
+  out.push(secao('Três desfechos — escolha um até o minuto 38', `
+    <div class="branches">${b.desfechos.map(d => `
+      <div class="branch">
+        <span class="tag t-${esc(d.tipo)}">${esc(d.tag)}</span>
+        <p><b>${esc(d.t)}</b> ${esc(d.d)}</p>
+      </div>`).join('')}</div>`));
+
+  out.push(secao(b.armadilhas.length > 1 ? 'Armadilhas específicas desta call' : 'Armadilha específica desta call',
+    itens(b.armadilhas, 'traps')));
+
+  document.getElementById('brief-body').innerHTML = `<div class="stack-lg">${out.join('')}</div>`;
+}
+
+const briefSel = document.getElementById('f-briefing');
+briefSel.innerHTML = BRIEFINGS.map(b => `<option value="${esc(b.id)}">${esc(b.lead)}</option>`).join('');
+briefSel.addEventListener('change', () => renderBriefing(BRIEFINGS.find(b => b.id === briefSel.value)));
+renderBriefing(BRIEFINGS[0]);
 
 /* ==================== ficha ==================== */
 document.getElementById('ficha-blocos').innerHTML = BLOCOS.map(b => `
