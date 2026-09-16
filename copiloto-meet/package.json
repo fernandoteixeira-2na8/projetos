@@ -1,0 +1,22 @@
+{
+  "name": "copiloto-meet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Copiloto de reuni\u00e3o para Google Meet \u2014 le legendas e chat ao vivo e sugere cards para o anfitriao, sem bot na call.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node test/smoke.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.126.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.300",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}

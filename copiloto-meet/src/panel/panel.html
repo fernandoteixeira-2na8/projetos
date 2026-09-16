@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Copiloto</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<header class="bar">
+  <span id="dot" class="dot" data-state="off"></span>
+  <span id="status" class="status">desconectado</span>
+  <button id="toggle" class="btn btn-sm">Iniciar</button>
+  <button id="opts" class="btn btn-sm btn-ghost" title="Opcoes">&#9881;</button>
+</header>
+
+<div id="consent" class="banner" hidden>
+  Avise na call que voce usa um assistente de IA para tomar notas. Sem bot na reuniao nao quer dizer sem aviso.
+  <button id="consent-ok" class="btn btn-xs">Ok</button>
+</div>
+
+<div id="error" class="banner banner-err" hidden></div>
+
+<div id="presenting" class="banner banner-warn" hidden>
+  Voce esta apresentando. Cards ocultos.
+</div>
+
+<main id="cards" class="cards">
+  <p class="empty">Nenhum card ainda. Ligue as legendas (CC) no Meet — e delas que o copiloto le.</p>
+</main>
+
+<section class="foot">
+  <div class="meter" id="meter" hidden>
+    <span class="meter-label">Voce falou</span>
+    <div class="meter-track"><div class="meter-fill" id="meter-fill"></div></div>
+    <span class="meter-val" id="meter-val">—</span>
+  </div>
+  <div class="chips" id="coverage"></div>
+  <div class="actions">
+    <button id="summary" class="btn">Resumo da call</button>
+    <button id="export" class="btn btn-ghost">Exportar</button>
+  </div>
+</section>
+
+<dialog id="modal">
+  <header class="modal-bar">
+    <strong id="modal-title">Resumo</strong>
+    <span class="spacer"></span>
+    <button id="modal-copy" class="btn btn-xs">Copiar</button>
+    <button id="modal-close" class="btn btn-xs btn-ghost">Fechar</button>
+  </header>
+  <pre id="modal-body"></pre>
+</dialog>
+
+<script type="module" src="panel.js"></script>
+</body>
+</html>
