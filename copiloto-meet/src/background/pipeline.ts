@@ -1,4 +1,4 @@
-import type Anthropic from '@anthropic-ai/sdk';
+import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
 import type { Settings } from '../shared/settings';
@@ -33,6 +33,19 @@ const CARD_WINDOW = 40;
 
 const TRIGGERS = ['pergunta', 'objecao', 'compromisso', 'risco', 'nenhum'] as const;
 
+/**
+ * O schema estrito que vai no fio nao carrega `enum` — o helper do SDK rebaixa
+ * a restricao para uma dica na `description`. A API entao aceita qualquer
+ * string, e quem barra e o SDK, no cliente, LANCANDO ao validar a resposta.
+ *
+ * Numa call isso importa: um unico token torto do estagio 1 viraria faixa
+ * vermelha no painel no meio da conversa. Rodada malformada e rodada pulada,
+ * nao erro na tela. Erro de API de verdade (401, 429, 500) continua subindo.
+ */
+function respostaMalformada(error: unknown): boolean {
+  return error instanceof Anthropic.AnthropicError && !(error instanceof Anthropic.APIError);
+}
+
 const GateSchema = z.object({
   trigger: z.enum(TRIGGERS),
   excerpt: z.string(),
@@ -52,26 +65,30 @@ export async function runGate(
   const window = lines.slice(-GATE_WINDOW);
   if (!window.length) return null;
 
-  const response = await client.messages.parse({
-    model: GATE_MODEL,
-    max_tokens: 300,
-    system: GATE_SYSTEM,
-    messages: [{ role: 'user', content: `Ultimas falas da call:\n\n${renderTranscript(window)}` }],
-    output_config: { format: zodOutputFormat(GateSchema) },
-  });
+  let parsed;
+  try {
+    const response = await client.messages.parse({
+      model: GATE_MODEL,
+      max_tokens: 300,
+      system: GATE_SYSTEM,
+      messages: [
+        {
+          role: 'user',
+          content: `Ultimas falas da call:\n\n${renderTranscript(window)}`,
+        },
+      ],
+      output_config: { format: zodOutputFormat(GateSchema) },
+    });
+    parsed = response.parsed_output;
+  } catch (error) {
+    if (respostaMalformada(error)) return null;
+    throw error;
+  }
 
-  const parsed = response.parsed_output;
   if (!parsed) return null;
-
-  // O schema estrito da API nao carrega `enum` — o helper do SDK rebaixa a
-  // restricao para uma dica na description. Ou seja: o valor volta validado
-  // como string, nao como um dos cinco gatilhos. Filtra aqui.
-  const trigger = (TRIGGERS as readonly string[]).includes(parsed.trigger)
-    ? (parsed.trigger as TriggerKind)
-    : 'nenhum';
-
   return {
-    trigger,
+    trigger: parsed.trigger as TriggerKind,
+    // `confidence` passa pelo schema como numero qualquer: 7 e um numero.
     excerpt: parsed.excerpt.slice(0, 200),
     confidence: Math.min(1, Math.max(0, Number(parsed.confidence) || 0)),
   };
@@ -139,7 +156,11 @@ export async function runSummary(
     max_tokens: 8000,
     system: [
       { type: 'text', text: SUMMARY_SYSTEM },
-      { type: 'text', text: knowledgeBlock(settings), cache_control: { type: 'ephemeral' } },
+      {
+        type: 'text',
+        text: knowledgeBlock(settings),
+        cache_control: { type: 'ephemeral' },
+      },
     ],
     output_config: { effort: 'medium' },
     messages: [
@@ -174,34 +195,32 @@ export async function runCoverage(
 ): Promise<Record<string, 'nao' | 'parcial' | 'sim'> | null> {
   if (!lines.length) return null;
 
-  const response = await client.messages.parse({
-    model: GATE_MODEL,
-    max_tokens: 400,
-    system:
-      'Voce acompanha uma call de pre-vendas e marca quais dimensoes de qualificacao ja foram cobertas.\n\n' +
-      'Para cada dimensao responda:\n' +
-      '- "sim": foi perguntada E respondida com informacao util.\n' +
-      '- "parcial": tocaram no assunto sem fechar.\n' +
-      '- "nao": nao apareceu.\n\n' +
-      'Dimensoes: grana (capacidade de investimento), dor (dor quantificada com numero), ' +
-      'fit (por que precisa ser sob medida), urgencia (gatilho com data), ' +
-      'decisao (quem decide e se esta na call), operar (quem toca depois de entregue).',
-    messages: [
-      { role: 'user', content: `Transcricao ate agora:\n\n${renderTranscript(lines.slice(-150))}` },
-    ],
-    output_config: { format: zodOutputFormat(CoverageSchema) },
-  });
-
-  const parsed = response.parsed_output;
-  if (!parsed) return null;
-
-  // Mesma defesa do runGate: normaliza qualquer valor fora dos tres esperados.
-  const valid = ['nao', 'parcial', 'sim'] as const;
-  const out: Record<string, 'nao' | 'parcial' | 'sim'> = {};
-  for (const [key, value] of Object.entries(parsed)) {
-    out[key] = (valid as readonly string[]).includes(value as string)
-      ? (value as 'nao' | 'parcial' | 'sim')
-      : 'nao';
+  let response;
+  try {
+    response = await client.messages.parse({
+      model: GATE_MODEL,
+      max_tokens: 400,
+      system:
+        'Voce acompanha uma call de pre-vendas e marca quais dimensoes de qualificacao ja foram cobertas.\n\n' +
+        'Para cada dimensao responda:\n' +
+        '- "sim": foi perguntada E respondida com informacao util.\n' +
+        '- "parcial": tocaram no assunto sem fechar.\n' +
+        '- "nao": nao apareceu.\n\n' +
+        'Dimensoes: grana (capacidade de investimento), dor (dor quantificada com numero), ' +
+        'fit (por que precisa ser sob medida), urgencia (gatilho com data), ' +
+        'decisao (quem decide e se esta na call), operar (quem toca depois de entregue).',
+      messages: [
+        {
+          role: 'user',
+          content: `Transcricao ate agora:\n\n${renderTranscript(lines.slice(-150))}`,
+        },
+      ],
+      output_config: { format: zodOutputFormat(CoverageSchema) },
+    });
+  } catch (error) {
+    if (respostaMalformada(error)) return null;
+    throw error;
   }
-  return out;
+
+  return response.parsed_output ?? null;
 }

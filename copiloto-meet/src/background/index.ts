@@ -46,6 +46,22 @@ function pushState(): void {
   broadcast({ type: 'state', state: session.snapshot(settings?.hostName ?? '') });
 }
 
+/**
+ * Cada fala nova atualiza o contador do painel, no maximo uma vez por segundo.
+ * E o unico jeito de saber, olhando a tela, se as legendas estao sendo lidas —
+ * inclusive sem chave de API configurada, que e como se testa a leitura do DOM
+ * sem gastar nada.
+ */
+let statePending = false;
+function pushStateThrottled(): void {
+  if (statePending) return;
+  statePending = true;
+  setTimeout(() => {
+    statePending = false;
+    pushState();
+  }, 1000);
+}
+
 function rebuildClient(): void {
   try {
     client = createClient(settings);
@@ -167,6 +183,7 @@ async function onContentMessage(msg: ContentMessage): Promise<void> {
       break;
     case 'meet/lines':
       session.addLines(msg.lines);
+      pushStateThrottled();
       break;
     case 'meet/presenting':
       session.setPresenting(msg.presenting);

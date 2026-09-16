@@ -82,6 +82,90 @@ Serve para você usar na sua máquina. **Não distribua a extensão assim** — 
 consegue ler a chave. Para o time, use o modo **proxy**: um backend seu guarda a chave e
 espelha `/v1/messages`.
 
+## Como testar
+
+Quatro níveis, do mais barato para o mais caro. Cada um responde uma pergunta diferente —
+não pule para o nível 4 antes que o 2 esteja passando.
+
+### 1. O pipeline responde certo? (sem chave, sem custo, 5 segundos)
+
+```bash
+npm run smoke
+```
+
+Sobe um servidor que finge ser a API, roda os três estágios contra ele e confere as
+respostas **e** o formato das requisições (modelo certo em cada estágio, `effort` baixo no
+card, base de conhecimento em bloco cacheado, nenhuma chamada extra ao modelo caro).
+Também exercita resposta malformada: gatilho fora do enum deve pular a rodada, não virar
+faixa vermelha no meio da call.
+
+É o teste que roda em qualquer máquina, sem Chrome e sem gastar um centavo. Rode depois de
+mexer em `pipeline.ts`.
+
+### 2. As legendas estão sendo lidas? (sem chave, sem custo, 2 minutos)
+
+Este é o nível que mais importa, porque é o que tem mais chance de estar quebrado.
+
+1. `npm run build` e carregue `dist/` em `chrome://extensions` (Modo do desenvolvedor → Carregar sem compactação).
+2. **Não configure a chave da API ainda.**
+3. Entre em qualquer reunião do Meet — pode ser sozinho, criando uma em `meet.google.com`.
+4. Ligue as legendas (**CC**) e abra o painel lateral no ícone da extensão.
+5. Fale.
+
+O painel vai mostrar `abc-defg-hij · N falas` no topo, e **N tem que subir enquanto você
+fala**. É esse contador que diz se o leitor de DOM está vivo. Vai aparecer também um aviso
+vermelho de chave não configurada — é esperado neste nível, ignore.
+
+Se N não sobe: DevTools na aba do Meet → no seletor de contexto do console, troque `top`
+por **Copiloto de Reunião** → rode `__copilotoDiagnose()`. O relatório mostra quais
+seletores casaram e quais regiões `aria-live` existem na página. Pegue o seletor novo e
+adicione na primeira camada de `src/content/dom.ts`.
+
+### 3. Os cards fazem sentido? (com chave, ~US$ 1, 15 minutos)
+
+Precisa de **duas vozes** — é o que exercita a separação de quem falou. O jeito mais
+simples de conseguir isso sozinho: entre na mesma reunião pelo celular, com fone, e faça os
+dois papéis. O celular vira o "cliente".
+
+Antes de começar, preencha nas opções:
+
+- **seu nome exatamente como aparece no Meet** (sem isso não há medidor de monólogo nem separação de fala);
+- **base de conhecimento** com 5 ou 6 fatos reais — faixas de preço, uma integração que vocês já fizeram, a resposta para a objeção de preço. Sem isso todo card vira "te confirmo depois" e o teste não mede nada.
+
+Aí rode um roteiro curto, pelo celular, deixando alguns segundos entre as falas:
+
+1. "Vocês integram com o [sistema que está na sua base]?" → deve virar card de **pergunta** com a resposta da base.
+2. "Achei caro." → card de **objeção**.
+3. "Te mando a proposta até sexta." → card de **compromisso**.
+4. "Ainda não tenho orçamento aprovado." → card de **risco**.
+5. Mande uma pergunta pelo **chat** do Meet também — é o caminho que passa pelo `chat.ts`, separado das legendas.
+
+Depois clique em **Resumo da call** e confira se as seis dimensões saíram coerentes.
+
+O que observar, além de "funcionou": **quanto tempo passou entre a fala e o card**, e se o
+texto do card é dizível em voz alta do jeito que está. Card correto que chega 8 segundos
+depois é card inútil.
+
+### 4. Você usa de verdade? (5 calls reais)
+
+Nível 3 mostra se o software funciona. Só o 4 mostra se o produto existe. Rode em 5 calls
+de verdade e conte uma coisa só: **quantas vezes um card mudou o que você falou**.
+
+Se for zero, a resposta não é melhorar o prompt — é que o valor está no resumo pós-call, e
+o tempo real pode ser desligado sem perda. Essa é a hipótese que este repositório existe
+para testar.
+
+### Enquanto desenvolve
+
+```bash
+npm run dev         # rebuild automático
+npm run typecheck   # sem emitir nada
+npm run smoke       # pipeline contra o servidor de eco
+```
+
+Depois de cada rebuild, clique no botão de recarregar da extensão em `chrome://extensions`
+e **recarregue a aba do Meet** — content script não recarrega sozinho.
+
 ## Custo por hora de call
 
 Com base de conhecimento de ~2.000 tokens e uma call de 1 hora:
@@ -130,7 +214,7 @@ Se parar de ler:
 
 ## O que ainda não foi validado
 
-- **Nunca rodou em uma call real.** O pipeline foi testado contra um servidor de eco local: as três chamadas saem bem formadas e as respostas são parseadas. Nada além disso.
+- **Nunca rodou em uma call real.** O pipeline passa no `npm run smoke` (15 verificações contra um servidor de eco). Isso cobre o nível 1 da escada acima. Nada além disso.
 - **Os seletores do Meet não foram testados contra o DOM atual** — é o primeiro lugar a quebrar.
 - **A hipótese central continua aberta:** ninguém olha para a tela durante uma call. Antes de investir mais, rode 5 calls de verdade e conte quantas vezes você realmente usou um card. Se a resposta for zero, o produto é o resumo pós-call, não o tempo real.
 
