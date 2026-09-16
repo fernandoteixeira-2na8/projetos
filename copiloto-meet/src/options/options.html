@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Copiloto — opcoes</title>
+<link rel="stylesheet" href="panel.css">
+<style>
+  body{display:block; max-width:760px; margin:0 auto; padding:24px 20px 60px}
+  h1{font-size:20px; margin:0 0 4px}
+  .sub{color:var(--ink-2); font-size:13px; margin:0 0 20px}
+  fieldset{border:1px solid var(--line); border-radius:var(--r); background:var(--surface); padding:14px 16px; margin:0 0 16px}
+  legend{font-weight:600; font-size:13px; padding:0 6px}
+  label{display:block; font-size:12px; color:var(--ink-2); margin:10px 0 4px}
+  input[type=text],input[type=password],input[type=number],textarea,select{
+    width:100%; font:inherit; font-size:13px; padding:7px 9px; border-radius:8px;
+    border:1px solid var(--line); background:var(--paper); color:var(--ink);
+  }
+  textarea{min-height:120px; resize:vertical}
+  .row{display:flex; gap:12px} .row>*{flex:1}
+  .inline{display:flex; align-items:center; gap:8px; margin:8px 0; font-size:13px; color:var(--ink)}
+  .inline input{width:auto}
+  .hint{font-size:11px; color:var(--ink-3); margin:4px 0 0}
+  .warn{background:var(--hold-soft); padding:8px 10px; border-radius:8px; font-size:12px; margin-top:8px}
+  #saved{position:fixed; right:20px; bottom:20px; background:var(--go-soft); color:var(--go);
+         padding:6px 12px; border-radius:999px; font-size:12px; opacity:0; transition:opacity .2s}
+  #saved.on{opacity:1}
+</style>
+</head>
+<body>
+<h1>Copiloto de Reuniao</h1>
+<p class="sub">Tudo fica no storage local deste navegador. Nada e sincronizado com a conta Google.</p>
+
+<fieldset>
+  <legend>Acesso a API</legend>
+  <label for="authMode">Modo</label>
+  <select id="authMode">
+    <option value="direto">Direto (chave nesta maquina)</option>
+    <option value="proxy">Via backend proprio</option>
+  </select>
+
+  <div id="grp-direto">
+    <label for="apiKey">Chave da API Anthropic</label>
+    <input type="password" id="apiKey" placeholder="sk-ant-...">
+    <p class="warn">A chave vai do seu navegador direto para a API. Isso serve para uso proprio. Para distribuir a extensao para o time, use o modo backend — senao qualquer pessoa com a extensao instalada le a chave.</p>
+  </div>
+
+  <div id="grp-proxy" hidden>
+    <label for="proxyUrl">URL do backend</label>
+    <input type="text" id="proxyUrl" placeholder="https://api.suaempresa.com/anthropic">
+    <label for="proxyToken">Token do backend</label>
+    <input type="password" id="proxyToken">
+    <p class="hint">O backend precisa espelhar a rota /v1/messages da API Anthropic.</p>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Contexto</legend>
+  <label for="hostName">Seu nome, exatamente como aparece no Meet</label>
+  <input type="text" id="hostName" placeholder="Fernando Teixeira">
+  <p class="hint">Serve para separar a sua fala da do cliente e medir o monologo.</p>
+
+  <label for="knowledgeBase">Base de conhecimento</label>
+  <textarea id="knowledgeBase" placeholder="Faixas de preco, prazos tipicos, integracoes que voce ja fez, casos, respostas para as objecoes que mais aparecem."></textarea>
+  <p class="hint">E daqui que sai a resposta dos cards. Sem isso, o copiloto so sabe dizer que vai confirmar depois.</p>
+
+  <label for="leadBriefing">Briefing do lead desta call</label>
+  <textarea id="leadBriefing" placeholder="Empresa, setor, o que ja foi conversado, quem vai estar na call."></textarea>
+</fieldset>
+
+<fieldset>
+  <legend>Quando interromper</legend>
+  <div class="inline"><input type="checkbox" id="t-pergunta"><label for="t-pergunta">Perguntas factuais</label></div>
+  <div class="inline"><input type="checkbox" id="t-objecao"><label for="t-objecao">Objecoes</label></div>
+  <div class="inline"><input type="checkbox" id="t-compromisso"><label for="t-compromisso">Compromissos assumidos</label></div>
+  <div class="inline"><input type="checkbox" id="t-risco"><label for="t-risco">Sinais de risco / desqualificacao</label></div>
+
+  <div class="row">
+    <div>
+      <label for="gateThreshold">Confianca minima (0–1)</label>
+      <input type="number" id="gateThreshold" min="0" max="1" step="0.05">
+    </div>
+    <div>
+      <label for="cardCooldownMs">Intervalo minimo entre cards (s)</label>
+      <input type="number" id="cardCooldownMs" min="0" step="5">
+    </div>
+    <div>
+      <label for="gateIntervalMs">Frequencia de analise (s)</label>
+      <input type="number" id="gateIntervalMs" min="2" step="1">
+    </div>
+  </div>
+  <p class="hint">Subir a confianca e o intervalo custa menos cards, mas protege sua atencao — que e o recurso escasso aqui, nao o token.</p>
+</fieldset>
+
+<fieldset>
+  <legend>Privacidade</legend>
+  <div class="inline"><input type="checkbox" id="hideWhilePresenting"><label for="hideWhilePresenting">Esconder cards quando eu estiver apresentando</label></div>
+  <div class="inline"><input type="checkbox" id="consentReminder"><label for="consentReminder">Lembrar de avisar a call sobre o assistente</label></div>
+  <p class="hint">A deteccao de apresentacao e heuristica. A protecao que realmente funciona e compartilhar uma janela ou aba especifica, nunca a tela inteira.</p>
+</fieldset>
+
+<div id="saved">salvo</div>
+<script type="module" src="options.js"></script>
+</body>
+</html>
