@@ -1,6 +1,6 @@
 # CRM Comercial 2na8
 
-CRM para acompanhar a **meta comercial** do período e os **leads em prospecção**. Página HTML/CSS/JS única (`index.html`), sem build e sem dependências além da fonte Inter do Google Fonts. Segue o design system da 2na8 (mesmos tokens de cor e tipografia do briefing de pré-vendas).
+CRM para acompanhar os **OKRs comerciais** do ciclo e os **leads em prospecção**. Página HTML/CSS/JS única (`index.html`), sem build. Segue o design system da 2na8 (o mesmo da Proposta Comercial e da Calculadora): tema escuro, azul #2f2ef5 e #8181fc, FHLecturis nos títulos (fonte embutida no arquivo), DM Sans no texto e Fira Code nos rótulos e números (Google Fonts), cantos retos e logo em pixel. Verde não faz parte da paleta: "no ritmo" usa o azul claro e "abaixo do esperado" o laranja da marca (#e29568).
 
 ## Abas
 
