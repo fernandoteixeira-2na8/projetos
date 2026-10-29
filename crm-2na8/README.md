@@ -4,9 +4,9 @@ CRM para acompanhar os **OKRs comerciais** do ciclo e os **leads em prospecção
 
 ## Abas
 
-- **OKR** — os seis resultados-chave do ciclo (contatos realizados, contatos qualificados, reuniões agendadas, reuniões qualificadas, propostas, fechamentos) com atual, meta, falta e status (Em dia, Em risco, Atrasado). Abaixo: o que pede atenção (próximo passo atrasado, de hoje, lead parado, sem próximo passo), funil aberto e resultado do período.
+- **OKR** — um card por resultado-chave (contatos realizados, contatos qualificados, reuniões agendadas, reuniões qualificadas, propostas, fechamentos) com atual, meta, falta, status (Em dia, Em risco, Atrasado) e barra de progresso com o marcador do esperado de hoje. Abaixo: números do período, agenda agrupada por situação (atrasados, para hoje, parados, sem próximo passo) e funil aberto. A barra lateral mostra o status de cada KR em qualquer tela.
 - **Pipeline** — kanban por etapa (Prospecção → Contato realizado → Contato qualificado → Reunião agendada → Reunião qualificada → Proposta → Negociação → Fechado / Perdido), com filtros por responsável e prioridade. Em Contato realizado o card mostra o toque da cadência (1 a 4). Mover para Perdido pede o motivo.
-- **Leads** — tabela com busca, filtros por etapa, responsável e segmento, ordenação por coluna, importação de planilha (.xlsx ou .csv) e exportação em CSV.
+- **Leads** — tabela com filtros rápidos por etapa, busca, filtro por situação, responsável e segmento, ordenação por coluna, importação de planilha (.xlsx ou .csv) e exportação em CSV.
 - **OKRs e premissas** — nome e período do ciclo, de quem são os negócios que contam, nome e meta de cada resultado-chave, o limite de "em risco", quanto já foi feito fora do CRM, dias para considerar um lead parado e probabilidade padrão de cada etapa.
 
 Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nome, cargo, e-mail, telefone, LinkedIn, responsável), qualificação (prioridade, fit 0–12, toque da cadência, score de discovery), negócio (valor, probabilidade, previsão), próximo passo com data, notas e histórico de atividades, com as mudanças de etapa registradas automaticamente.
