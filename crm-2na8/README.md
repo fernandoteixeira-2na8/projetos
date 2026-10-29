@@ -4,26 +4,27 @@ CRM para acompanhar a **meta comercial** do período e os **leads em prospecçã
 
 ## Abas
 
-- **Meta** — realizado × meta do período, ritmo linear esperado para hoje, previsão ponderada, cobertura do gap pelo pipeline, **plano reverso** (do gap até quantos contratos, propostas, discoveries e leads novos faltam, e quantos por semana), funil aberto, lista do que pede atenção (próximo passo atrasado, de hoje, sem próximo passo, lead parado) e resultado do período (ganhos, perdidos, taxa de ganho, motivos de perda).
-- **Pipeline** — kanban por etapa (Prospecção → Primeiro contato → Discovery → Proposta enviada → Negociação → Ganho / Perdido). Arraste os cards entre colunas; mover para Perdido pede o motivo.
-- **Leads** — tabela com busca, filtros por etapa e responsável, ordenação por coluna, importação e exportação em CSV.
-- **Meta e premissas** — período, meta de receita, ticket médio, cobertura alvo, dias para considerar um lead parado, taxas de conversão entre etapas e probabilidade padrão de cada etapa. Mostra também as conversões observadas na base para calibrar.
+- **OKR** — os resultados-chave do ciclo (padrão: OKR Q4 da 2na8) com nível (Compromisso / Aspiracional), atual, esperado hoje, meta, quanto falta, quanto é preciso por semana útil e barra de progresso com o marcador do esperado. Abaixo: o que pede atenção (próximo passo atrasado, de hoje, lead parado, sem próximo passo), funil aberto e resultado do período.
+- **Pipeline** — kanban por etapa (Prospecção → Primeiro contato → Discovery → Proposta enviada → Negociação → Ganho / Perdido), com filtros por responsável e prioridade. Em Primeiro contato o card mostra o toque da cadência (1 a 4). Mover para Perdido pede o motivo.
+- **Leads** — tabela com busca, filtros por etapa, responsável e segmento, ordenação por coluna, importação de planilha (.xlsx ou .csv) e exportação em CSV.
+- **OKRs e premissas** — nome e período do ciclo, de quem são os negócios que contam, nome/nível/meta de cada resultado-chave, quanto já foi feito fora do CRM, dias para considerar um lead parado e probabilidade padrão de cada etapa.
 
-Cada lead tem empresa, contato, origem, responsável, valor, probabilidade, score da triagem, previsão de fechamento, próximo passo com data, notas e um histórico de atividades (ligação, WhatsApp, e-mail, reunião…), com as mudanças de etapa registradas automaticamente.
+Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nome, cargo, e-mail, telefone, LinkedIn, responsável), qualificação (prioridade, fit 0–12, toque da cadência, score de discovery), negócio (valor, probabilidade, previsão), próximo passo com data, notas e histórico de atividades, com as mudanças de etapa registradas automaticamente.
 
-## Como os números são calculados
+## Como os OKRs são contados
 
-- **Realizado**: soma do valor dos leads em *Ganho* com data de fechamento dentro do período.
-- **Pipeline ponderado**: soma de valor × probabilidade dos leads em aberto com previsão de fechamento até o fim do período (ou sem previsão).
-- **Previsão**: realizado + pipeline ponderado.
-- **Cobertura**: pipeline em aberto (mesmo recorte) ÷ gap. Alvo padrão: 3x.
-- **Plano reverso**: contratos = gap ÷ ticket médio; propostas = contratos ÷ conversão proposta→ganho; descontando o que já está em Proposta/Negociação, o restante é desdobrado em discoveries e leads novos pelas outras taxas.
+- **Esperado hoje** = meta × dias úteis já passados ÷ dias úteis do período (segunda a sexta, sem feriados nacionais, carnaval, sexta-feira santa e Corpus Christi).
+- Só contam os leads do responsável configurado em "Negócios de" (vazio = time todo).
+- **Pessoas novas contatadas / Reuniões qualificadas / Propostas formalizadas**: leads que chegaram pela primeira vez a Primeiro contato / Discovery / Proposta enviada dentro do período. A data é gravada quando o lead muda de etapa (pular etapas conta as anteriores).
+- **Oportunidades no funil**: soma do valor dos leads em aberto de Discovery em diante.
+- **Contratos assinados**: leads ganhos com data de fechamento no período.
+- **Já feito fora do CRM** soma ao que o CRM conta. Leads importados não geram marcos retroativos: o que aconteceu antes entra nesse ajuste.
 
 ## Persistência
 
 - Publicado como Artifact no claude.ai, usa `window.claude.use('db')`: leads em `leads/{id}` e premissas em `config/meta`, compartilhados com o time e atualizados ao vivo.
 - Aberto como arquivo estático, salva no `localStorage` do navegador (`crm2na8.leads.v1` e `crm2na8.cfg.v1`). Use **Exportar CSV** para backup ou para levar os dados ao Artifact (via **Importar CSV**).
 
-## Importar CSV
+## Importar planilha
 
-Cabeçalho com nomes como `empresa`, `contato`, `cargo`, `email`, `telefone`, `segmento`, `origem`, `responsavel`, `etapa`, `valor`, `probabilidade`, `previsao`, `proximo passo`, `notas` (sem diferenciar acentos/maiúsculas; aceita `,` ou `;`). Só `empresa` é obrigatória. Linhas com mesma empresa + e-mail de um lead existente são ignoradas.
+Aceita `.xlsx` (lido com SheetJS, carregado do cdnjs só no momento da importação) ou `.csv` (`,` ou `;`). A linha de cabeçalho é localizada sozinha nas primeiras 20 linhas, em qualquer aba. Colunas reconhecidas (sem diferenciar acentos/maiúsculas): instituição/empresa, segmento, sistema/grupo, UF, patrocinador/contato, cargo, contato/LinkedIn, e-mail, telefone, origem, responsável, status/etapa ("Toque N enviado" vira Primeiro contato no toque N; "Discovery feito" vira Discovery; "Sprint proposto"/"Proposta apresentada" viram Proposta enviada), prioridade, fit total, valor, próxima ação, data próxima ação e notas. Colunas como dor-hipótese, quem aprova, quem pode bloquear e indicador de porte vão para as notas com o rótulo original. Linhas `[EXEMPLO]`, placeholders (`[nome]`, `linkedin.com/in/...`, `a confirmar`) e empresas já cadastradas são ignorados. Sem responsável na planilha, o lead fica com o responsável dos OKRs.
