@@ -48,7 +48,7 @@ button,input,select,textarea{font:inherit; color:inherit}
 .mini{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--ink-2)}
 .mini .dots{display:flex; gap:8px}
 .mini .dots i{width:8px; height:8px; transform:rotate(45deg); border:1px solid var(--line-2)}
-.mini .dots i.ok{background:var(--blue-light); border-color:var(--blue-light)} .mini .dots i.gap{background:var(--danger); border-color:var(--danger)}
+.mini .dots i.ok{background:var(--blue-light); border-color:var(--blue-light)} .mini .dots i.warn{background:var(--warn); border-color:var(--warn)} .mini .dots i.gap{background:var(--danger); border-color:var(--danger)}
 .mini b{color:var(--ink); font-weight:500}
 .tabs{display:flex; gap:4px; overflow-x:auto; width:100%; margin-top:8px}
 .tab{appearance:none; background:none; border:0; cursor:pointer; padding:11px 12px 10px; font-family:var(--font-mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); border-bottom:2px solid transparent; white-space:nowrap; transition:color .2s var(--ease)}
@@ -93,24 +93,16 @@ h2.sec small{font-size:10.5px; letter-spacing:.08em; text-transform:none; color:
 .hl{color:var(--blue)}
 
 /* ---------- OKR ---------- */
-.okr{min-width:860px}
+.okr{min-width:620px}
 .okr td{vertical-align:middle; padding-block:15px}
 .okr .kr{font-weight:500; font-size:15px}
 .okr .kr small{display:block; font-weight:400; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-2); margin-top:3px}
 .okr td.r{font-size:15px}
-.okr td.behind{color:var(--danger); font-weight:500}
-.okr td.ahead{color:var(--blue-light); font-weight:500}
-.okr td.prog-c{width:23%; min-width:150px}
-.prog{position:relative; height:4px; background:var(--surface-2)}
-.prog i{position:absolute; inset:0 auto 0 0; background:var(--blue-light)}
-.prog i.behind{background:var(--danger)} .prog i.ahead{background:var(--blue-light)}
-.prog b{position:absolute; top:-6px; bottom:-6px; width:2px; background:var(--ink)}
-.lv{display:inline-block; font-family:var(--font-mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; padding:4px 8px; border:1px solid var(--line-2); color:var(--ink-2); white-space:nowrap}
-.lv-c{background:var(--blue); border-color:var(--blue); color:var(--ink)}
-.lv-a{background:transparent}
+.okr td.num-big{font-size:20px; color:var(--ink)}
+.okr td.st-c{width:24%}
+.okr td.st-c small{display:block; margin-top:6px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-2)}
+.legend b{color:var(--ink-2); font-weight:500}
 .legend{display:flex; flex-wrap:wrap; gap:6px 20px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; color:var(--muted); margin-top:12px}
-.legend i{display:inline-block; width:14px; height:4px; vertical-align:2px; margin-right:7px}
-.lg-gap{background:var(--danger)} .lg-ok{background:var(--blue-light)} .lg-mark{width:2px!important; height:12px!important; vertical-align:-2px!important; background:var(--ink)}
 
 .pill{display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; padding:3px 8px; border:1px solid currentColor; white-space:nowrap}
 .pill::before{content:""; width:5px; height:5px; background:currentColor; transform:rotate(45deg)}
@@ -233,7 +225,7 @@ tfoot td{padding:10px 14px 0 0; font-family:var(--font-mono); font-size:11px; le
 .foot .mode.local::before{background:var(--warn)}
 
 .toast{position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--blue); color:var(--ink); padding:11px 16px; font-family:var(--font-mono); font-size:12px; letter-spacing:.04em; z-index:100; max-width:calc(100% - 32px)}
-@media (prefers-reduced-motion:no-preference){.prog i,.frow .b i{transition:width .5s var(--ease)}}
+@media (prefers-reduced-motion:no-preference){.frow .b i{transition:width .5s var(--ease)}}
 </style>
 
 <header class="top">
@@ -260,7 +252,7 @@ tfoot td{padding:10px 14px 0 0; font-family:var(--font-mono); font-size:11px; le
     </div>
     <h2 class="sec">Resultados-chave <small id="m-weeks"></small></h2>
     <div class="tw"><table class="okr" id="m-okr"></table></div>
-    <div class="legend"><span><i class="lg-gap"></i>Abaixo do esperado</span><span><i class="lg-ok"></i>No ritmo ou à frente</span><span><i class="lg-mark"></i>Esperado hoje</span></div>
+    <p class="legend" id="m-legend"></p>
 
     <div class="two">
       <div>
@@ -322,6 +314,8 @@ tfoot td{padding:10px 14px 0 0; font-family:var(--font-mono); font-size:11px; le
 
       <h2 class="sec">Resultados-chave</h2>
       <div class="tw"><table id="c-krs"></table></div>
+      <div class="grid4"><label class="f" style="grid-column:span 2"><span>Em risco a partir de (% do esperado)</span><input type="number" id="c-risco" min="1" max="99" step="5" inputmode="numeric"></label></div>
+      <p class="hint" style="margin-top:-6px">Status: <b>Em dia</b> quando o atual alcança o esperado de hoje (meta proporcional aos dias úteis passados); <b>Em risco</b> entre esse percentual e o esperado; <b>Atrasado</b> abaixo dele.</p>
       <p class="hint" style="margin-top:-6px"><b>Já feito fora do CRM</b> soma ao que o CRM conta: use para o que aconteceu antes de os leads estarem aqui. Zere quando esses contatos forem cadastrados, para não contar duas vezes.</p>
 
       <h2 class="sec">Pipeline</h2>
@@ -422,28 +416,33 @@ tfoot td{padding:10px 14px 0 0; font-family:var(--font-mono); font-size:11px; le
 /* ===================== modelo ===================== */
 const ETAPAS = [
   {id:'prospeccao', nome:'Prospecção',       prob:5},
-  {id:'contato',    nome:'Primeiro contato', prob:10},
-  {id:'discovery',  nome:'Discovery',        prob:25},
-  {id:'proposta',   nome:'Proposta enviada', prob:50},
-  {id:'negociacao', nome:'Negociação',       prob:75},
-  {id:'ganho',      nome:'Ganho',            prob:100},
-  {id:'perdido',    nome:'Perdido',          prob:0},
+  {id:'contato',    nome:'Contato realizado',   prob:8},
+  {id:'qualificado',nome:'Contato qualificado', prob:12},
+  {id:'agendada',   nome:'Reunião agendada',    prob:18},
+  {id:'reuniao',    nome:'Reunião qualificada', prob:25},
+  {id:'proposta',   nome:'Proposta',            prob:50},
+  {id:'negociacao', nome:'Negociação',          prob:75},
+  {id:'ganho',      nome:'Fechado (ganho)',     prob:100},
+  {id:'perdido',    nome:'Perdido',             prob:0},
 ];
-const ABERTAS = ['prospeccao','contato','discovery','proposta','negociacao'];
+const ABERTAS = ['prospeccao','contato','qualificado','agendada','reuniao','proposta','negociacao'];
 const ORD = ETAPAS.map(e => e.id);
 const EN = Object.fromEntries(ETAPAS.map(e => [e.id, e]));
 const ORIGENS = ['Indicação','Rede Sicredi','Inbound site','LinkedIn','Outbound','Evento','Parceiro','Cliente atual'];
 /* marcos: a data em que o lead chegou a cada etapa pela primeira vez (base da contagem dos OKRs) */
-const MARCOS = ['contato','discovery','proposta'];
+const MARCOS = ['contato','qualificado','agendada','reuniao','proposta'];
 
 /* Os 5 resultados-chave. A medida de cada id é fixa; nome, nível, meta e ajuste vêm da configuração. */
 const KRS = [
-  {id:'contatos',  nome:'Pessoas novas contatadas', nivel:'Compromisso', meta:600,     como:'leads que chegaram a Primeiro contato no período'},
-  {id:'reunioes',  nome:'Reuniões qualificadas',    nivel:'Compromisso', meta:50,      como:'leads que chegaram a Discovery no período'},
-  {id:'propostas', nome:'Propostas formalizadas',   nivel:'Compromisso', meta:10,      como:'leads que chegaram a Proposta enviada no período'},
-  {id:'funil',     nome:'Oportunidades no funil',   nivel:'Aspiracional', meta:3000000, como:'valor em aberto de Discovery em diante', brl:true},
-  {id:'contratos', nome:'Contratos assinados',      nivel:'Aspiracional', meta:2,      como:'leads ganhos no período'},
+  {id:'contatos',     nome:'Contatos realizados',   meta:600, marco:'contato',     como:'leads que chegaram a Contato realizado no período'},
+  {id:'qualificados', nome:'Contatos qualificados', meta:0,   marco:'qualificado', como:'leads que chegaram a Contato qualificado no período'},
+  {id:'agendadas',    nome:'Reuniões agendadas',    meta:0,   marco:'agendada',    como:'leads que chegaram a Reunião agendada no período'},
+  {id:'reunioes',     nome:'Reuniões qualificadas', meta:50,  marco:'reuniao',     como:'leads que chegaram a Reunião qualificada no período'},
+  {id:'propostas',    nome:'Propostas',             meta:10,  marco:'proposta',    como:'leads que chegaram a Proposta no período'},
+  {id:'fechamentos',  nome:'Fechamentos',           meta:2,                        como:'leads fechados (ganhos) no período'},
 ];
+/* status: em dia quando o atual alcança o esperado de hoje; em risco até a fração configurada abaixo dele; atrasado abaixo disso */
+const STATUS = {dia:{rot:'Em dia', cls:'p-ok', dot:'ok'}, risco:{rot:'Em risco', cls:'p-warn', dot:'warn'}, atraso:{rot:'Atrasado', cls:'p-gap', dot:'gap'}, sem:{rot:'Sem meta', cls:'p-mut', dot:''}};
 
 function hojeISO(){ return iso(new Date()); }
 function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -479,7 +478,8 @@ function cfgPadrao(){
     inicio: iso(new Date(d.getFullYear(), q*3, 1)),
     fim: iso(new Date(d.getFullYear(), q*3+3, 0)),
     dono: '', diasParado: 14,
-    krs: KRS.map(k => ({id:k.id, nome:k.nome, nivel:k.nivel, meta:k.meta, ajuste:0})),
+    risco: 70,
+    krs: KRS.map(k => ({id:k.id, nome:k.nome, meta:k.meta, ajuste:0})),
     probs: Object.fromEntries(ETAPAS.map(e => [e.id, e.prob])),
   };
 }
@@ -546,7 +546,7 @@ async function salvarCfg(c){
 
 function modoLocal(motivo){
   S.mode = 'local';
-  S.leads = lsGet(LK) || [];
+  S.leads = (lsGet(LK) || []).map(migrar);
   S.cfg = cfgMerge(lsGet(CK));
   $('mode').className = 'mode local';
   $('mode').textContent = motivo;
@@ -558,7 +558,7 @@ function modoCompartilhado(db){
   $('mode').className = 'mode shared';
   $('mode').textContent = 'Dados compartilhados com o time, atualizados ao vivo';
   db.collection('leads').onSnapshot(
-    snap => { S.leads = snap.docs.map(d => ({...d.data(), id:d.id})); renderTudo(); },
+    snap => { S.leads = snap.docs.map(d => migrar({...d.data(), id:d.id})); renderTudo(); },
     () => { $('mode').className = 'mode local'; $('mode').textContent = 'Perdi a conexão com os dados do time. Recarregue a página.'; }
   );
   db.doc('config/meta').onSnapshot(
@@ -568,6 +568,12 @@ function modoCompartilhado(db){
 }
 
 /* ===================== cálculos ===================== */
+function migrar(l){
+  if (l.etapa === 'discovery') l.etapa = 'reuniao';
+  if (l.maxEtapa === 'discovery') l.maxEtapa = 'reuniao';
+  if (l.marcos?.discovery && !l.marcos.reuniao){ l.marcos = {...l.marcos, reuniao:l.marcos.discovery}; delete l.marcos.discovery; }
+  return l;
+}
 function doDono(l){ const d = norm(S.cfg.dono); return !d || norm(l.responsavel) === d; }
 
 function calc(){
@@ -575,29 +581,22 @@ function calc(){
   const meus = S.leads.filter(doDono);
   const ganhos = meus.filter(l => l.etapa === 'ganho' && noPeriodo(l.fechadoEm));
   const perdidos = meus.filter(l => l.etapa === 'perdido' && noPeriodo(l.fechadoEm));
-  const abertosMeus = meus.filter(aberto);
 
   const total = Math.max(1, diasUteis(c.inicio, c.fim));
   const passados = Math.min(total, diasUteis(c.inicio, hoje < c.inicio ? addDias(c.inicio, -1) : (hoje > c.fim ? c.fim : addDias(hoje, -1))));
   const restantes = hoje > c.fim ? 0 : diasUteis(hoje < c.inicio ? c.inicio : hoje, c.fim);
   const frac = passados / total;
 
-  const medida = {
-    contatos:  meus.filter(l => noPeriodo(l.marcos?.contato)).length,
-    reunioes:  meus.filter(l => noPeriodo(l.marcos?.discovery)).length,
-    propostas: meus.filter(l => noPeriodo(l.marcos?.proposta)).length,
-    funil:     abertosMeus.filter(l => ORD.indexOf(l.etapa) >= ORD.indexOf('discovery')).reduce((s,l) => s + (Number(l.valor)||0), 0),
-    contratos: ganhos.length,
-  };
+  const risco = Math.min(99, Math.max(1, Number(c.risco) || 70)) / 100;
   const krs = c.krs.map(k => {
     const def = KRS.find(x => x.id === k.id);
+    const crm = def.marco ? meus.filter(l => noPeriodo(l.marcos?.[def.marco])).length : ganhos.length;
     const meta = Number(k.meta) || 0, ajuste = Number(k.ajuste) || 0;
-    const atual = medida[k.id] + ajuste;
-    const esperado = def.brl ? meta * frac : Math.round(meta * frac);
+    const atual = crm + ajuste;
+    const esperado = Math.round(meta * frac);
     const falta = Math.max(0, meta - atual);
-    return {...def, ...k, meta, ajuste, crm:medida[k.id], atual, esperado, falta,
-      porSemana: restantes ? falta / (restantes / 5) : null,
-      noRitmo: atual >= esperado};
+    const status = !meta ? 'sem' : (atual >= meta || atual >= esperado) ? 'dia' : atual >= esperado * risco ? 'risco' : 'atraso';
+    return {...def, ...k, meta, ajuste, crm, atual, esperado, falta, status};
   });
 
   const parado = Number(c.diasParado) || 14;
@@ -615,10 +614,10 @@ function calc(){
 
 /* ===================== render: topo ===================== */
 function renderTopo(k){
-  const comp = k.krs.filter(x => x.nivel === 'Compromisso');
-  const ok = comp.filter(x => x.noRitmo).length;
-  $('mini').innerHTML = comp.length
-    ? `<span class="dots" aria-hidden="true">${comp.map(x => `<i class="${x.noRitmo?'ok':'gap'}"></i>`).join('')}</span><span><b>${ok} de ${comp.length}</b> compromissos no ritmo</span>`
+  const com = k.krs.filter(x => x.status !== 'sem');
+  const ok = com.filter(x => x.status === 'dia').length;
+  $('mini').innerHTML = com.length
+    ? `<span class="dots" aria-hidden="true">${com.map(x => `<i class="${STATUS[x.status].dot}"></i>`).join('')}</span><span><b>${ok} de ${com.length}</b> resultados em dia</span>`
     : '';
   $('ct-pipe').textContent = k.abertos.length || '';
   $('ct-leads').textContent = S.leads.length || '';
@@ -640,7 +639,6 @@ function renderTopo(k){
 }
 
 /* ===================== render: OKR ===================== */
-function fmtKR(k, v){ return k.brl ? brlK(v) : INT.format(v); }
 function renderOKR(k){
   const c = S.cfg;
   $('m-period').innerHTML = `${esc(dataBR(c.inicio, true))} a ${esc(dataBR(c.fim, true))}<span class="sep">/</span>${k.passados} de ${k.total} dias úteis<span class="sep">/</span>${k.restantes} ${k.restantes===1?'restante':'restantes'}`;
@@ -648,23 +646,20 @@ function renderOKR(k){
   $('m-head').innerHTML = esc(nm.join(' ')) + (ult ? ' <span class="hl">' + esc(ult) + '</span>' : '');
   const quem = (c.dono||'').trim() ? `negócios de ${esc(c.dono.trim())}` : 'negócios de todo o time';
   $('m-lede').innerHTML = `Até ${esc(dataCurta(c.fim))}. Esperado hoje é a meta proporcional aos dias úteis já passados. Contagem: ${quem}.`;
+  const rc = Number(c.risco) || 70;
+  $('m-legend').innerHTML = `<span><b>Em dia</b>: atual igual ou acima do esperado para hoje</span><span><b>Em risco</b>: entre ${rc}% e 100% do esperado</span><span><b>Atrasado</b>: abaixo de ${rc}% do esperado</span>`;
   $('m-weeks').textContent = k.restantes ? `${NUM.format(k.restantes/5)} semanas úteis restantes` : 'período encerrado';
 
-  $('m-okr').innerHTML = `<thead><tr><th>Resultado-chave</th><th>Nível</th><th class="r">Atual</th><th class="r">Esperado hoje</th><th class="r">Meta</th><th class="r">Falta</th><th class="r">Por semana</th><th>Progresso</th></tr></thead><tbody>
+  $('m-okr').innerHTML = `<thead><tr><th>Resultado-chave</th><th class="r">Atual</th><th class="r">Meta</th><th class="r">Falta</th><th>Status</th></tr></thead><tbody>
     ${k.krs.map(x => {
-      const st = x.noRitmo ? 'ahead' : 'behind';
-      const pct = x.meta ? Math.min(100, x.atual / x.meta * 100) : 0;
-      const mk = x.meta ? Math.min(100, x.esperado / x.meta * 100) : 0;
-      const orig = x.ajuste ? `${fmtKR(x, x.crm)} no CRM + ${fmtKR(x, x.ajuste)} de fora` : x.como;
+      const st = STATUS[x.status];
+      const orig = x.ajuste ? `${INT.format(x.crm)} no CRM + ${INT.format(x.ajuste)} de fora` : x.como;
       return `<tr>
         <td class="kr">${esc(x.nome)}<small>${esc(orig)}</small></td>
-        <td><span class="lv ${x.nivel === 'Compromisso' ? 'lv-c' : 'lv-a'}">${esc(x.nivel)}</span></td>
-        <td class="r ${st}">${esc(fmtKR(x, x.atual))}</td>
-        <td class="r">${esc(fmtKR(x, x.esperado))}</td>
-        <td class="r">${esc(fmtKR(x, x.meta))}</td>
-        <td class="r">${x.falta ? esc(fmtKR(x, x.falta)) : '—'}</td>
-        <td class="r">${x.falta && x.porSemana !== null ? esc(x.brl ? brlK(x.porSemana) : NUM.format(Math.ceil(x.porSemana*10)/10)) : '—'}</td>
-        <td class="prog-c"><div class="prog" role="img" aria-label="${esc(fmtKR(x, x.atual))} de ${esc(fmtKR(x, x.meta))}, esperado hoje ${esc(fmtKR(x, x.esperado))}"><i class="${st}" style="width:calc(${pct}% + 1px)"></i><b style="left:calc(${mk}% - 1px)"></b></div></td></tr>`;
+        <td class="r num-big">${INT.format(x.atual)}</td>
+        <td class="r">${x.meta ? INT.format(x.meta) : '—'}</td>
+        <td class="r">${x.meta ? (x.falta ? INT.format(x.falta) : 'Meta batida') : '—'}</td>
+        <td class="st-c"><span class="pill ${st.cls}">${st.rot}</span><small>${x.meta ? 'esperado hoje: ' + INT.format(x.esperado) : '<a href="#premissas">defina a meta</a>'}</small></td></tr>`;
     }).join('')}</tbody>`;
 
   // funil
@@ -779,12 +774,12 @@ function preencherCfg(){
   const c = S.cfg;
   $('c-nome').value = c.nome || ''; $('c-inicio').value = c.inicio; $('c-fim').value = c.fim;
   $('c-dono').value = c.dono || ''; $('c-parado').value = c.diasParado;
-  $('c-krs').innerHTML = `<thead><tr><th>Resultado-chave</th><th>Nível</th><th class="r">Meta</th><th class="r">Já feito fora do CRM</th></tr></thead><tbody>
+  $('c-risco').value = c.risco ?? 70;
+  $('c-krs').innerHTML = `<thead><tr><th>Resultado-chave</th><th class="r">Meta</th><th class="r">Já feito fora do CRM</th></tr></thead><tbody>
     ${c.krs.map(k => { const def = KRS.find(x => x.id === k.id); return `<tr>
       <td><input type="text" id="k-nome-${k.id}" value="${esc(k.nome)}" aria-label="Nome do resultado-chave" autocomplete="off"><span class="sub" style="margin-top:3px">${esc(def.como)}</span></td>
-      <td><select id="k-nivel-${k.id}" aria-label="Nível"><option${k.nivel==='Compromisso'?' selected':''}>Compromisso</option><option${k.nivel==='Aspiracional'?' selected':''}>Aspiracional</option></select></td>
-      <td class="r"><input type="number" id="k-meta-${k.id}" min="0" step="${def.brl?100000:1}" inputmode="numeric" value="${Number(k.meta)||0}" aria-label="Meta"></td>
-      <td class="r"><input type="number" id="k-aj-${k.id}" min="0" step="${def.brl?10000:1}" inputmode="numeric" value="${Number(k.ajuste)||0}" aria-label="Já feito fora do CRM"></td></tr>`; }).join('')}</tbody>`;
+      <td class="r"><input type="number" id="k-meta-${k.id}" min="0" step="1" inputmode="numeric" value="${Number(k.meta)||0}" aria-label="Meta"></td>
+      <td class="r"><input type="number" id="k-aj-${k.id}" min="0" step="1" inputmode="numeric" value="${Number(k.ajuste)||0}" aria-label="Já feito fora do CRM"></td></tr>`; }).join('')}</tbody>`;
   $('c-probs').innerHTML = ABERTAS.map(e => `<label class="f"><span>${EN[e].nome} (%)</span><input type="number" id="c-p-${e}" min="0" max="100" step="5" inputmode="numeric" value="${Number(c.probs[e])}"></label>`).join('');
 }
 
@@ -951,7 +946,8 @@ $('cfg-form').addEventListener('submit', async e => {
   if (!inicio || !fim || fim < inicio){ $('c-note').textContent = 'O fim do período precisa ser depois do início.'; return; }
   const c = {
     nome:$('c-nome').value.trim() || 'OKR', inicio, fim, dono:$('c-dono').value.trim(), diasParado:n('c-parado', 14),
-    krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, nivel:$('k-nivel-'+k.id).value, meta:n('k-meta-'+k.id, k.meta), ajuste:n('k-aj-'+k.id, 0)})),
+    risco:n('c-risco', 70),
+    krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, meta:n('k-meta-'+k.id, 0), ajuste:n('k-aj-'+k.id, 0)})),
     probs:Object.fromEntries(ABERTAS.map(x => [x, n('c-p-'+x, EN[x].prob)]).concat([['ganho',100],['perdido',0]])),
     atualizadoEm:new Date().toISOString(),
   };
@@ -1029,8 +1025,10 @@ function etapaDe(v){
   const e = ETAPAS.find(x => norm(x.nome) === n || x.id === n); if (e) return {etapa:e.id};
   if (/ganh|won|assinad/.test(n)) return {etapa:'ganho'}; if (/perd|lost/.test(n)) return {etapa:'perdido'};
   if (/negoc/.test(n)) return {etapa:'negociacao'}; if (/propost|sprint/.test(n)) return {etapa:'proposta'};
-  if (/disc|diag|reuniao|qualific/.test(n)) return {etapa:'discovery'};
-  if (/contat|respond|call|agend|abord/.test(n)) return {etapa:'contato'};
+  if (/agend|marcad/.test(n)) return {etapa:'agendada'};
+  if (/disc|diag|reuniao|call/.test(n)) return {etapa:'reuniao'};
+  if (/qualific/.test(n)) return {etapa:'qualificado'};
+  if (/contat|respond|abord/.test(n)) return {etapa:'contato'};
   return {etapa:'prospeccao'};
 }
 function numBR(v){ if (typeof v === 'number') return v; v = String(v||'').replace(/[^\d,.-]/g,''); if (!v) return ''; if (v.includes(',')) v = v.replace(/\./g,'').replace(',', '.'); else if (/\.\d{3}$/.test(v)) v = v.replace(/\./g,''); const x = Number(v); return isFinite(x) ? x : ''; }
