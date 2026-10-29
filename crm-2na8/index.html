@@ -139,6 +139,8 @@ h2.sec small{font-size:10.5px; letter-spacing:.08em; text-transform:none; color:
 .kr-v{display:flex; align-items:baseline; gap:10px}
 .kr-v b{font-family:var(--font-display); font-weight:400; font-size:clamp(44px,4.4vw,58px); line-height:.9; letter-spacing:-.02em}
 .kr-v span{font-family:var(--font-mono); font-size:14px; color:var(--muted)}
+.kr-v.brl{flex-wrap:wrap}
+.kr-v.brl b{font-size:clamp(34px,3.3vw,46px); white-space:nowrap}
 .kr-bar{position:relative; height:4px; background:var(--surface-2)}
 .kr-bar i{position:absolute; inset:0 auto 0 0; background:var(--muted)}
 .st-dia .kr-bar i{background:var(--blue-light)} .st-risco .kr-bar i{background:var(--warn)} .st-atraso .kr-bar i{background:var(--danger)}
@@ -150,6 +152,44 @@ h2.sec small{font-size:10.5px; letter-spacing:.08em; text-transform:none; color:
 .legend{display:flex; flex-wrap:wrap; gap:6px 22px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted-2); margin-top:12px}
 .legend b{color:var(--ink-2); font-weight:500}
 .legend em{display:inline-block; width:2px; height:11px; background:var(--ink); vertical-align:-1px; margin-right:6px}
+
+/* objetivos */
+.objs{display:grid; gap:30px}
+.obj-h{display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 14px; margin-bottom:12px}
+.obj-h .n{font-family:var(--font-mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--blue-light)}
+.obj-h h2{font-family:var(--font-display); font-weight:400; font-size:clamp(24px,2.6vw,34px); line-height:1}
+.obj-h p{font-size:13px; color:var(--muted); flex-basis:100%}
+
+/* ritmo da semana */
+.week{margin-top:34px}
+.wk td{vertical-align:middle}
+.wk td.bar-c{width:34%; min-width:120px}
+.wbar{position:relative; height:4px; background:var(--surface-2)}
+.wbar i{position:absolute; inset:0 auto 0 0; background:var(--blue-light)}
+.wbar i.low{background:var(--muted)}
+.wk .sub{font-family:var(--font-mono); font-size:10.5px; color:var(--muted-2)}
+
+/* projeção */
+.pj-in label.f > span{min-height:2.6em; display:flex; align-items:flex-end}
+.pj-hi{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin:6px 0 18px}
+@media (max-width:760px){.pj-hi{grid-template-columns:minmax(0,1fr)}}
+.pj-hi > div{background:var(--surface); padding:16px 18px}
+.pj-hi dt{font-family:var(--font-mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted)}
+.pj-hi dd{margin:8px 0 0; font-family:var(--font-display); font-size:clamp(30px,3.4vw,44px); line-height:1}
+.pj-hi dd small{display:block; font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:8px; letter-spacing:.02em}
+.pj-hi .base dd{color:var(--ink)} .pj-hi .pess dd,.pj-hi .otim dd{color:var(--ink-2)}
+.pj-sec{margin-top:40px}
+.pj-sec > p.hint{margin:8px 0 12px; max-width:80ch}
+.pj td.base,.pj th.base{color:var(--ink); background:rgba(47,46,245,.07)}
+.pj tr.tot td{font-weight:500; color:var(--ink)}
+.callout{border:1px solid var(--line-2); border-left:2px solid var(--blue-light); padding:14px 16px; margin:12px 0; font-size:14px; color:var(--ink-2); max-width:86ch}
+.callout.warn{border-left-color:var(--warn)} .callout.bad{border-left-color:var(--danger)}
+.callout b{color:var(--ink); font-weight:500}
+.mbar{position:relative; height:10px; background:var(--surface); min-width:90px}
+.mbar i{position:absolute; top:0; bottom:0; left:0; background:var(--blue)}
+.mbar i.pl{background:var(--blue-light)}
+.mbar i.fx{background:var(--ink-2)}
+.mbar em{position:absolute; top:-4px; bottom:-4px; width:2px; margin-left:-1px; background:var(--warn)}
 
 /* números do período */
 .stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin:30px 0 34px}
@@ -318,6 +358,7 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
       <button class="tab" role="tab" data-tab="okr" id="t-okr"><span>OKR</span></button>
       <button class="tab" role="tab" data-tab="pipeline" id="t-pipeline"><span>Pipeline</span><span class="ct" id="ct-pipe"></span></button>
       <button class="tab" role="tab" data-tab="leads" id="t-leads"><span>Leads</span><span class="ct" id="ct-leads"></span></button>
+      <button class="tab" role="tab" data-tab="projecao" id="t-projecao"><span>Projeção</span></button>
       <button class="tab" role="tab" data-tab="premissas" id="t-premissas"><span>Premissas</span></button>
     </nav>
     <div class="side-krs" id="mini" aria-label="Status dos resultados-chave"></div>
@@ -335,8 +376,12 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
         </div>
         <div class="timebox" id="m-time"></div>
       </header>
-      <div class="krs" id="m-okr"></div>
+      <div class="objs" id="m-okr"></div>
       <p class="legend" id="m-legend"></p>
+      <section class="week">
+        <h2 class="sec">Ritmo da semana <small id="m-week-n"></small></h2>
+        <div class="tw"><table class="wk" id="m-week"></table></div>
+      </section>
       <dl class="stats" id="m-stats"></dl>
       <div class="two">
         <section>
@@ -392,6 +437,29 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
       <div class="tw"><table id="l-table"></table></div>
     </section>
 
+    <!-- ======================= PROJEÇÃO ======================= -->
+    <section class="panel" id="p-projecao" role="tabpanel" aria-labelledby="t-projecao" hidden>
+      <header class="ph">
+        <div>
+          <p class="eyebrow">Simulação e validação</p>
+          <h1 class="ph-t">Projeção</h1>
+          <p class="lede">Quanto a operação de hoje entrega, o que uma meta exige e se as premissas batem com o que o CRM está medindo.</p>
+        </div>
+      </header>
+      <section class="set" style="padding-top:0">
+        <div class="set-h"><h2>Premissas da projeção</h2><p>Mude os números para simular; a página recalcula na hora. Salve para que o OKR e o ritmo semanal passem a usar os novos valores.</p></div>
+        <div class="set-b">
+          <div class="grid4 pj-in" id="pj-in"></div>
+          <div class="cfg-act" style="padding-top:4px">
+            <button class="btn btn-primary" type="button" id="pj-save">Salvar premissas</button>
+            <button class="btn btn-ghost" type="button" id="pj-reset">Descartar mudanças</button>
+            <span class="hint" id="pj-note"></span>
+          </div>
+        </div>
+      </section>
+      <div id="pj-out"></div>
+    </section>
+
     <!-- ======================= PREMISSAS ======================= -->
     <section class="panel" id="p-premissas" role="tabpanel" aria-labelledby="t-premissas" hidden>
       <form class="cfg" id="cfg-form" novalidate>
@@ -413,7 +481,7 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
           </div>
         </section>
         <section class="set">
-          <div class="set-h"><h2>Resultados-chave</h2><p>Cada um conta os leads que chegaram à etapa correspondente no período. <b style="color:var(--ink-2); font-weight:500">Já feito fora do CRM</b> soma ao que o CRM conta; zere quando esses contatos forem cadastrados.</p></div>
+          <div class="set-h"><h2>Resultados-chave</h2><p>Metas do ciclo, em dois objetivos. <b style="color:var(--ink-2); font-weight:500">Já feito fora do CRM</b> soma ao que o CRM conta (só nos KRs de quantidade e receita); zere quando esses negócios forem cadastrados. Ticket, ciclo, capacidade e conversões ficam na aba Projeção.</p></div>
           <div class="set-b">
             <div class="tw"><table id="c-krs"></table></div>
           </div>
@@ -493,6 +561,7 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
         <div class="sheet-side">
           <h4>Etapa</h4>
           <div class="stages" id="s-stages"></div>
+          <p class="hint" id="s-crit"></p>
           <label class="f" id="s-motivo-w" hidden><span>Motivo da perda</span>
             <select id="s-motivo"><option value="">Escolha o motivo…</option><option>Preço</option><option>Sem orçamento</option><option>Sem timing / adiou</option><option>Escolheu concorrente</option><option>Fez internamente</option><option>Sem resposta após os 4 toques</option><option>Fora do perfil (triagem)</option><option>Outro</option></select>
           </label>
@@ -544,16 +613,40 @@ const ORIGENS = ['Indicação','Rede Sicredi','Inbound site','LinkedIn','Outboun
 const MARCOS = ['contato','qualificado','agendada','reuniao','proposta'];
 
 /* Os 5 resultados-chave. A medida de cada id é fixa; nome, nível, meta e ajuste vêm da configuração. */
+/* Dois objetivos. Os KRs de quantidade e receita andam no ritmo dos dias úteis; cobertura e taxa de ganho são razões. */
+const OBJS = [
+  {id:1, nome:'Gerar pipeline qualificado', desc:'Reuniões que viram propostas, e pipeline suficiente para a meta de receita.'},
+  {id:2, nome:'Converter em receita', desc:'Contratos assinados no ciclo, sem perder eficiência nas propostas.'},
+];
 const KRS = [
-  {id:'contatos',     nome:'Contatos realizados',   meta:600, marco:'contato',     como:'leads que chegaram a Contato realizado no período'},
-  {id:'qualificados', nome:'Contatos qualificados', meta:0,   marco:'qualificado', como:'leads que chegaram a Contato qualificado no período'},
-  {id:'agendadas',    nome:'Reuniões agendadas',    meta:0,   marco:'agendada',    como:'leads que chegaram a Reunião agendada no período'},
-  {id:'reunioes',     nome:'Reuniões qualificadas', meta:50,  marco:'reuniao',     como:'leads que chegaram a Reunião qualificada no período'},
-  {id:'propostas',    nome:'Propostas',             meta:10,  marco:'proposta',    como:'leads que chegaram a Proposta no período'},
-  {id:'fechamentos',  nome:'Fechamentos',           meta:2,                        como:'leads fechados (ganhos) no período'},
+  {id:'reunioes',  obj:1, tipo:'n',   nome:'Reuniões qualificadas',      meta:15,     marco:'reuniao',  como:'leads que chegaram a Reunião qualificada no período (discovery com score ≥ 60)'},
+  {id:'propostas', obj:1, tipo:'n',   nome:'Propostas apresentadas',     meta:15,     marco:'proposta', como:'leads que chegaram a Proposta no período'},
+  {id:'cobertura', obj:1, tipo:'x',   nome:'Cobertura do pipeline',      meta:3,                        como:'pipeline aberto de Reunião qualificada em diante ÷ receita que falta para a meta'},
+  {id:'receita',   obj:2, tipo:'brl', nome:'Receita contratada',         meta:320000,                   como:'valor dos contratos fechados no período (sem valor no lead, conta o ticket médio)'},
+  {id:'taxa',      obj:2, tipo:'pct', nome:'Taxa de ganho em propostas', meta:27,                       como:'ganhos ÷ propostas decididas (ganhas ou perdidas) no período'},
+];
+/* critério para um lead estar em cada etapa: deixa a contagem igual para todo mundo */
+const CRIT = {
+  prospeccao:'conta mapeada: decisor provável e rota de acesso identificados.',
+  contato:'primeiro toque enviado a uma pessoa da conta (cadência de 4 toques).',
+  qualificado:'respondeu e tem fit: porte, dor evidente e acesso ao decisor.',
+  agendada:'reunião de discovery com data marcada.',
+  reuniao:'discovery feito, score ≥ 60 e orçamento compatível com o ticket.',
+  proposta:'proposta apresentada ao decisor.',
+  negociacao:'decisor quer fechar; ajustando escopo, prazo ou preço.',
+  ganho:'contrato assinado.',
+  perdido:'motivo da perda registrado.',
+};
+const PROJ = {ticket:80000, ciclo:30, cap:24, metaMensal:0, conv:{qualificado:15, agendada:44, reuniao:75, proposta:100, ganho:27}};
+const PASSOS = [
+  {k:'qualificado', de:'contato',     nome:'Contato → qualificado'},
+  {k:'agendada',    de:'qualificado', nome:'Qualificado → reunião agendada'},
+  {k:'reuniao',     de:'agendada',    nome:'Agendada → reunião qualificada'},
+  {k:'proposta',    de:'reuniao',     nome:'Reunião qualificada → proposta'},
+  {k:'ganho',       de:'proposta',    nome:'Proposta → ganho'},
 ];
 /* status: em dia quando o atual alcança o esperado de hoje; em risco até a fração configurada abaixo dele; atrasado abaixo disso */
-const STATUS = {dia:{rot:'Em dia', cls:'p-ok', dot:'ok'}, risco:{rot:'Em risco', cls:'p-warn', dot:'warn'}, atraso:{rot:'Atrasado', cls:'p-gap', dot:'gap'}, sem:{rot:'Sem meta', cls:'p-mut', dot:''}};
+const STATUS = {dia:{rot:'Em dia', cls:'p-ok', dot:'ok'}, risco:{rot:'Em risco', cls:'p-warn', dot:'warn'}, atraso:{rot:'Atrasado', cls:'p-gap', dot:'gap'}, sem:{rot:'Sem meta', cls:'p-mut', dot:''}, dados:{rot:'Poucos dados', cls:'p-mut', dot:''}};
 
 function hojeISO(){ return iso(new Date()); }
 function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -591,6 +684,8 @@ function cfgPadrao(){
     dono: '', diasParado: 14,
     risco: 70,
     krs: KRS.map(k => ({id:k.id, nome:k.nome, meta:k.meta, ajuste:0})),
+    proj: JSON.parse(JSON.stringify(PROJ)),
+    atvAjuste: {contato:0, qualificado:0, agendada:0},
     probs: Object.fromEntries(ETAPAS.map(e => [e.id, e.prob])),
   };
 }
@@ -628,7 +723,8 @@ function noPeriodo(s){ return !!s && s >= S.cfg.inicio && s <= S.cfg.fim; }
 function cfgMerge(c){
   const d = cfgPadrao(); c = c || {};
   const krs = d.krs.map(k => ({...k, ...((c.krs||[]).find(x => x.id === k.id) || {})}));
-  return {...d, ...c, krs, probs:{...d.probs, ...(c.probs||{})}};
+  const pj = c.proj || {};
+  return {...d, ...c, krs, probs:{...d.probs, ...(c.probs||{})}, proj:{...d.proj, ...pj, conv:{...d.proj.conv, ...(pj.conv||{})}}, atvAjuste:{...d.atvAjuste, ...(c.atvAjuste||{})}};
 }
 
 /* ===================== armazenamento ===================== */
@@ -711,29 +807,53 @@ function calc(){
   const frac = passados / total;
 
   const risco = Math.min(99, Math.max(1, Number(c.risco) || 70)) / 100;
-  const krs = c.krs.map(k => {
-    const def = KRS.find(x => x.id === k.id);
-    const crm = def.marco ? meus.filter(l => noPeriodo(l.marcos?.[def.marco])).length : ganhos.length;
-    const meta = Number(k.meta) || 0, ajuste = Number(k.ajuste) || 0;
-    const atual = crm + ajuste;
-    const esperado = Math.round(meta * frac);
-    const falta = Math.max(0, meta - atual);
-    const status = !meta ? 'sem' : (atual >= meta || atual >= esperado) ? 'dia' : atual >= esperado * risco ? 'risco' : 'atraso';
-    return {...def, ...k, meta, ajuste, crm, atual, esperado, falta, status};
-  });
+  const ticket = Number(c.proj.ticket) || 0;
+  const valorDe = l => Number(l.valor) || ticket;
+  const pace = (atual, meta, esperado) => !meta ? 'sem' : (atual >= meta || atual >= esperado) ? 'dia' : atual >= esperado * risco ? 'risco' : 'atraso';
+  const ratio = (atual, meta) => !meta ? 'sem' : atual >= meta ? 'dia' : atual >= meta * risco ? 'risco' : 'atraso';
+  const cfgKR = id => c.krs.find(k => k.id === id) || {};
+  const out = {};
+  for (const def of KRS.filter(d => d.tipo === 'n' || d.tipo === 'brl')){
+    const k = cfgKR(def.id), meta = Number(k.meta) || 0, ajuste = Number(k.ajuste) || 0;
+    const crm = def.tipo === 'brl' ? ganhos.reduce((s,l) => s + valorDe(l), 0) : meus.filter(l => noPeriodo(l.marcos?.[def.marco])).length;
+    const atual = crm + ajuste, esperado = def.tipo === 'brl' ? meta * frac : Math.round(meta * frac);
+    out[def.id] = {...def, ...k, meta, ajuste, crm, atual, esperado, falta:Math.max(0, meta - atual), status:pace(atual, meta, esperado)};
+  }
+  { // cobertura: pipeline aberto qualificado ÷ receita que falta
+    const def = KRS.find(d => d.id === 'cobertura'), k = cfgKR('cobertura'), meta = Number(k.meta) || 0;
+    const rec = out.receita, faltaR = Math.max(0, rec.meta - rec.atual);
+    const pipe = meus.filter(l => aberto(l) && ORD.indexOf(l.etapa) >= ORD.indexOf('reuniao')).reduce((s,l) => s + valorDe(l), 0);
+    const atual = faltaR ? pipe / faltaR : null;
+    out.cobertura = {...def, ...k, meta, atual, pipe, faltaR, aGerar:Math.max(0, meta * faltaR - pipe),
+      status: !rec.meta || !meta ? 'sem' : !faltaR ? 'dia' : ratio(atual, meta)};
+  }
+  { // taxa de ganho nas propostas decididas no período
+    const def = KRS.find(d => d.id === 'taxa'), k = cfgKR('taxa'), meta = Number(k.meta) || 0;
+    const dec = meus.filter(l => (l.etapa === 'ganho' || l.etapa === 'perdido') && noPeriodo(l.fechadoEm) && (l.etapa === 'ganho' || l.marcos?.proposta));
+    const wins = dec.filter(l => l.etapa === 'ganho').length;
+    const atual = dec.length ? wins / dec.length * 100 : null;
+    out.taxa = {...def, ...k, meta, atual, wins, dec:dec.length, status: !meta ? 'sem' : dec.length < 3 ? 'dados' : ratio(atual, meta)};
+  }
+  const krs = KRS.map(d => out[d.id]);
+
+  // ritmo da semana (segunda até hoje)
+  const dow = (new Date().getDay() + 6) % 7, iniSem = addDias(hoje, -dow);
+  const ajAtv = {...c.atvAjuste, reuniao:Number(out.reunioes.ajuste) || 0, proposta:Number(out.propostas.ajuste) || 0};
+  const semana = MARCOS.map(m => ({m, n:meus.filter(l => { const d = l.marcos?.[m]; return d && d >= iniSem && d <= hoje; }).length,
+    ciclo:meus.filter(l => noPeriodo(l.marcos?.[m])).length + (Number(ajAtv[m]) || 0)}));
 
   const parado = Number(c.diasParado) || 14;
   const ordem = Object.keys(SIT);
   const att = S.leads.map(l => ({l, sit:situacao(l, hoje, parado)})).filter(a => a.sit);
   att.sort((a,b) => ordem.indexOf(a.sit) - ordem.indexOf(b.sit) || String(a.l.proximoData || a.l.etapaDesde || '').localeCompare(String(b.l.proximoData || b.l.etapaDesde || '')));
 
-  return {krs, ganhos, perdidos, abertos:S.leads.filter(aberto), passados, total, restantes, att};
+  return {krs, ganhos, perdidos, abertos:S.leads.filter(aberto), passados, total, restantes, att, semana, iniSem};
 }
 
 /* ===================== render: topo ===================== */
 function renderTopo(k){
   $('mini').innerHTML = `<p class="side-h">${esc(S.cfg.nome || 'OKR')}</p>` + k.krs.map(x =>
-    `<button type="button" class="skr" data-go="okr" title="${esc(STATUS[x.status].rot)}"><i class="${STATUS[x.status].dot}"></i><span>${esc(x.nome)}</span><b>${INT.format(x.atual)}${x.meta ? '<small>/' + INT.format(x.meta) + '</small>' : ''}</b></button>`).join('');
+    `<button type="button" class="skr" data-go="okr" title="${esc(STATUS[x.status].rot)}"><i class="${STATUS[x.status].dot}"></i><span>${esc(x.nome)}</span><b>${esc(fmtKR(x, x.atual))}${x.meta && (x.tipo === 'n') ? '<small>/' + INT.format(x.meta) + '</small>' : ''}</b></button>`).join('');
   $('ct-pipe').textContent = k.abertos.length || '';
   $('ct-leads').textContent = S.leads.length || '';
   $('foot-n').textContent = S.leads.length ? S.leads.length + (S.leads.length === 1 ? ' lead cadastrado' : ' leads cadastrados') : '';
@@ -754,6 +874,32 @@ function renderTopo(k){
 }
 
 /* ===================== render: OKR ===================== */
+function fmtKR(x, v){
+  if (v === null || v === undefined) return '—';
+  if (x.tipo === 'brl') return brlK(v);
+  if (x.tipo === 'x') return NUM.format(Math.round(v * 10) / 10) + 'x';
+  if (x.tipo === 'pct') return NUM.format(Math.round(v)) + '%';
+  return INT.format(v);
+}
+function cardKR(x, i){
+  const st = STATUS[x.status];
+  const temMeta = !!x.meta, ritmo = x.tipo === 'n' || x.tipo === 'brl';
+  const pct = temMeta && x.atual !== null ? Math.min(100, x.atual / x.meta * 100) : 0;
+  const mk = temMeta && ritmo ? Math.min(100, x.esperado / x.meta * 100) : null;
+  let dl;
+  if (ritmo) dl = [['Falta', temMeta ? (x.falta ? fmtKR(x, x.falta) : 'Meta batida') : '—'], ['Esperado hoje', temMeta ? fmtKR(x, x.esperado) : '<a href="#premissas">Definir meta</a>']];
+  else if (x.tipo === 'x') dl = [['Pipeline aberto', brlK(x.pipe)], ['A gerar', !x.faltaR ? 'Meta de receita batida' : x.aGerar ? brlK(x.aGerar) : 'Coberto']];
+  else dl = [['Ganhas / decididas', `${x.wins} de ${x.dec}`], ['Meta', '≥ ' + fmtKR(x, x.meta)]];
+  const how = ritmo && x.ajuste ? `${fmtKR(x, x.crm)} no CRM + ${fmtKR(x, x.ajuste)} de fora` : x.como;
+  return `<article class="kr st-${x.status}">
+    <header><span class="kr-i">KR ${i}</span><span class="pill ${st.cls}">${st.rot}</span></header>
+    <h3>${esc(x.nome)}</h3>
+    <div class="kr-v${x.tipo === 'brl' ? ' brl' : ''}"><b>${esc(fmtKR(x, x.atual))}</b><span>${temMeta ? (ritmo ? '/ ' : 'meta ') + esc(fmtKR(x, x.meta)) : 'sem meta'}</span></div>
+    <div class="kr-bar" ${temMeta ? `role="img" aria-label="${esc(fmtKR(x, x.atual))} de ${esc(fmtKR(x, x.meta))}"` : 'aria-hidden="true"'}>${temMeta ? `<i style="width:${pct}%"></i>${mk !== null ? `<em style="left:${mk}%"></em>` : ''}` : ''}</div>
+    <dl>${dl.map(([t, v]) => `<div><dt>${t}</dt><dd>${v.startsWith('<a') ? v : esc(v)}</dd></div>`).join('')}</dl>
+    <p class="kr-how">${esc(how)}</p>
+  </article>`;
+}
 function textoSit(a){
   const l = a.l;
   if (a.sit === 'atraso') return (l.proximoPasso || 'Próximo passo') + ' · ' + quando(l.proximoData);
@@ -767,27 +913,34 @@ function renderOKR(k){
   $('m-period').innerHTML = `Objetivos comerciais<span class="sep">/</span>${quem}`;
   const nm = (c.nome || 'OKR').trim().split(' '), ult = nm.length > 1 ? nm.pop() : '';
   $('m-head').innerHTML = esc(nm.join(' ')) + (ult ? ' <span class="hl">' + esc(ult) + '</span>' : '');
-  $('m-lede').textContent = `Atual, meta e quanto falta em cada etapa do funil até ${dataCurta(c.fim)}.`;
+  $('m-lede').textContent = `Dois objetivos até ${dataCurta(c.fim)}: gerar pipeline qualificado e convertê-lo em receita. A atividade que alimenta os dois fica no ritmo da semana.`;
   const pctT = k.total ? k.passados / k.total * 100 : 0;
   $('m-time').innerHTML = `<span class="tb-k">Período</span><span class="tb-v">${esc(dataBR(c.inicio, true))} → ${esc(dataBR(c.fim, true))}</span>
     <div class="tb-bar" aria-hidden="true"><i style="width:${pctT}%"></i></div>
     <div class="tb-n"><span>${k.passados} de ${k.total} dias úteis</span><span>${k.restantes ? k.restantes + (k.restantes === 1 ? ' restante' : ' restantes') : 'encerrado'}</span></div>`;
 
-  $('m-okr').innerHTML = k.krs.map((x, i) => {
-    const st = STATUS[x.status];
-    const pct = x.meta ? Math.min(100, x.atual / x.meta * 100) : 0;
-    const mk = x.meta ? Math.min(100, x.esperado / x.meta * 100) : 0;
-    return `<article class="kr st-${x.status}">
-      <header><span class="kr-i">${String(i+1).padStart(2,'0')}</span><span class="pill ${st.cls}">${st.rot}</span></header>
-      <h3>${esc(x.nome)}</h3>
-      <div class="kr-v"><b>${INT.format(x.atual)}</b><span>${x.meta ? '/ ' + INT.format(x.meta) : 'sem meta'}</span></div>
-      <div class="kr-bar" ${x.meta ? `role="img" aria-label="${INT.format(x.atual)} de ${INT.format(x.meta)}; esperado hoje ${INT.format(x.esperado)}"` : 'aria-hidden="true"'}>${x.meta ? `<i style="width:${pct}%"></i><em style="left:${mk}%"></em>` : ''}</div>
-      <dl><div><dt>Falta</dt><dd>${x.meta ? (x.falta ? INT.format(x.falta) : 'Meta batida') : '—'}</dd></div><div><dt>Esperado hoje</dt><dd>${x.meta ? INT.format(x.esperado) : '<a href="#premissas">Definir meta</a>'}</dd></div></dl>
-      <p class="kr-how">${esc(x.ajuste ? `${INT.format(x.crm)} no CRM + ${INT.format(x.ajuste)} de fora` : x.como)}</p>
-    </article>`;
-  }).join('');
+  let ordem = 0;
+  $('m-okr').innerHTML = OBJS.map(o => `<section>
+    <div class="obj-h"><span class="n">Objetivo ${o.id}</span><h2>${esc(o.nome)}</h2><p>${esc(o.desc)}</p></div>
+    <div class="krs">${k.krs.filter(x => x.obj === o.id).map(x => cardKR(x, ++ordem)).join('')}</div>
+  </section>`).join('');
+
+  // ritmo da semana: atividade que alimenta os KRs, com meta semanal tirada da projeção
+  const base = funilMes(c.proj), sem = 52 / 12;
+  const metaSem = {contato:Number(c.proj.cap) || 0, qualificado:base.qualificados / sem, agendada:base.agendadas / sem, reuniao:base.reunioes / sem, proposta:base.propostas / sem};
+  const nomeAtv = {contato:'Contatos novos', qualificado:'Contatos qualificados', agendada:'Reuniões agendadas', reuniao:'Reuniões qualificadas', proposta:'Propostas'};
+  const diaSem = Math.min(5, (new Date().getDay() + 6) % 7 + 1);
+  $('m-week-n').textContent = `semana desde segunda ${dataCurta(k.iniSem)} · metas pela projeção · no ciclo inclui o feito fora do CRM`;
+  const semanasCiclo = k.total / 5;
+  $('m-week').innerHTML = `<thead><tr><th>Atividade</th><th class="r">Esta semana</th><th class="r">Meta semanal</th><th>Ritmo da semana</th><th class="r">No ciclo</th><th class="r">Meta do ciclo</th></tr></thead><tbody>${k.semana.map(w => {
+    const mt = metaSem[w.m], esp = mt * diaSem / 5, pct = mt ? Math.min(100, w.n / mt * 100) : 0;
+    const mc = Math.round(mt * semanasCiclo);
+    return `<tr><td>${nomeAtv[w.m]}<span class="sub">${esc(CRIT[w.m])}</span></td><td class="r">${w.n}</td><td class="r">${NUM.format(Math.round(mt * 10) / 10)}</td>
+      <td class="bar-c" title="Esperado até hoje: ${NUM.format(Math.round(esp * 10) / 10)}"><div class="wbar"><i class="${w.n >= esp ? '' : 'low'}" style="width:${pct}%"></i></div></td>
+      <td class="r">${INT.format(w.ciclo)}</td><td class="r">${INT.format(mc)}</td></tr>`;
+  }).join('')}</tbody>`;
   const rc = Number(c.risco) || 70;
-  $('m-legend').innerHTML = `<span><em></em>Esperado hoje</span><span><b>Em dia</b> no esperado ou acima</span><span><b>Em risco</b> entre ${rc}% e 100% do esperado</span><span><b>Atrasado</b> abaixo de ${rc}%</span>`;
+  $('m-legend').innerHTML = `<span><em></em>Esperado hoje (KRs de quantidade e receita)</span><span><b>Em dia</b> no esperado ou acima</span><span><b>Em risco</b> entre ${rc}% e 100% do esperado</span><span><b>Atrasado</b> abaixo de ${rc}%</span><span>Cobertura e taxa comparam direto com a meta</span>`;
 
   // números do período
   const fech = k.ganhos.length + k.perdidos.length;
@@ -822,6 +975,139 @@ function renderOKR(k){
       + (mot.length ? `<p class="sub-h">Motivos de perda no período</p><div class="funnel">${mot.map(([m,n]) => `<div class="frow"><span class="lbl">${esc(m)}</span><div class="b"><i class="l" style="width:${n/mot[0][1]*100}%"></i></div><span class="n">${n}</span><span class="val"></span></div>`).join('')}</div>` : '');
 }
 
+/* ===================== projeção ===================== */
+/* funil mensal em regime: capacidade de contatos novos × conversões; f ajusta as duas conversões finais (cenários) */
+function funilMes(p, f = 1){
+  const r = k => Math.min(1, Math.max(0, (Number(p.conv?.[k]) || 0) / 100));
+  const contatos = (Number(p.cap) || 0) * 52 / 12;
+  const qualificados = contatos * r('qualificado'), agendadas = qualificados * r('agendada'), reunioes = agendadas * r('reuniao');
+  const propostas = reunioes * Math.min(1, r('proposta') * f), contratos = propostas * Math.min(1, r('ganho') * f);
+  return {contatos, qualificados, agendadas, reunioes, propostas, contratos, receita:contratos * (Number(p.ticket) || 0)};
+}
+const CEN = [{id:'pess', nome:'Pessimista', f:.75}, {id:'base', nome:'Base', f:1}, {id:'otim', nome:'Otimista', f:1.25}];
+let pjDraft = null;
+function projAtual(){ return pjDraft || S.cfg.proj; }
+function preencherPj(){
+  const p = projAtual();
+  const campo = (id, rot, v, step, extra = '') => `<label class="f"><span>${rot}</span><input type="number" id="${id}" min="0" step="${step}" inputmode="decimal" value="${v ?? ''}" ${extra}></label>`;
+  $('pj-in').innerHTML = [
+    campo('pj-ticket', 'Ticket médio (R$)', p.ticket, 1000),
+    campo('pj-ciclo', 'Ciclo de venda (dias)', p.ciclo, 1),
+    campo('pj-cap', 'Contatos novos por semana', p.cap, 1),
+    campo('pj-meta', 'Meta de receita mensal (R$, opcional)', p.metaMensal || '', 5000, 'placeholder="ainda sem meta"'),
+    ...PASSOS.map(ps => campo('pj-r-' + ps.k, ps.nome + ' (%)', p.conv[ps.k], 1, 'max="100"')),
+  ].join('');
+}
+function lerPj(){
+  const n = (id, d) => { const el = $(id); const v = Number(el?.value); return el && el.value !== '' && isFinite(v) ? v : d; };
+  const b = S.cfg.proj;
+  return {ticket:n('pj-ticket', b.ticket), ciclo:n('pj-ciclo', b.ciclo), cap:n('pj-cap', b.cap), metaMensal:n('pj-meta', 0),
+    conv:Object.fromEntries(PASSOS.map(ps => [ps.k, Math.min(100, n('pj-r-' + ps.k, b.conv[ps.k]))]))};
+}
+function mesIdx(isoD, base){ const d = parseD(isoD); return (d.getFullYear() - base.getFullYear()) * 12 + d.getMonth() - base.getMonth(); }
+const MESL = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function renderProjecao(){
+  const p = projAtual(), hoje = hojeISO(), h = parseD(hoje);
+  const cen = CEN.map(c => ({...c, ...funilMes(p, c.f)}));
+  const base = cen[1];
+  const fmtN = v => v >= 10 ? INT.format(Math.round(v)) : NUM.format(Math.round(v * 10) / 10);
+  $('pj-note').textContent = pjDraft ? 'Simulando: estes números ainda não foram salvos.' : '';
+
+  // 1. o que a operação entrega
+  const linhas = [['Contatos novos','contatos'], ['Contatos qualificados','qualificados'], ['Reuniões agendadas','agendadas'], ['Reuniões qualificadas','reunioes'], ['Propostas','propostas'], ['Contratos','contratos']];
+  let html = `<section class="pj-sec">
+    <h2 class="sec">O que a operação de hoje entrega <small>${INT.format(p.cap)} contatos novos por semana · ticket ${esc(brlK(p.ticket))}</small></h2>
+    <dl class="pj-hi">${cen.map(c => `<div class="${c.id}"><dt>${c.nome} · por mês</dt><dd>${esc(brlK(c.receita))}<small>${esc(brlK(c.receita * 12))} por ano · ${fmtN(c.contratos)} contratos/mês</small></dd></div>`).join('')}</dl>
+    <p class="hint">Regime estável: todo mês entram ${INT.format(Math.round(base.contatos))} contatos novos e percorrem o funil com as conversões ao lado. Os cenários mudam só as duas conversões finais (reunião → proposta e proposta → ganho) em 25% para menos ou para mais.${!p.metaMensal ? ' <b>Sem meta de 2027 ainda: o cenário base é o ponto de partida mais honesto para defini-la.</b>' : ''}</p>
+    <div class="tw"><table class="pj"><thead><tr><th>Por mês</th>${cen.map(c => `<th class="r ${c.id === 'base' ? 'base' : ''}">${c.nome}</th>`).join('')}<th class="r">Por semana (base)</th></tr></thead><tbody>
+      ${linhas.map(([t, k]) => `<tr><td>${t}</td>${cen.map(c => `<td class="r ${c.id === 'base' ? 'base' : ''}">${fmtN(c[k])}</td>`).join('')}<td class="r">${fmtN(base[k] / (52 / 12))}</td></tr>`).join('')}
+      <tr class="tot"><td>Receita</td>${cen.map(c => `<td class="r ${c.id === 'base' ? 'base' : ''}">${esc(brl(c.receita))}</td>`).join('')}<td class="r">${esc(brl(base.receita / (52 / 12)))}</td></tr>
+    </tbody></table></div></section>`;
+
+  // 2. funil reverso para a meta
+  html += `<section class="pj-sec"><h2 class="sec">O que uma meta exige</h2>`;
+  if (!p.metaMensal){
+    html += `<p class="hint">Preencha a meta de receita mensal nas premissas acima para ver o funil reverso: quantos contratos, propostas, reuniões e contatos por semana ela pede, e se cabe na sua capacidade.</p>`;
+  } else {
+    const r = k => Math.max(.001, (Number(p.conv[k]) || 0) / 100);
+    const contratos = p.metaMensal / Math.max(1, p.ticket);
+    const rev = [['Contratos', contratos]];
+    rev.push(['Propostas', rev[0][1] / r('ganho')]);
+    rev.push(['Reuniões qualificadas', rev[1][1] / r('proposta')]);
+    rev.push(['Reuniões agendadas', rev[2][1] / r('reuniao')]);
+    rev.push(['Contatos qualificados', rev[3][1] / r('agendada')]);
+    rev.push(['Contatos novos', rev[4][1] / r('qualificado')]);
+    const precisa = rev[5][1] / (52 / 12), uso = p.cap ? precisa / p.cap * 100 : Infinity;
+    html += uso <= 100
+      ? `<div class="callout"><b>Cabe na capacidade atual.</b> A meta de ${esc(brl(p.metaMensal))} por mês pede ${fmtN(precisa)} contatos novos por semana, ${INT.format(Math.round(uso))}% dos ${INT.format(p.cap)} que você consegue fazer.</div>`
+      : `<div class="callout bad"><b>Não cabe na capacidade atual.</b> A meta de ${esc(brl(p.metaMensal))} por mês pede ${fmtN(precisa)} contatos novos por semana, e a capacidade é de ${INT.format(p.cap)}. Para fechar a conta: subir o ticket, melhorar uma conversão (a de proposta → ganho é a que mais rende), ou aumentar o time.</div>`;
+    html += `<div class="tw"><table class="pj"><thead><tr><th>Para ${esc(brl(p.metaMensal))} por mês</th><th class="r">Por mês</th><th class="r">Por semana</th></tr></thead><tbody>${rev.map(([t, v]) => `<tr><td>${t}</td><td class="r">${fmtN(v)}</td><td class="r">${fmtN(v / (52 / 12))}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  html += `</section>`;
+
+  // 3. próximos 6 meses: fechado + pipeline atual ponderado + novos negócios
+  const meus = S.leads.filter(doDono);
+  const lag = Math.max(1, Math.round((Number(p.ciclo) || 30) / 30));
+  const meses = Array.from({length:6}, (_, i) => ({i, d:new Date(h.getFullYear(), h.getMonth() + i, 1), fechado:0, pipe:0}));
+  for (const l of meus){
+    if (l.etapa === 'ganho' && l.fechadoEm && mesIdx(l.fechadoEm, h) === 0) meses[0].fechado += Number(l.valor) || p.ticket;
+    if (!aberto(l) || ORD.indexOf(l.etapa) < ORD.indexOf('qualificado')) continue;
+    let m = l.previsao ? Math.max(0, mesIdx(l.previsao, h)) : (ORD.indexOf(l.etapa) >= ORD.indexOf('proposta') ? 0 : Math.min(5, lag - 1));
+    if (m < 6) meses[m].pipe += (Number(l.valor) || p.ticket) * probDe(l) / 100;
+  }
+  const rows = meses.map(m => {
+    const novos = m.i >= lag ? base.receita : 0;
+    const total = m.fechado + m.pipe + novos;
+    return {...m, novos, total, pess:m.fechado + m.pipe + (m.i >= lag ? cen[0].receita : 0), otim:m.fechado + m.pipe + (m.i >= lag ? cen[2].receita : 0)};
+  });
+  const maxV = Math.max(1, ...rows.map(r => r.otim), p.metaMensal || 0);
+  html += `<section class="pj-sec"><h2 class="sec">Próximos 6 meses <small>ciclo de ${INT.format(p.ciclo)} dias</small></h2>
+    <p class="hint">Previsto = já fechado no mês + pipeline atual ponderado pela probabilidade da etapa (de Contato qualificado em diante, no mês da previsão de fechamento) + novos negócios do cenário base, que começam a fechar um ciclo depois de prospectados.${p.metaMensal ? ' O traço amarelo é a meta mensal.' : ''}</p>
+    <div class="tw"><table class="pj"><thead><tr><th>Mês</th><th class="r">Já fechado</th><th class="r">Pipeline atual</th><th class="r">Novos negócios</th><th class="r base">Previsto</th><th class="r">Faixa</th><th></th></tr></thead><tbody>
+    ${rows.map(r => `<tr><td>${MESL[r.d.getMonth()]}/${String(r.d.getFullYear()).slice(2)}</td><td class="r">${r.fechado ? esc(brlK(r.fechado)) : '—'}</td><td class="r">${r.pipe ? esc(brlK(r.pipe)) : '—'}</td><td class="r">${r.novos ? esc(brlK(r.novos)) : '—'}</td><td class="r base">${esc(brlK(r.total))}</td><td class="r">${esc(brlK(r.pess))} a ${esc(brlK(r.otim))}</td>
+      <td style="width:22%"><div class="mbar"><i class="fx" style="width:${r.fechado / maxV * 100}%"></i><i class="pl" style="left:${r.fechado / maxV * 100}%; width:${r.pipe / maxV * 100}%"></i><i style="left:${(r.fechado + r.pipe) / maxV * 100}%; width:${r.novos / maxV * 100}%"></i>${p.metaMensal ? `<em style="left:${p.metaMensal / maxV * 100}%"></em>` : ''}</div></td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="legend"><span><i style="display:inline-block; width:12px; height:8px; background:var(--ink-2); margin-right:6px"></i>Já fechado</span><span><i style="display:inline-block; width:12px; height:8px; background:var(--blue-light); margin-right:6px"></i>Pipeline atual</span><span><i style="display:inline-block; width:12px; height:8px; background:var(--blue); margin-right:6px"></i>Novos negócios</span></p>
+  </section>`;
+
+  // 4. premissa × realidade: o que valida o CRM
+  const chegou = (l, e) => !!l.marcos?.[e] || l.etapa === 'ganho';
+  const realRows = PASSOS.map(ps => {
+    let den, num;
+    if (ps.k === 'ganho'){ const dec = meus.filter(l => chegou(l, 'proposta') && (l.etapa === 'ganho' || l.etapa === 'perdido')); den = dec.length; num = dec.filter(l => l.etapa === 'ganho').length; }
+    else { const ls = meus.filter(l => chegou(l, ps.de)); den = ls.length; num = ls.filter(l => chegou(l, ps.k)).length; }
+    return {nome:ps.nome, prem:p.conv[ps.k], real:den ? num / den * 100 : null, n:den, txt:`${num} de ${den}`};
+  });
+  const ganhosT = meus.filter(l => l.etapa === 'ganho');
+  const tk = ganhosT.filter(l => Number(l.valor));
+  const ticketReal = tk.length ? tk.reduce((s,l) => s + Number(l.valor), 0) / tk.length : null;
+  const cic = ganhosT.filter(l => l.fechadoEm && (l.marcos?.contato || l.criadoEm)).map(l => diasEntre(l.marcos?.contato || l.criadoEm.slice(0,10), l.fechadoEm));
+  const cicloReal = cic.length ? cic.reduce((a,b) => a + b, 0) / cic.length : null;
+  const veredito = (real, prem, n, min = 10) => {
+    if (real === null) return '<span class="pill p-mut">Sem dados</span>';
+    if (n < min) return '<span class="pill p-mut">Amostra pequena</span>';
+    const d = real / Math.max(.0001, prem);
+    return d >= .8 && d <= 1.25 ? '<span class="pill p-ok">Confere</span>' : d < .8 ? '<span class="pill p-gap">Abaixo</span>' : '<span class="pill p-acc">Acima</span>';
+  };
+  html += `<section class="pj-sec"><h2 class="sec">Premissa × realidade <small>o que valida a projeção</small></h2>
+    <p class="hint">Conversões medidas nos leads do CRM, pelas datas em que cada um chegou a cada etapa. Leads ainda em andamento entram no denominador, então no começo o real tende a sair abaixo. Com menos de 10 leads na base de um passo, o número ainda não serve para decidir.</p>
+    <div class="tw"><table class="pj"><thead><tr><th>Passo</th><th class="r">Premissa</th><th class="r">Real no CRM</th><th class="r">Base</th><th>Leitura</th></tr></thead><tbody>
+    ${realRows.map(r => `<tr><td>${r.nome}</td><td class="r">${NUM.format(r.prem)}%</td><td class="r">${r.real === null ? '—' : NUM.format(Math.round(r.real)) + '%'}</td><td class="r">${r.txt}</td><td>${veredito(r.real, r.prem, r.n)}</td></tr>`).join('')}
+    <tr><td>Ticket médio</td><td class="r">${esc(brlK(p.ticket))}</td><td class="r">${ticketReal === null ? '—' : esc(brlK(ticketReal))}</td><td class="r">${tk.length} ${tk.length === 1 ? 'contrato' : 'contratos'}</td><td>${veredito(ticketReal, p.ticket, tk.length, 3)}</td></tr>
+    <tr><td>Ciclo (primeiro contato → contrato)</td><td class="r">${INT.format(p.ciclo)} dias</td><td class="r">${cicloReal === null ? '—' : INT.format(Math.round(cicloReal)) + ' dias'}</td><td class="r">${cic.length} ${cic.length === 1 ? 'contrato' : 'contratos'}</td><td>${cicloReal === null ? '<span class="pill p-mut">Sem dados</span>' : cic.length < 3 ? '<span class="pill p-mut">Amostra pequena</span>' : cicloReal <= p.ciclo * 1.25 ? '<span class="pill p-ok">Confere</span>' : '<span class="pill p-gap">Mais longo</span>'}</td></tr>
+    </tbody></table></div></section>`;
+  $('pj-out').innerHTML = html;
+}
+$('pj-in').addEventListener('input', () => { pjDraft = lerPj(); renderProjecao(); });
+$('pj-reset').addEventListener('click', () => { pjDraft = null; preencherPj(); renderProjecao(); });
+$('pj-save').addEventListener('click', async () => {
+  const proj = lerPj(), b = $('pj-save');
+  b.disabled = true; $('pj-note').textContent = 'Salvando…';
+  try { await salvarCfg({...S.cfg, proj, atualizadoEm:new Date().toISOString()}); pjDraft = null; $('pj-note').textContent = 'Salvo. O OKR e o ritmo semanal já usam estes números.'; toast('Premissas da projeção salvas'); }
+  catch(err){ $('pj-note').textContent = 'Não consegui salvar agora. Tente de novo.'; }
+  b.disabled = false;
+});
+
 /* ===================== render: pipeline ===================== */
 function filtroResp(l, v){ if (!v) return true; if (v === '__sem') return !(l.responsavel||'').trim(); return (l.responsavel||'').trim() === v; }
 function filtroPrio(l, v){ if (!v) return true; if (v === '__sem') return !l.prioridade; return l.prioridade === v; }
@@ -840,7 +1126,7 @@ function renderPipeline(){
     const tot = ls.reduce((s,l) => s + (Number(l.valor)||0), 0);
     const pond = ls.reduce((s,l) => s + (Number(l.valor)||0) * probDe(l) / 100, 0);
     return `<div class="col c-${e}${ls.length ? '' : ' empty-col'}" data-col="${e}">
-      <div class="col-h"><div class="t">${EN[e].nome}<span>${ls.length}</span></div><div class="s">${tot ? esc(brlK(tot)) + (ABERTAS.includes(e) ? ' · pond. ' + esc(brlK(pond)) : '') : '<span class="hint">sem valor</span>'}</div></div>
+      <div class="col-h" title="Critério: ${esc(CRIT[e])}"><div class="t">${EN[e].nome}<span>${ls.length}</span></div><div class="s">${tot ? esc(brlK(tot)) + (ABERTAS.includes(e) ? ' · pond. ' + esc(brlK(pond)) : '') : '<span class="hint">sem valor</span>'}</div></div>
       <div class="col-b">${ls.map(l => cardHTML(l, hoje)).join('')}</div></div>`;
   }).join('');
 }
@@ -911,22 +1197,28 @@ function preencherCfg(){
   $('c-nome').value = c.nome || ''; $('c-inicio').value = c.inicio; $('c-fim').value = c.fim;
   $('c-dono').value = c.dono || ''; $('c-parado').value = c.diasParado;
   $('c-risco').value = c.risco ?? 70;
+  const unid = {n:'', brl:'R$', x:'x', pct:'%'};
   $('c-krs').innerHTML = `<thead><tr><th>Resultado-chave</th><th class="r">Meta</th><th class="r">Já feito fora do CRM</th></tr></thead><tbody>
-    ${c.krs.map(k => { const def = KRS.find(x => x.id === k.id); return `<tr>
-      <td><input type="text" id="k-nome-${k.id}" value="${esc(k.nome)}" aria-label="Nome do resultado-chave" autocomplete="off"><span class="sub" style="margin-top:3px">${esc(def.como)}</span></td>
-      <td class="r"><input type="number" id="k-meta-${k.id}" min="0" step="1" inputmode="numeric" value="${Number(k.meta)||0}" aria-label="Meta"></td>
-      <td class="r"><input type="number" id="k-aj-${k.id}" min="0" step="1" inputmode="numeric" value="${Number(k.ajuste)||0}" aria-label="Já feito fora do CRM"></td></tr>`; }).join('')}</tbody>`;
+    ${OBJS.map(o => `<tr><td colspan="3" style="padding-top:18px; border-bottom:0"><span class="eyebrow" style="gap:8px">Objetivo ${o.id}<span class="sep">/</span>${esc(o.nome)}</span></td></tr>` +
+      KRS.filter(d => d.obj === o.id).map(def => { const k = c.krs.find(x => x.id === def.id) || def; const aj = def.tipo === 'n' || def.tipo === 'brl'; return `<tr>
+      <td><input type="text" id="k-nome-${def.id}" value="${esc(k.nome)}" aria-label="Nome do resultado-chave" autocomplete="off"><span class="sub">${esc(def.como)}</span></td>
+      <td class="r"><label class="f"><span>${def.tipo === 'n' ? 'quantidade' : def.tipo === 'brl' ? 'R$' : def.tipo === 'x' ? 'vezes a receita que falta' : '% mínimo'}</span><input type="number" id="k-meta-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : def.tipo === 'x' ? .5 : 1}" inputmode="decimal" value="${Number(k.meta) || 0}" aria-label="Meta"></label></td>
+      <td class="r">${aj ? `<label class="f"><span>${def.tipo === 'brl' ? 'R$' : 'quantidade'}</span><input type="number" id="k-aj-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : 1}" inputmode="decimal" value="${Number(k.ajuste) || 0}" aria-label="Já feito fora do CRM"></label>` : '<span class="hint">não se aplica</span>'}</td></tr>`; }).join('')).join('')}
+    <tr><td colspan="3" style="padding-top:18px; border-bottom:0"><span class="eyebrow" style="gap:8px">Atividade<span class="sep">/</span>ritmo da semana</span></td></tr>
+    ${[['contato','Contatos novos'], ['qualificado','Contatos qualificados'], ['agendada','Reuniões agendadas']].map(([m, t]) => `<tr><td>${t}<span class="sub">meta pela capacidade e conversões da aba Projeção</span></td><td class="r"><span class="hint">pela projeção</span></td>
+      <td class="r"><label class="f"><span>quantidade</span><input type="number" id="a-aj-${m}" min="0" step="1" inputmode="numeric" value="${Number(c.atvAjuste?.[m]) || 0}" aria-label="Já feito fora do CRM"></label></td></tr>`).join('')}</tbody>`;
   $('c-probs').innerHTML = ABERTAS.map(e => `<label class="f"><span>${EN[e].nome} (%)</span><input type="number" id="c-p-${e}" min="0" max="100" step="5" inputmode="numeric" value="${Number(c.probs[e])}"></label>`).join('');
 }
 
 /* ===================== abas ===================== */
-const TABS = ['okr','pipeline','leads','premissas'];
+const TABS = ['okr','pipeline','leads','projecao','premissas'];
 function abrirTab(t, push){
   if (!TABS.includes(t)) t = 'okr';
   S.tab = t;
   TABS.forEach(x => { $('p-'+x).hidden = x !== t; $('t-'+x).setAttribute('aria-selected', String(x === t)); });
   if (push && location.hash !== '#'+t) history.replaceState(null, '', '#'+t);
   if (t === 'premissas') preencherCfg();
+  if (t === 'projecao') preencherPj();
   renderTudo();
 }
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => abrirTab(b.dataset.tab, true)));
@@ -939,6 +1231,7 @@ function renderTudo(){
   if (S.tab === 'okr') renderOKR(k);
   if (S.tab === 'pipeline') renderPipeline();
   if (S.tab === 'leads') renderLeads();
+  if (S.tab === 'projecao') renderProjecao();
 }
 
 /* ===================== lead: editor ===================== */
@@ -968,6 +1261,7 @@ function fecharLead(){ $('ov').hidden = true; document.body.style.overflow = '';
 function renderStages(){
   const iSel = ORD.indexOf(etapaSel);
   $('s-stages').innerHTML = ETAPAS.map((e, i) => `<button type="button" data-e="${e.id}" aria-pressed="${e.id===etapaSel}" class="${etapaSel !== 'perdido' && i < iSel && ABERTAS.includes(e.id) ? 'past' : ''}"><i>${e.id === 'perdido' ? '×' : e.id === 'ganho' ? '✓' : String(i+1).padStart(2,'0')}</i>${e.nome}</button>`).join('');
+  $('s-crit').innerHTML = `<b>Critério:</b> ${esc(CRIT[etapaSel])}`;
   $('s-motivo-w').hidden = etapaSel !== 'perdido';
   $('s-fech-w').hidden = aberto({etapa:etapaSel});
   $('s-prob').placeholder = 'padrão ' + (S.cfg.probs[etapaSel] ?? EN[etapaSel].prob) + '%';
@@ -1088,7 +1382,9 @@ $('cfg-form').addEventListener('submit', async e => {
   const c = {
     nome:$('c-nome').value.trim() || 'OKR', inicio, fim, dono:$('c-dono').value.trim(), diasParado:n('c-parado', 14),
     risco:n('c-risco', 70),
-    krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, meta:n('k-meta-'+k.id, 0), ajuste:n('k-aj-'+k.id, 0)})),
+    krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, meta:n('k-meta-'+k.id, 0), ajuste:$('k-aj-'+k.id) ? n('k-aj-'+k.id, 0) : 0})),
+    proj:S.cfg.proj,
+    atvAjuste:Object.fromEntries(['contato','qualificado','agendada'].map(m => [m, n('a-aj-' + m, 0)])),
     probs:Object.fromEntries(ABERTAS.map(x => [x, n('c-p-'+x, EN[x].prob)]).concat([['ganho',100],['perdido',0]])),
     atualizadoEm:new Date().toISOString(),
   };

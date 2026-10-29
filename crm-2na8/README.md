@@ -4,7 +4,8 @@ CRM para acompanhar os **OKRs comerciais** do ciclo e os **leads em prospecção
 
 ## Abas
 
-- **OKR** — um card por resultado-chave (contatos realizados, contatos qualificados, reuniões agendadas, reuniões qualificadas, propostas, fechamentos) com atual, meta, falta, status (Em dia, Em risco, Atrasado) e barra de progresso com o marcador do esperado de hoje. Abaixo: números do período, agenda agrupada por situação (atrasados, para hoje, parados, sem próximo passo) e funil aberto. A barra lateral mostra o status de cada KR em qualquer tela.
+- **OKR** — dois objetivos. *Gerar pipeline qualificado*: reuniões qualificadas, propostas apresentadas e cobertura do pipeline. *Converter em receita*: receita contratada e taxa de ganho em propostas. Cada KR é um card com atual, meta, falta, status e barra com o esperado de hoje. Abaixo: ritmo da semana (contatos novos, qualificados, agendadas, reuniões, propostas: esta semana × meta semanal, e acumulado do ciclo × meta do ciclo), números do período, agenda por situação e funil aberto.
+- **Projeção** — simulador com ticket, ciclo, capacidade semanal de contatos novos, conversões entre etapas e meta mensal opcional. Mostra quanto a operação entrega por mês em três cenários, o funil reverso que uma meta exige (e se cabe na capacidade), a previsão dos próximos 6 meses (já fechado + pipeline ponderado + novos negócios) e a comparação premissa × realidade medida no CRM.
 - **Pipeline** — kanban por etapa (Prospecção → Contato realizado → Contato qualificado → Reunião agendada → Reunião qualificada → Proposta → Negociação → Fechado / Perdido), com filtros por responsável e prioridade. Em Contato realizado o card mostra o toque da cadência (1 a 4). Mover para Perdido pede o motivo.
 - **Leads** — tabela com filtros rápidos por etapa, busca, filtro por situação, responsável e segmento, ordenação por coluna, importação de planilha (.xlsx ou .csv) e exportação em CSV.
 - **OKRs e premissas** — nome e período do ciclo, de quem são os negócios que contam, nome e meta de cada resultado-chave, o limite de "em risco", quanto já foi feito fora do CRM, dias para considerar um lead parado e probabilidade padrão de cada etapa.
@@ -13,12 +14,20 @@ Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nom
 
 ## Como os OKRs são contados
 
-- Cada resultado-chave conta os leads que chegaram pela primeira vez à etapa correspondente dentro do período: Contato realizado, Contato qualificado, Reunião agendada, Reunião qualificada e Proposta. Fechamentos são leads ganhos com data de fechamento no período. A data é gravada quando o lead muda de etapa (pular etapas conta as anteriores).
-- Só contam os leads do responsável configurado em "Negócios de" (vazio = time todo).
-- **Esperado hoje** = meta × dias úteis já passados ÷ dias úteis do período (segunda a sexta, sem feriados nacionais, carnaval, sexta-feira santa e Corpus Christi).
-- **Status**: *Em dia* quando o atual alcança o esperado de hoje (ou a meta); *Em risco* entre o limite configurado (padrão 70%) e o esperado; *Atrasado* abaixo do limite; *Sem meta* quando a meta é zero.
-- **Já feito fora do CRM** soma ao que o CRM conta. Leads importados não geram marcos retroativos: o que aconteceu antes entra nesse ajuste.
-- Leads da versão anterior em "Discovery" passam automaticamente para Reunião qualificada.
+- **Reuniões qualificadas / Propostas apresentadas**: leads que chegaram pela primeira vez a Reunião qualificada / Proposta dentro do período (pular etapas conta as anteriores).
+- **Cobertura do pipeline**: valor em aberto de Reunião qualificada em diante ÷ receita que ainda falta para a meta. Alvo padrão 3x.
+- **Receita contratada**: valor dos leads ganhos com fechamento no período (sem valor no lead, conta o ticket médio da projeção).
+- **Taxa de ganho**: ganhos ÷ propostas decididas (ganhas ou perdidas) no período; com menos de 3 decididas o status é "Poucos dados".
+- **Esperado hoje** (KRs de quantidade e receita) = meta × dias úteis já passados ÷ dias úteis do período (sem fins de semana e feriados nacionais). Status: *Em dia* no esperado ou acima; *Em risco* entre o limite configurado (padrão 70%) e o esperado; *Atrasado* abaixo. Cobertura e taxa comparam direto com a meta.
+- **Ritmo da semana**: metas semanais saem da projeção (capacidade × conversões); "no ciclo" soma o feito fora do CRM.
+- Só contam os leads do responsável configurado em "Negócios de" (vazio = time todo). "Já feito fora do CRM" soma ao que o CRM conta.
+- Cada etapa tem um critério (exibido na ficha do lead e no título da coluna do pipeline), para que a contagem signifique a mesma coisa para todo mundo.
+
+## Projeção
+
+- Regime estável: contatos novos por mês = capacidade semanal × 52 ÷ 12, que percorrem o funil pelas conversões. Cenários pessimista/otimista mudam em 25% as conversões reunião → proposta e proposta → ganho.
+- Próximos 6 meses: já fechado no mês + pipeline atual (de Contato qualificado em diante) × probabilidade da etapa no mês da previsão de fechamento + novos negócios do cenário base a partir de um ciclo de defasagem.
+- Premissa × realidade: conversões reais pelas datas de cada etapa, ticket médio e ciclo dos contratos ganhos. Menos de 10 leads na base de um passo = amostra pequena.
 
 ## Persistência
 
