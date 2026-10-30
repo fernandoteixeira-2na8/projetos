@@ -15,7 +15,8 @@ Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nom
 
 ## Como os OKRs são contados
 
-- **Reuniões qualificadas / Propostas apresentadas**: leads que chegaram pela primeira vez a Reunião qualificada / Proposta dentro do período (pular etapas conta as anteriores).
+- **Reuniões qualificadas**: leads que chegaram pela primeira vez a Reunião qualificada dentro do período (pular etapas conta as anteriores).
+- **Propostas apresentadas**: propostas enviadas lançadas no Pulso (North Star) no período + o "já feito fora do CRM".
 - **Receita contratada**: valor dos leads ganhos com fechamento no período (sem valor no lead, conta o ticket médio da projeção).
 - **Taxa de ganho**: ganhos ÷ propostas decididas (ganhas ou perdidas) no período; com menos de 3 decididas o status é "Poucos dados".
 - **Esperado hoje** (KRs de quantidade e receita) = meta × dias úteis já passados ÷ dias úteis do período (sem fins de semana e feriados nacionais). Status: *Em dia* no esperado ou acima; *Em risco* entre o limite configurado (padrão 70%) e o esperado; *Atrasado* abaixo. A taxa de ganho compara direto com a meta.

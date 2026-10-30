@@ -698,7 +698,7 @@ const OBJS = [
 ];
 const KRS = [
   {id:'reunioes',  obj:1, tipo:'n',   nome:'Reuniões qualificadas',      meta:15,     marco:'reuniao',  como:'leads que chegaram a Reunião qualificada no período (discovery com score ≥ 60)'},
-  {id:'propostas', obj:1, tipo:'n',   nome:'Propostas apresentadas',     meta:15,     marco:'proposta', como:'leads que chegaram a Proposta no período'},
+  {id:'propostas', obj:1, tipo:'n',   nome:'Propostas apresentadas',     meta:15,     pulso:'ns_prop',  como:'propostas enviadas lançadas no Pulso (North Star) no período'},
   {id:'receita',   obj:2, tipo:'brl', nome:'Receita contratada',         meta:320000,                   como:'valor dos contratos fechados no período (sem valor no lead, conta o ticket médio)'},
   {id:'taxa',      obj:2, tipo:'pct', nome:'Taxa de ganho em propostas', meta:27,                       como:'ganhos ÷ propostas decididas (ganhas ou perdidas) no período'},
 ];
@@ -853,12 +853,12 @@ function modoCompartilhado(db){
     const novo = Object.fromEntries(snap.docs.map(d => [d.id, d.data()]));
     for (const d of plPend) if (S.pulso[d]) novo[d] = S.pulso[d];   // edição local ainda não gravada vence
     S.pulso = novo;
-    if (S.tab === 'pulso') renderPulsoSeguro(); else if (S.tab === 'okr') renderTudo();
+    if (S.tab === 'pulso') renderPulsoSeguro(); else renderTudo();
   }, () => {});
   db.doc('config/pulso').onSnapshot(snap => {
     if (plMetasPend) return;
     S.plMetas = snap.exists ? (snap.data().metas || {}) : {};
-    if (S.tab === 'pulso') renderPulsoSeguro(); else if (S.tab === 'okr') renderTudo();
+    if (S.tab === 'pulso') renderPulsoSeguro(); else renderTudo();
   }, () => {});
 }
 
@@ -903,7 +903,7 @@ function calc(){
   const out = {};
   for (const def of KRS.filter(d => d.tipo === 'n' || d.tipo === 'brl')){
     const k = cfgKR(def.id), meta = Number(k.meta) || 0, ajuste = Number(k.ajuste) || 0;
-    const crm = def.tipo === 'brl' ? ganhos.reduce((s,l) => s + valorDe(l), 0) : meus.filter(l => noPeriodo(l.marcos?.[def.marco])).length;
+    const crm = def.tipo === 'brl' ? ganhos.reduce((s,l) => s + valorDe(l), 0) : def.pulso ? plTotal(def.pulso) : meus.filter(l => noPeriodo(l.marcos?.[def.marco])).length;
     const atual = crm + ajuste, esperado = def.tipo === 'brl' ? meta * frac : Math.round(meta * frac);
     out[def.id] = {...def, ...k, meta, ajuste, crm, atual, esperado, falta:Math.max(0, meta - atual), status:pace(atual, meta, esperado)};
   }
@@ -967,7 +967,7 @@ function cardKR(x, i){
   let dl;
   if (ritmo) dl = [['Falta', temMeta ? (x.falta ? fmtKR(x, x.falta) : 'Meta batida') : '—'], ['Esperado hoje', temMeta ? fmtKR(x, x.esperado) : '<a href="#premissas">Definir meta</a>']];
   else dl = [['Ganhas / decididas', `${x.wins} de ${x.dec}`], ['Meta', '≥ ' + fmtKR(x, x.meta)]];
-  const how = ritmo && x.ajuste ? `${fmtKR(x, x.crm)} no CRM + ${fmtKR(x, x.ajuste)} de fora`
+  const how = ritmo && x.ajuste ? `${fmtKR(x, x.crm)} ${x.pulso ? 'no Pulso' : 'no CRM'} + ${fmtKR(x, x.ajuste)} de fora`
     : x.tipo === 'pct' && x.ajD ? `${x.wins - x.ajG} de ${x.dec - x.ajD} no CRM + ${x.ajG} de ${x.ajD} de fora` : x.como;
   return `<article class="kr st-${x.status}">
     <header><span class="kr-i">KR ${i}</span><span class="pill ${st.cls}">${st.rot}</span></header>
@@ -1316,6 +1316,7 @@ function plAtualizarCalculos(){
     const sk = plStatus(it, real, meta), p = PLST[sk];
     st.innerHTML = `<span class="pill ${p.cls}">${p.rot}</span>${meta ? `<small>esperado hoje: ${esc(plFmt(it, Math.round(plEsperado(meta) * 10) / 10))}</small>` : ''}`;
   }
+  if (S.mode !== 'loading') renderTopo(calc());   // barra lateral acompanha o KR de propostas
 }
 function renderPulsoDia(){
   const d = S.plSel, x = parseD(d);
