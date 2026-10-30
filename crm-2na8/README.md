@@ -6,6 +6,7 @@ CRM para acompanhar os **OKRs comerciais** do ciclo e os **leads em prospecção
 
 - **OKR** — dois objetivos. *Gerar pipeline qualificado*: reuniões qualificadas e propostas apresentadas. *Converter em receita*: receita contratada e taxa de ganho em propostas. Cada KR é um card com atual, meta, falta, status e barra com o esperado de hoje. Abaixo: ritmo da semana (contatos novos, qualificados, agendadas, reuniões, propostas: esta semana × meta semanal, e acumulado do ciclo × meta do ciclo), números do período, agenda por situação e funil aberto.
 - **Projeção** — simulador com ticket, ciclo, capacidade semanal de contatos novos, conversões entre etapas e meta mensal opcional. Mostra quanto a operação entrega por mês em três cenários, o funil reverso que uma meta exige (e se cabe na capacidade), a previsão dos próximos 6 meses (já fechado + pipeline ponderado + novos negócios) e a comparação premissa × realidade medida no CRM.
+- **Pulso** — quadro de indicadores diário por canal, no formato da planilha "Q4 / Máquina crescimento": North Star (investimento, leads, reuniões — somados dos canais — e faturamento), Ads (Meta, Google, outros), Social selling e LinkedIn (abordagens, respostas, qualificados, agendados, reuniões). Grade semanal editável (Enter desce de linha), com Realizado no ciclo, Meta, Diferença e Status (Bom, Atenção, Ruim) contra a meta proporcional aos dias corridos; CPL nos leads de ads e taxa de resposta nas respostas. Abaixo, o "Pulso do dia": nota livre do que rolou, com histórico dos últimos registros.
 - **Pipeline** — kanban por etapa (Prospecção → Contato realizado → Contato qualificado → Reunião agendada → Reunião qualificada → Proposta → Negociação → Fechado / Perdido), com filtros por responsável e prioridade. Em Contato realizado o card mostra o toque da cadência (1 a 4). Mover para Perdido pede o motivo.
 - **Leads** — tabela com filtros rápidos por etapa, busca, filtro por situação, responsável e segmento, ordenação por coluna, importação de planilha (.xlsx ou .csv) e exportação em CSV.
 - **OKRs e premissas** — nome e período do ciclo, de quem são os negócios que contam, nome e meta de cada resultado-chave, o limite de "em risco", quanto já foi feito fora do CRM, dias para considerar um lead parado e probabilidade padrão de cada etapa.
@@ -32,6 +33,7 @@ Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nom
 
 - Publicado como Artifact no claude.ai, usa `window.claude.use('db')`: leads em `leads/{id}` e premissas em `config/meta`, compartilhados com o time e atualizados ao vivo.
 - Aberto como arquivo estático, salva no `localStorage` do navegador (`crm2na8.leads.v1` e `crm2na8.cfg.v1`). Use **Exportar CSV** para backup ou para levar os dados ao Artifact (via **Importar CSV**).
+- Pulso: um documento por dia em `pulso/{AAAA-MM-DD}` (`v` com os números por indicador e `nota`), metas em `config/pulso`. Em arquivo local: `crm2na8.pulso.v1` e `crm2na8.pulsoMetas.v1`.
 
 ## Importar planilha
 

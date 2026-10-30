@@ -191,6 +191,54 @@ h2.sec small{font-size:10.5px; letter-spacing:.08em; text-transform:none; color:
 .mbar i.fx{background:var(--ink-2)}
 .mbar em{position:absolute; top:-4px; bottom:-4px; width:2px; margin-left:-1px; background:var(--warn)}
 
+/* pulso */
+.pl-nav{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.pl-nav .wk-l{font-family:var(--font-mono); font-size:12px; color:var(--ink-2); min-width:15ch; text-align:center}
+.pl-nav .btn{padding:8px 12px}
+.pl-wrap{overflow-x:auto; border-top:1px solid var(--line-3)}
+.pl{table-layout:fixed; width:100%; min-width:1060px; font-size:13.5px}
+.pl col.c-nm{width:190px} .pl col.c-d{width:70px} .pl col.c-t{width:112px} .pl col.c-m{width:88px} .pl col.c-df{width:96px} .pl col.c-st{width:120px}
+@media (max-width:600px){.pl col.c-nm{width:150px} .pl{min-width:1020px}}
+.pl th,.pl td{padding:0 6px; height:38px; border-bottom:1px solid var(--line); vertical-align:middle}
+.pl thead th{padding:6px 6px 8px; border-bottom:1px solid var(--line-3)}
+.pl .nm{position:sticky; left:0; z-index:1; background:var(--bg); padding-left:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.pl .nm .un{font-family:var(--font-mono); font-size:10px; color:var(--muted-2); margin-left:8px}
+.pl .nm.calc{color:var(--ink-2)}
+.pl .nm.calc::after{content:"Σ"; font-family:var(--font-mono); font-size:10px; letter-spacing:0; color:var(--muted-2); border:1px solid var(--line-2); padding:1px 5px; margin-left:8px}
+.pl tr.grp td{height:auto; padding:18px 6px 8px 0; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--blue-light); border-bottom:1px solid var(--line-2)}
+.pl tr.grp td.nm{z-index:2}
+.pl th.day{text-align:center}
+.pl th.day button{appearance:none; background:none; border:0; cursor:pointer; display:grid; gap:2px; width:100%; padding:4px 2px; color:var(--muted); font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase}
+.pl th.day b{font-size:12px; letter-spacing:.02em; font-weight:500; color:var(--ink-2)}
+.pl th.day.fds b{color:var(--muted)}
+.pl th.day.hoje b{color:var(--blue-light)}
+.pl th.day.sel{background:var(--blue-wash); box-shadow:inset 0 2px 0 var(--blue)}
+.pl th.day.sel b{color:var(--ink)}
+.pl td.sel{background:rgba(47,46,245,.05)}
+.pl td.out{opacity:.45}
+.pl input.pc{width:100%; min-width:0; text-align:right; font-family:var(--font-mono); font-size:13px; padding:6px 8px; background:transparent; border:1px solid transparent; border-radius:0}
+.pl input.pc:hover{border-color:var(--line-2)}
+.pl input.pc:focus{border-color:var(--blue); background:var(--sunk); box-shadow:none}
+.pl td.ro{text-align:right; font-family:var(--font-mono); font-size:13px; color:var(--ink-2); padding-right:15px}
+.pl td.tot{border-left:1px solid var(--line-3); background:var(--surface); text-align:right; font-family:var(--font-mono); font-size:13.5px; color:var(--ink); padding:0 12px; white-space:nowrap}
+.pl td.tot small{display:block; font-size:10px; color:var(--muted-2)}
+.pl td.mt{background:var(--surface)}
+.pl td.mt input{text-align:right; font-family:var(--font-mono); font-size:13px; padding:6px 8px}
+.pl td.df{text-align:right; font-family:var(--font-mono); font-size:13px; background:var(--surface); padding:0 12px; white-space:nowrap}
+.pl td.df.neg{color:var(--danger)} .pl td.df.pos{color:var(--blue-light)}
+.pl td.st{background:var(--surface); padding:0 12px; white-space:nowrap}
+.pl td.st small{display:block; overflow:hidden; text-overflow:ellipsis; font-family:var(--font-mono); font-size:10px; color:var(--muted-2); margin-top:3px}
+.pl th.tot-h{border-left:1px solid var(--line-3); background:var(--surface); text-align:right; padding-right:12px}
+.pl th.sum-h{background:var(--surface); text-align:right; padding-right:12px}
+.pl-dia{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:34px 44px; margin-top:34px}
+@media (max-width:900px){.pl-dia{grid-template-columns:minmax(0,1fr)}}
+.pl-dia textarea{min-height:150px}
+.notas{list-style:none; margin:0; padding:0}
+.notas li{display:grid; grid-template-columns:86px minmax(0,1fr); gap:12px; padding:11px 8px; margin:0 -8px; border-bottom:1px solid var(--line); cursor:pointer}
+.notas li:hover{background:rgba(253,253,253,.03)}
+.notas .when{font-family:var(--font-mono); font-size:10.5px; color:var(--muted); padding-top:2px}
+.notas .tx{font-size:13.5px; color:var(--ink-2); white-space:pre-line; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical}
+
 /* números do período */
 .stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin:30px 0 34px}
 @media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -356,6 +404,7 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
     </div>
     <nav class="tabs" role="tablist" aria-label="Seções">
       <button class="tab" role="tab" data-tab="okr" id="t-okr"><span>OKR</span></button>
+      <button class="tab" role="tab" data-tab="pulso" id="t-pulso"><span>Pulso</span></button>
       <button class="tab" role="tab" data-tab="pipeline" id="t-pipeline"><span>Pipeline</span><span class="ct" id="ct-pipe"></span></button>
       <button class="tab" role="tab" data-tab="leads" id="t-leads"><span>Leads</span><span class="ct" id="ct-leads"></span></button>
       <button class="tab" role="tab" data-tab="projecao" id="t-projecao"><span>Projeção</span></button>
@@ -391,6 +440,35 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
         <section>
           <h2 class="sec">Funil aberto <small>leads · valor</small></h2>
           <div id="m-funnel"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ======================= PULSO ======================= -->
+    <section class="panel" id="p-pulso" role="tabpanel" aria-labelledby="t-pulso" hidden>
+      <header class="ph">
+        <div>
+          <p class="eyebrow">Quadro de indicadores<span class="sep">/</span>dia a dia</p>
+          <h1 class="ph-t">Pulso</h1>
+          <p class="lede">O que está rolando no comercial, canal por canal. Preencha os números do dia direto na grade (Enter desce para a próxima linha). As linhas marcadas com Σ somam os canais; Realizado soma o ciclo inteiro e o status compara com a meta proporcional aos dias corridos.</p>
+        </div>
+        <div class="pl-nav">
+          <button class="btn btn-ghost" type="button" id="pl-prev" aria-label="Semana anterior">‹</button>
+          <span class="wk-l" id="pl-wk"></span>
+          <button class="btn btn-ghost" type="button" id="pl-next" aria-label="Próxima semana">›</button>
+          <button class="btn btn-ghost" type="button" id="pl-hoje">Hoje</button>
+        </div>
+      </header>
+      <div class="pl-wrap"><table class="pl" id="pl-grid"></table></div>
+      <div class="pl-dia">
+        <section>
+          <h2 class="sec">Pulso do dia <small id="pl-dia-l"></small></h2>
+          <label class="f" style="margin-top:12px"><span>O que rolou</span><textarea id="pl-nota" placeholder="Conversas que andaram, objeções, quem respondeu, o que travou, o que fazer amanhã…"></textarea></label>
+          <p class="hint" id="pl-nota-st" style="margin-top:6px"></p>
+        </section>
+        <section>
+          <h2 class="sec">Últimos registros <small>clique para abrir o dia</small></h2>
+          <ul class="notas" id="pl-notas"></ul>
         </section>
       </div>
     </section>
@@ -754,6 +832,7 @@ function modoLocal(motivo){
   S.mode = 'local';
   S.leads = (lsGet(LK) || []).map(migrar);
   S.cfg = cfgMerge(lsGet(CK));
+  S.pulso = lsGet(PK) || {}; S.plMetas = lsGet(PMK) || {};
   $('mode').className = 'mode local';
   $('mode').textContent = motivo;
   renderTudo();
@@ -771,6 +850,17 @@ function modoCompartilhado(db){
     snap => { S.cfg = cfgMerge(snap.exists ? snap.data() : null); renderTudo(); if (S.tab === 'premissas') preencherCfg(); },
     () => {}
   );
+  db.collection('pulso').onSnapshot(snap => {
+    const novo = Object.fromEntries(snap.docs.map(d => [d.id, d.data()]));
+    for (const d of plPend) if (S.pulso[d]) novo[d] = S.pulso[d];   // edição local ainda não gravada vence
+    S.pulso = novo;
+    if (S.tab === 'pulso') renderPulsoSeguro();
+  }, () => {});
+  db.doc('config/pulso').onSnapshot(snap => {
+    if (plMetasPend) return;
+    S.plMetas = snap.exists ? (snap.data().metas || {}) : {};
+    if (S.tab === 'pulso') renderPulsoSeguro();
+  }, () => {});
 }
 
 /* ===================== cálculos ===================== */
@@ -1100,6 +1190,183 @@ $('pj-save').addEventListener('click', async () => {
   b.disabled = false;
 });
 
+/* ===================== pulso ===================== */
+/* indicadores diários por canal, no formato do quadro de indicadores do Q4; os da North Star marcados com calc somam os canais */
+const PULSO = [
+  {g:'North Star', itens:[
+    {id:'ns_inv',   nome:'Investimento total',  u:'R$', calc:['meta_inv','gads_inv','out_inv'], custo:true},
+    {id:'ns_leads', nome:'Leads total',         u:'nº', calc:['meta_leads','gads_leads','ss_qual','li_qual']},
+    {id:'ns_reun',  nome:'Reuniões realizadas', u:'nº', calc:['ss_reun','li_reun']},
+    {id:'ns_fat',   nome:'Faturamento total',   u:'R$'},
+  ]},
+  {g:'Ads', itens:[
+    {id:'meta_inv',   nome:'Meta Ads · investimento',   u:'R$', custo:true},
+    {id:'meta_leads', nome:'Meta Ads · leads',          u:'nº'},
+    {id:'gads_inv',   nome:'Google Ads · investimento', u:'R$', custo:true},
+    {id:'gads_leads', nome:'Google Ads · leads',        u:'nº'},
+    {id:'out_inv',    nome:'Outros investimentos',      u:'R$', custo:true},
+  ]},
+  {g:'Social selling', itens:[
+    {id:'ss_abord', nome:'Abordagens',          u:'nº'},
+    {id:'ss_resp',  nome:'Respostas recebidas', u:'nº'},
+    {id:'ss_qual',  nome:'Leads qualificados',  u:'nº'},
+    {id:'ss_agend', nome:'Leads agendados',     u:'nº'},
+    {id:'ss_reun',  nome:'Reuniões realizadas', u:'nº'},
+  ]},
+  {g:'LinkedIn', itens:[
+    {id:'li_abord', nome:'Abordagens',          u:'nº'},
+    {id:'li_resp',  nome:'Respostas recebidas', u:'nº'},
+    {id:'li_qual',  nome:'Leads qualificados',  u:'nº'},
+    {id:'li_agend', nome:'Leads agendados',     u:'nº'},
+    {id:'li_reun',  nome:'Reuniões realizadas', u:'nº'},
+  ]},
+];
+const PL_ITENS = PULSO.flatMap(g => g.itens);
+const PL = Object.fromEntries(PL_ITENS.map(i => [i.id, i]));
+const PK = 'crm2na8.pulso.v1', PMK = 'crm2na8.pulsoMetas.v1';
+const DSEM = ['dom','seg','ter','qua','qui','sex','sáb'];
+const PLST = {dia:{rot:'Bom', cls:'p-ok'}, risco:{rot:'Atenção', cls:'p-warn'}, atraso:{rot:'Ruim', cls:'p-gap'}, acima:{rot:'Acima', cls:'p-warn'}, sem:{rot:'Sem meta', cls:'p-mut'}};
+function segundaDe(d){ const dow = (parseD(d).getDay() + 6) % 7; return addDias(d, -dow); }
+S.pulso = {}; S.plMetas = {}; S.plSel = hojeISO(); S.plSemana = segundaDe(hojeISO());
+const plPend = new Set(), plTimers = {}, plGravando = {}, plSujo = {};
+let plMetasPend = false, plMetasTimer = null, plRenderDepois = false;
+
+function plDia(d){ return S.pulso[d] || {v:{}, nota:''}; }
+function plValor(d, id){
+  const it = PL[id];
+  if (it.calc){ let soma = 0, tem = false; for (const c of it.calc){ const x = plValor(d, c); if (x !== null){ soma += x; tem = true; } } return tem ? soma : null; }
+  const x = (plDia(d).v || {})[id];
+  return x === undefined || x === null || x === '' ? null : Number(x);
+}
+function plTotal(id){ let s = 0; for (const d of Object.keys(S.pulso)) if (d >= S.cfg.inicio && d <= S.cfg.fim){ const x = plValor(d, id); if (x !== null) s += x; } return s; }
+function plFmt(it, v){ if (v === null || v === undefined || v === '') return ''; return it.u === 'R$' ? brl(v) : NUM.format(v); }
+function plCru(v){ return v === null || v === undefined ? '' : String(v).replace('.', ','); }
+function plNum(t){ t = String(t || '').replace(/R\$|\s/g, ''); if (!t) return null; if (t.includes(',')) t = t.replace(/\./g, '').replace(',', '.'); const x = Number(t); return isFinite(x) ? x : null; }
+function plEsperado(meta){
+  const c = S.cfg, hoje = hojeISO(), tot = diasEntre(c.inicio, c.fim) + 1;
+  const pass = Math.min(tot, Math.max(0, diasEntre(c.inicio, hoje) + 1));
+  return meta * pass / tot;
+}
+function plStatus(it, real, meta){
+  if (!meta) return 'sem';
+  const esp = plEsperado(meta), risco = (Number(S.cfg.risco) || 70) / 100;
+  if (it.custo) return real <= esp * 1.1 ? 'dia' : real <= esp * 1.3 ? 'risco' : 'acima';
+  return real >= esp ? 'dia' : real >= esp * risco ? 'risco' : 'atraso';
+}
+function plDias(){ return Array.from({length:7}, (_, i) => addDias(S.plSemana, i)); }
+
+function renderPulsoSeguro(){
+  const a = document.activeElement;
+  if (a && (a.closest?.('#pl-grid') || a.id === 'pl-nota')){ plRenderDepois = true; plAtualizarCalculos(); return; }
+  renderPulso();
+}
+function renderPulso(){
+  plRenderDepois = false;
+  const dias = plDias(), hoje = hojeISO(), c = S.cfg;
+  $('pl-wk').textContent = `${dataBR(dias[0])} – ${dataBR(dias[6], true)}`;
+  const head = `<thead><tr><th class="nm">Indicador</th>${dias.map(d => { const x = parseD(d), w = x.getDay();
+      return `<th class="day${d === S.plSel ? ' sel' : ''}${d === hoje ? ' hoje' : ''}${w === 0 || w === 6 ? ' fds' : ''}"><button type="button" data-dia="${d}" aria-pressed="${d === S.plSel}">${DSEM[w]}<b>${String(x.getDate()).padStart(2,'0')} ${MES[x.getMonth()]}</b></button></th>`; }).join('')}
+    <th class="tot-h">Realizado</th><th class="sum-h">Meta</th><th class="sum-h">Diferença</th><th class="sum-h">Status</th></tr></thead>`;
+  const body = PULSO.map(g => `<tr class="grp"><td class="nm">${esc(g.g)}</td><td colspan="${dias.length + 4}"></td></tr>` + g.itens.map(it => {
+    const cells = dias.map(d => {
+      const cls = `${d === S.plSel ? ' sel' : ''}${d < c.inicio || d > c.fim ? ' out' : ''}`;
+      return it.calc
+        ? `<td class="ro${cls}" id="plc-${it.id}-${d}">${esc(plFmt(it, plValor(d, it.id)))}</td>`
+        : `<td class="${cls.trim()}"><input class="pc" type="text" inputmode="decimal" data-d="${d}" data-m="${it.id}" value="${esc(plCru(plValor(d, it.id)))}" aria-label="${esc(it.nome)} em ${dataBR(d)}"></td>`;
+    }).join('');
+    return `<tr><td class="nm${it.calc ? ' calc' : ''}">${esc(it.nome)}<span class="un">${it.u}</span></td>${cells}
+      <td class="tot" id="plr-${it.id}"></td>
+      <td class="mt"><input type="text" inputmode="decimal" data-meta="${it.id}" value="${esc(plCru(S.plMetas[it.id]))}" placeholder="—" aria-label="Meta do ciclo: ${esc(it.nome)}"></td>
+      <td class="df" id="pld-${it.id}"></td><td class="st" id="pls-${it.id}"></td></tr>`;
+  }).join('')).join('');
+  const cols = `<colgroup><col class="c-nm">${dias.map(() => '<col class="c-d">').join('')}<col class="c-t"><col class="c-m"><col class="c-df"><col class="c-st"></colgroup>`;
+  $('pl-grid').innerHTML = cols + head + `<tbody>${body}</tbody>`;
+  plAtualizarCalculos();
+  renderPulsoDia();
+}
+function plAtualizarCalculos(){
+  const dias = plDias();
+  for (const it of PL_ITENS){
+    if (it.calc) for (const d of dias){ const el = $(`plc-${it.id}-${d}`); if (el) el.textContent = plFmt(it, plValor(d, it.id)); }
+    const real = plTotal(it.id), meta = Number(S.plMetas[it.id]) || 0;
+    const r = $('plr-' + it.id); if (!r) continue;
+    let extra = '';
+    if (it.id === 'meta_leads' || it.id === 'gads_leads'){ const inv = plTotal(it.id === 'meta_leads' ? 'meta_inv' : 'gads_inv'); if (inv && real) extra = `<small>CPL ${esc(brl(inv / real))}</small>`; }
+    if (it.id === 'li_resp' || it.id === 'ss_resp'){ const ab = plTotal(it.id === 'li_resp' ? 'li_abord' : 'ss_abord'); if (ab) extra = `<small>${NUM.format(Math.round(real / ab * 1000) / 10)}% das abordagens</small>`; }
+    r.innerHTML = esc(plFmt(it, real) || (it.u === 'R$' ? brl(0) : '0')) + extra;
+    const df = $('pld-' + it.id), st = $('pls-' + it.id);
+    if (!meta){ df.textContent = '—'; df.className = 'df'; }
+    else { const dif = real - meta; df.textContent = (dif > 0 ? '+' : '') + (it.u === 'R$' ? brl(dif) : NUM.format(dif)); df.className = 'df ' + (it.custo ? (dif > 0 ? 'neg' : '') : (dif >= 0 ? 'pos' : 'neg')); }
+    const sk = plStatus(it, real, meta), p = PLST[sk];
+    st.innerHTML = `<span class="pill ${p.cls}">${p.rot}</span>${meta ? `<small>esperado hoje: ${esc(plFmt(it, Math.round(plEsperado(meta) * 10) / 10))}</small>` : ''}`;
+  }
+}
+function renderPulsoDia(){
+  const d = S.plSel, x = parseD(d);
+  $('pl-dia-l').textContent = `${DSEM[x.getDay()]}, ${dataBR(d, true)}${d === hojeISO() ? ' · hoje' : ''}`;
+  if (document.activeElement !== $('pl-nota')) $('pl-nota').value = plDia(d).nota || '';
+  const ls = Object.entries(S.pulso).filter(([, v]) => (v.nota || '').trim()).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 12);
+  $('pl-notas').innerHTML = ls.length ? ls.map(([dd, v]) => `<li data-dia="${dd}" tabindex="0"><span class="when">${DSEM[parseD(dd).getDay()]} ${esc(dataBR(dd))}</span><span class="tx">${esc(v.nota.trim())}</span></li>`).join('')
+    : `<li style="display:block; cursor:default"><span class="hint">Nenhum registro ainda. Escreva no campo ao lado o que rolou hoje.</span></li>`;
+}
+
+async function plGravar(d){
+  if (plGravando[d]){ plSujo[d] = true; return; }
+  plGravando[d] = true;
+  const dia = plDia(d), doc = {v:{...(dia.v || {})}, nota:dia.nota || '', atualizadoEm:new Date().toISOString()};
+  try {
+    if (S.mode === 'shared') await S.db.collection('pulso').doc(d).set(doc);
+    else if (!lsSet(PK, S.pulso)) toast('Não consegui gravar neste navegador.');
+    if (d === S.plSel) $('pl-nota-st').textContent = 'Salvo';
+  } catch(err){ toast(err?.code === 'quota_exceeded' ? 'A base está cheia.' : 'Não consegui salvar o pulso agora. Tente de novo.'); }
+  plGravando[d] = false;
+  if (plSujo[d]){ plSujo[d] = false; plGravar(d); } else if (!plTimers[d]) plPend.delete(d);
+}
+function plAgendar(d){
+  plPend.add(d); clearTimeout(plTimers[d]);
+  plTimers[d] = setTimeout(() => { plTimers[d] = null; plGravar(d); }, 700);
+}
+function plMetasAgendar(){
+  plMetasPend = true; clearTimeout(plMetasTimer);
+  plMetasTimer = setTimeout(async () => {
+    try {
+      if (S.mode === 'shared') await S.db.doc('config/pulso').set({metas:{...S.plMetas}, atualizadoEm:new Date().toISOString()});
+      else lsSet(PMK, S.plMetas);
+    } catch(err){ toast('Não consegui salvar a meta agora. Tente de novo.'); }
+    plMetasPend = false;
+  }, 900);
+}
+$('pl-grid').addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.m){
+    const d = el.dataset.d, m = el.dataset.m, v = plNum(el.value), dia = plDia(d);
+    const vals = {...(dia.v || {})}; if (v === null) delete vals[m]; else vals[m] = v;
+    S.pulso[d] = {...dia, v:vals}; plAgendar(d); plAtualizarCalculos();
+  } else if (el.dataset.meta){
+    const v = plNum(el.value); if (v === null) delete S.plMetas[el.dataset.meta]; else S.plMetas[el.dataset.meta] = v;
+    plMetasAgendar(); plAtualizarCalculos();
+  }
+});
+$('pl-grid').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || !e.target.dataset.m) return;
+  e.preventDefault();
+  const col = [...$('pl-grid').querySelectorAll(`input[data-d="${e.target.dataset.d}"]`)], i = col.indexOf(e.target);
+  (col[i + (e.shiftKey ? -1 : 1)] || e.target).focus();
+});
+$('pl-grid').addEventListener('focusout', () => setTimeout(() => { if (plRenderDepois && !document.activeElement?.closest?.('#pl-grid')) renderPulso(); }, 0));
+$('p-pulso').addEventListener('click', e => {
+  const b = e.target.closest('[data-dia]'); if (!b) return;
+  S.plSel = b.dataset.dia; S.plSemana = segundaDe(S.plSel); renderPulso();
+});
+$('pl-prev').addEventListener('click', () => { S.plSemana = addDias(S.plSemana, -7); renderPulso(); });
+$('pl-next').addEventListener('click', () => { S.plSemana = addDias(S.plSemana, 7); renderPulso(); });
+$('pl-hoje').addEventListener('click', () => { S.plSel = hojeISO(); S.plSemana = segundaDe(S.plSel); renderPulso(); });
+$('pl-nota').addEventListener('input', () => {
+  const d = S.plSel; S.pulso[d] = {...plDia(d), nota:$('pl-nota').value};
+  $('pl-nota-st').textContent = 'Salvando…'; plAgendar(d);
+});
+$('pl-nota').addEventListener('blur', () => { if (plRenderDepois) renderPulso(); else renderPulsoDia(); });
+
 /* ===================== render: pipeline ===================== */
 function filtroResp(l, v){ if (!v) return true; if (v === '__sem') return !(l.responsavel||'').trim(); return (l.responsavel||'').trim() === v; }
 function filtroPrio(l, v){ if (!v) return true; if (v === '__sem') return !l.prioridade; return l.prioridade === v; }
@@ -1203,7 +1470,7 @@ function preencherCfg(){
 }
 
 /* ===================== abas ===================== */
-const TABS = ['okr','pipeline','leads','projecao','premissas'];
+const TABS = ['okr','pulso','pipeline','leads','projecao','premissas'];
 function abrirTab(t, push){
   if (!TABS.includes(t)) t = 'okr';
   S.tab = t;
@@ -1224,6 +1491,7 @@ function renderTudo(){
   if (S.tab === 'pipeline') renderPipeline();
   if (S.tab === 'leads') renderLeads();
   if (S.tab === 'projecao') renderProjecao();
+  if (S.tab === 'pulso') renderPulsoSeguro();
 }
 
 /* ===================== lead: editor ===================== */
