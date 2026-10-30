@@ -19,7 +19,7 @@ Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nom
 - **Taxa de ganho**: ganhos ÷ propostas decididas (ganhas ou perdidas) no período; com menos de 3 decididas o status é "Poucos dados".
 - **Esperado hoje** (KRs de quantidade e receita) = meta × dias úteis já passados ÷ dias úteis do período (sem fins de semana e feriados nacionais). Status: *Em dia* no esperado ou acima; *Em risco* entre o limite configurado (padrão 70%) e o esperado; *Atrasado* abaixo. A taxa de ganho compara direto com a meta.
 - **Ritmo da semana**: metas semanais saem da projeção (capacidade × conversões); "no ciclo" soma o feito fora do CRM.
-- Só contam os leads do responsável configurado em "Negócios de" (vazio = time todo). "Já feito fora do CRM" soma ao que o CRM conta.
+- Só contam os leads do responsável configurado em "Negócios de" (vazio = time todo). "Já feito fora do CRM" soma ao que o CRM conta; na taxa de ganho, entra como propostas ganhas e decididas fora do CRM.
 - Cada etapa tem um critério (exibido na ficha do lead e no título da coluna do pipeline), para que a contagem signifique a mesma coisa para todo mundo.
 
 ## Projeção

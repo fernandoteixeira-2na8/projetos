@@ -821,9 +821,10 @@ function calc(){
   { // taxa de ganho nas propostas decididas no período
     const def = KRS.find(d => d.id === 'taxa'), k = cfgKR('taxa'), meta = Number(k.meta) || 0;
     const dec = meus.filter(l => (l.etapa === 'ganho' || l.etapa === 'perdido') && noPeriodo(l.fechadoEm) && (l.etapa === 'ganho' || l.marcos?.proposta));
-    const wins = dec.filter(l => l.etapa === 'ganho').length;
-    const atual = dec.length ? wins / dec.length * 100 : null;
-    out.taxa = {...def, ...k, meta, atual, wins, dec:dec.length, status: !meta ? 'sem' : dec.length < 3 ? 'dados' : ratio(atual, meta)};
+    const ajG = Number(k.ajGanhas) || 0, ajD = Math.max(ajG, Number(k.ajDecididas) || 0);
+    const wins = dec.filter(l => l.etapa === 'ganho').length + ajG, nDec = dec.length + ajD;
+    const atual = nDec ? wins / nDec * 100 : null;
+    out.taxa = {...def, ...k, meta, atual, wins, dec:nDec, ajG, ajD, status: !meta ? 'sem' : nDec < 3 ? 'dados' : ratio(atual, meta)};
   }
   const krs = KRS.map(d => out[d.id]);
 
@@ -880,7 +881,8 @@ function cardKR(x, i){
   let dl;
   if (ritmo) dl = [['Falta', temMeta ? (x.falta ? fmtKR(x, x.falta) : 'Meta batida') : '—'], ['Esperado hoje', temMeta ? fmtKR(x, x.esperado) : '<a href="#premissas">Definir meta</a>']];
   else dl = [['Ganhas / decididas', `${x.wins} de ${x.dec}`], ['Meta', '≥ ' + fmtKR(x, x.meta)]];
-  const how = ritmo && x.ajuste ? `${fmtKR(x, x.crm)} no CRM + ${fmtKR(x, x.ajuste)} de fora` : x.como;
+  const how = ritmo && x.ajuste ? `${fmtKR(x, x.crm)} no CRM + ${fmtKR(x, x.ajuste)} de fora`
+    : x.tipo === 'pct' && x.ajD ? `${x.wins - x.ajG} de ${x.dec - x.ajD} no CRM + ${x.ajG} de ${x.ajD} de fora` : x.como;
   return `<article class="kr st-${x.status}">
     <header><span class="kr-i">KR ${i}</span><span class="pill ${st.cls}">${st.rot}</span></header>
     <h3>${esc(x.nome)}</h3>
@@ -1193,7 +1195,7 @@ function preencherCfg(){
       KRS.filter(d => d.obj === o.id).map(def => { const k = c.krs.find(x => x.id === def.id) || def; const aj = def.tipo === 'n' || def.tipo === 'brl'; return `<tr>
       <td><input type="text" id="k-nome-${def.id}" value="${esc(k.nome)}" aria-label="Nome do resultado-chave" autocomplete="off"><span class="sub">${esc(def.como)}</span></td>
       <td class="r"><label class="f"><span>${def.tipo === 'n' ? 'quantidade' : def.tipo === 'brl' ? 'R$' : def.tipo === 'x' ? 'vezes a receita que falta' : '% mínimo'}</span><input type="number" id="k-meta-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : def.tipo === 'x' ? .5 : 1}" inputmode="decimal" value="${Number(k.meta) || 0}" aria-label="Meta"></label></td>
-      <td class="r">${aj ? `<label class="f"><span>${def.tipo === 'brl' ? 'R$' : 'quantidade'}</span><input type="number" id="k-aj-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : 1}" inputmode="decimal" value="${Number(k.ajuste) || 0}" aria-label="Já feito fora do CRM"></label>` : '<span class="hint">não se aplica</span>'}</td></tr>`; }).join('')).join('')}
+      <td class="r">${aj ? `<label class="f"><span>${def.tipo === 'brl' ? 'R$' : 'quantidade'}</span><input type="number" id="k-aj-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : 1}" inputmode="decimal" value="${Number(k.ajuste) || 0}" aria-label="Já feito fora do CRM"></label>` : (def.tipo === 'pct' ? `<div class="grid2"><label class="f"><span>ganhas</span><input type="number" id="k-ajg-${def.id}" min="0" step="1" inputmode="numeric" value="${Number(k.ajGanhas) || 0}" aria-label="Propostas ganhas fora do CRM"></label><label class="f"><span>decididas</span><input type="number" id="k-ajd-${def.id}" min="0" step="1" inputmode="numeric" value="${Number(k.ajDecididas) || 0}" aria-label="Propostas decididas fora do CRM"></label></div>` : '<span class="hint">não se aplica</span>')}</td></tr>`; }).join('')).join('')}
     <tr><td colspan="3" style="padding-top:18px; border-bottom:0"><span class="eyebrow" style="gap:8px">Atividade<span class="sep">/</span>ritmo da semana</span></td></tr>
     ${[['contato','Contatos novos'], ['qualificado','Contatos qualificados'], ['agendada','Reuniões agendadas']].map(([m, t]) => `<tr><td>${t}<span class="sub">meta pela capacidade e conversões da aba Projeção</span></td><td class="r"><span class="hint">pela projeção</span></td>
       <td class="r"><label class="f"><span>quantidade</span><input type="number" id="a-aj-${m}" min="0" step="1" inputmode="numeric" value="${Number(c.atvAjuste?.[m]) || 0}" aria-label="Já feito fora do CRM"></label></td></tr>`).join('')}</tbody>`;
@@ -1372,7 +1374,7 @@ $('cfg-form').addEventListener('submit', async e => {
   const c = {
     nome:$('c-nome').value.trim() || 'OKR', inicio, fim, dono:$('c-dono').value.trim(), diasParado:n('c-parado', 14),
     risco:n('c-risco', 70),
-    krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, meta:n('k-meta-'+k.id, 0), ajuste:$('k-aj-'+k.id) ? n('k-aj-'+k.id, 0) : 0})),
+    krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, meta:n('k-meta-'+k.id, 0), ajuste:$('k-aj-'+k.id) ? n('k-aj-'+k.id, 0) : 0, ...($('k-ajg-'+k.id) ? {ajGanhas:n('k-ajg-'+k.id, 0), ajDecididas:n('k-ajd-'+k.id, 0)} : {})})),
     proj:S.cfg.proj,
     atvAjuste:Object.fromEntries(['contato','qualificado','agendada'].map(m => [m, n('a-aj-' + m, 0)])),
     probs:Object.fromEntries(ABERTAS.map(x => [x, n('c-p-'+x, EN[x].prob)]).concat([['ganho',100],['perdido',0]])),
