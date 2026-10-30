@@ -1003,33 +1003,30 @@ function renderOKR(k){
     <div class="krs">${k.krs.filter(x => x.obj === o.id).map(x => cardKR(x, ++ordem)).join('')}</div>
   </section>`).join('');
 
-  // ritmo da semana: atividade registrada no Pulso (social selling + LinkedIn); propostas vêm do CRM.
+  // ritmo da semana: atividade registrada no Pulso (social selling + LinkedIn; propostas na North Star).
   // Meta semanal: metas do Pulso proporcionais a 7 dias; sem meta no Pulso, usa a projeção.
   const base = funilMes(c.proj), porSem = v => v / (52 / 12);
   const diasCiclo = diasEntre(c.inicio, c.fim) + 1, hoje = hojeISO();
   const diaSem = (new Date().getDay() + 6) % 7 + 1;
   const soma = (ids, d0, d1) => { let t = 0; for (const d of Object.keys(S.pulso)) if (d >= d0 && d <= d1) for (const id of ids){ const x = plValor(d, id); if (x !== null) t += x; } return t; };
-  const propKR = k.krs.find(x => x.id === 'propostas');
   const RITMO = [
     {nome:'Abordagens',          pl:['ss_abord','li_abord'], proj:base.contatos,     fonte:'Pulso · social selling + LinkedIn'},
     {nome:'Respostas recebidas', pl:['ss_resp','li_resp'],   proj:null,              fonte:'Pulso · social selling + LinkedIn'},
     {nome:'Leads qualificados',  pl:['ss_qual','li_qual'],   proj:base.qualificados, fonte:'Pulso · social selling + LinkedIn'},
     {nome:'Leads agendados',     pl:['ss_agend','li_agend'], proj:base.agendadas,    fonte:'Pulso · social selling + LinkedIn'},
     {nome:'Reuniões realizadas', pl:['ss_reun','li_reun'],   proj:base.reunioes,     fonte:'Pulso · social selling + LinkedIn'},
-    {nome:'Propostas',           crm:'proposta',             proj:base.propostas,    fonte:'CRM · leads que chegaram a Proposta'},
+    {nome:'Propostas enviadas',  pl:['ns_prop'],             proj:base.propostas,    fonte:'Pulso · North Star', metaOKR:'propostas'},
   ];
   $('m-week-n').textContent = `semana desde segunda ${dataCurta(k.iniSem)} · atividade lançada no Pulso`;
   $('m-week').innerHTML = `<thead><tr><th>Atividade</th><th class="r">Esta semana</th><th class="r">Meta semanal</th><th>Ritmo da semana</th><th class="r">No ciclo</th><th class="r">Meta do ciclo</th></tr></thead><tbody>${RITMO.map(r => {
     let sem, ciclo, metaCiclo = null, origem = '';
-    if (r.pl){
+    {
       sem = soma(r.pl, k.iniSem, hoje); ciclo = soma(r.pl, c.inicio, c.fim);
       const metas = r.pl.map(id => Number(S.plMetas[id]) || 0), temMeta = metas.some(Boolean);
+      const krM = r.metaOKR ? Number(k.krs.find(x => x.id === r.metaOKR)?.meta) || 0 : 0;
       if (temMeta){ metaCiclo = metas.reduce((a, b) => a + b, 0); origem = 'meta do Pulso'; }
+      else if (krM){ metaCiclo = krM; origem = 'meta do OKR'; }
       else if (r.proj !== null){ metaCiclo = porSem(r.proj) * diasCiclo / 7; origem = 'pela projeção'; }
-    } else {
-      const meus = S.leads.filter(doDono);
-      sem = meus.filter(l => { const d = l.marcos?.[r.crm]; return d && d >= k.iniSem && d <= hoje; }).length;
-      ciclo = propKR ? propKR.atual : 0; metaCiclo = propKR?.meta || porSem(r.proj) * diasCiclo / 7; origem = propKR?.meta ? 'meta do OKR' : 'pela projeção';
     }
     const mt = metaCiclo !== null ? metaCiclo * 7 / diasCiclo : null, esp = mt !== null ? mt * diaSem / 7 : null;
     const pct = mt ? Math.min(100, sem / mt * 100) : 0;
@@ -1215,6 +1212,7 @@ const PULSO = [
     {id:'ns_inv',   nome:'Investimento total',  u:'R$', calc:['meta_inv','gads_inv','out_inv'], custo:true},
     {id:'ns_leads', nome:'Leads total',         u:'nº', calc:['meta_leads','gads_leads','ss_qual','li_qual']},
     {id:'ns_reun',  nome:'Reuniões realizadas', u:'nº', calc:['ss_reun','li_reun']},
+    {id:'ns_prop',  nome:'Propostas enviadas',  u:'nº'},
     {id:'ns_fat',   nome:'Faturamento total',   u:'R$'},
   ]},
   {g:'Ads', itens:[
