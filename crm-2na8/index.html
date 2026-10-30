@@ -762,7 +762,6 @@ function cfgPadrao(){
     risco: 70,
     krs: KRS.map(k => ({id:k.id, nome:k.nome, meta:k.meta, ajuste:0})),
     proj: JSON.parse(JSON.stringify(PROJ)),
-    atvAjuste: {contato:0, qualificado:0, agendada:0},
     probs: Object.fromEntries(ETAPAS.map(e => [e.id, e.prob])),
   };
 }
@@ -801,7 +800,7 @@ function cfgMerge(c){
   const d = cfgPadrao(); c = c || {};
   const krs = d.krs.map(k => ({...k, ...((c.krs||[]).find(x => x.id === k.id) || {})}));
   const pj = c.proj || {};
-  return {...d, ...c, krs, probs:{...d.probs, ...(c.probs||{})}, proj:{...d.proj, ...pj, conv:{...d.proj.conv, ...(pj.conv||{})}}, atvAjuste:{...d.atvAjuste, ...(c.atvAjuste||{})}};
+  return {...d, ...c, krs, probs:{...d.probs, ...(c.probs||{})}, proj:{...d.proj, ...pj, conv:{...d.proj.conv, ...(pj.conv||{})}}};
 }
 
 /* ===================== armazenamento ===================== */
@@ -854,12 +853,12 @@ function modoCompartilhado(db){
     const novo = Object.fromEntries(snap.docs.map(d => [d.id, d.data()]));
     for (const d of plPend) if (S.pulso[d]) novo[d] = S.pulso[d];   // edição local ainda não gravada vence
     S.pulso = novo;
-    if (S.tab === 'pulso') renderPulsoSeguro();
+    if (S.tab === 'pulso') renderPulsoSeguro(); else if (S.tab === 'okr') renderTudo();
   }, () => {});
   db.doc('config/pulso').onSnapshot(snap => {
     if (plMetasPend) return;
     S.plMetas = snap.exists ? (snap.data().metas || {}) : {};
-    if (S.tab === 'pulso') renderPulsoSeguro();
+    if (S.tab === 'pulso') renderPulsoSeguro(); else if (S.tab === 'okr') renderTudo();
   }, () => {});
 }
 
@@ -918,18 +917,15 @@ function calc(){
   }
   const krs = KRS.map(d => out[d.id]);
 
-  // ritmo da semana (segunda até hoje)
+  // ritmo da semana (segunda até hoje); a atividade vem do Pulso
   const dow = (new Date().getDay() + 6) % 7, iniSem = addDias(hoje, -dow);
-  const ajAtv = {...c.atvAjuste, reuniao:Number(out.reunioes.ajuste) || 0, proposta:Number(out.propostas.ajuste) || 0};
-  const semana = MARCOS.map(m => ({m, n:meus.filter(l => { const d = l.marcos?.[m]; return d && d >= iniSem && d <= hoje; }).length,
-    ciclo:meus.filter(l => noPeriodo(l.marcos?.[m])).length + (Number(ajAtv[m]) || 0)}));
 
   const parado = Number(c.diasParado) || 14;
   const ordem = Object.keys(SIT);
   const att = S.leads.map(l => ({l, sit:situacao(l, hoje, parado)})).filter(a => a.sit);
   att.sort((a,b) => ordem.indexOf(a.sit) - ordem.indexOf(b.sit) || String(a.l.proximoData || a.l.etapaDesde || '').localeCompare(String(b.l.proximoData || b.l.etapaDesde || '')));
 
-  return {krs, ganhos, perdidos, abertos:S.leads.filter(aberto), passados, total, restantes, att, semana, iniSem};
+  return {krs, ganhos, perdidos, abertos:S.leads.filter(aberto), passados, total, restantes, att, iniSem};
 }
 
 /* ===================== render: topo ===================== */
@@ -995,7 +991,7 @@ function renderOKR(k){
   $('m-period').innerHTML = `Objetivos comerciais<span class="sep">/</span>${quem}`;
   const nm = (c.nome || 'OKR').trim().split(' '), ult = nm.length > 1 ? nm.pop() : '';
   $('m-head').innerHTML = esc(nm.join(' ')) + (ult ? ' <span class="hl">' + esc(ult) + '</span>' : '');
-  $('m-lede').textContent = `Dois objetivos até ${dataCurta(c.fim)}: gerar pipeline qualificado e convertê-lo em receita. A atividade que alimenta os dois fica no ritmo da semana.`;
+  $('m-lede').textContent = `Dois objetivos até ${dataCurta(c.fim)}: gerar pipeline qualificado e convertê-lo em receita. A atividade que alimenta os dois vem do Pulso, no ritmo da semana.`;
   const pctT = k.total ? k.passados / k.total * 100 : 0;
   $('m-time').innerHTML = `<span class="tb-k">Período</span><span class="tb-v">${esc(dataBR(c.inicio, true))} → ${esc(dataBR(c.fim, true))}</span>
     <div class="tb-bar" aria-hidden="true"><i style="width:${pctT}%"></i></div>
@@ -1007,20 +1003,42 @@ function renderOKR(k){
     <div class="krs">${k.krs.filter(x => x.obj === o.id).map(x => cardKR(x, ++ordem)).join('')}</div>
   </section>`).join('');
 
-  // ritmo da semana: atividade que alimenta os KRs, com meta semanal tirada da projeção
-  const base = funilMes(c.proj), sem = 52 / 12;
-  const metaSem = {contato:Number(c.proj.cap) || 0, qualificado:base.qualificados / sem, agendada:base.agendadas / sem, reuniao:base.reunioes / sem, proposta:base.propostas / sem};
-  const nomeAtv = {contato:'Contatos novos', qualificado:'Contatos qualificados', agendada:'Reuniões agendadas', reuniao:'Reuniões qualificadas', proposta:'Propostas'};
-  const diaSem = Math.min(5, (new Date().getDay() + 6) % 7 + 1);
-  $('m-week-n').textContent = `semana desde segunda ${dataCurta(k.iniSem)} · metas pela projeção · no ciclo inclui o feito fora do CRM`;
-  const semanasCiclo = k.total / 5;
-  $('m-week').innerHTML = `<thead><tr><th>Atividade</th><th class="r">Esta semana</th><th class="r">Meta semanal</th><th>Ritmo da semana</th><th class="r">No ciclo</th><th class="r">Meta do ciclo</th></tr></thead><tbody>${k.semana.map(w => {
-    const mt = metaSem[w.m], esp = mt * diaSem / 5, pct = mt ? Math.min(100, w.n / mt * 100) : 0;
-    const mc = Math.round(mt * semanasCiclo);
-    return `<tr><td>${nomeAtv[w.m]}<span class="sub">${esc(CRIT[w.m])}</span></td><td class="r">${w.n}</td><td class="r">${NUM.format(Math.round(mt * 10) / 10)}</td>
-      <td class="bar-c" title="Esperado até hoje: ${NUM.format(Math.round(esp * 10) / 10)}"><div class="wbar"><i class="${w.n >= esp ? '' : 'low'}" style="width:${pct}%"></i></div></td>
-      <td class="r">${INT.format(w.ciclo)}</td><td class="r">${INT.format(mc)}</td></tr>`;
+  // ritmo da semana: atividade registrada no Pulso (social selling + LinkedIn); propostas vêm do CRM.
+  // Meta semanal: metas do Pulso proporcionais a 7 dias; sem meta no Pulso, usa a projeção.
+  const base = funilMes(c.proj), porSem = v => v / (52 / 12);
+  const diasCiclo = diasEntre(c.inicio, c.fim) + 1, hoje = hojeISO();
+  const diaSem = (new Date().getDay() + 6) % 7 + 1;
+  const soma = (ids, d0, d1) => { let t = 0; for (const d of Object.keys(S.pulso)) if (d >= d0 && d <= d1) for (const id of ids){ const x = plValor(d, id); if (x !== null) t += x; } return t; };
+  const propKR = k.krs.find(x => x.id === 'propostas');
+  const RITMO = [
+    {nome:'Abordagens',          pl:['ss_abord','li_abord'], proj:base.contatos,     fonte:'Pulso · social selling + LinkedIn'},
+    {nome:'Respostas recebidas', pl:['ss_resp','li_resp'],   proj:null,              fonte:'Pulso · social selling + LinkedIn'},
+    {nome:'Leads qualificados',  pl:['ss_qual','li_qual'],   proj:base.qualificados, fonte:'Pulso · social selling + LinkedIn'},
+    {nome:'Leads agendados',     pl:['ss_agend','li_agend'], proj:base.agendadas,    fonte:'Pulso · social selling + LinkedIn'},
+    {nome:'Reuniões realizadas', pl:['ss_reun','li_reun'],   proj:base.reunioes,     fonte:'Pulso · social selling + LinkedIn'},
+    {nome:'Propostas',           crm:'proposta',             proj:base.propostas,    fonte:'CRM · leads que chegaram a Proposta'},
+  ];
+  $('m-week-n').textContent = `semana desde segunda ${dataCurta(k.iniSem)} · atividade lançada no Pulso`;
+  $('m-week').innerHTML = `<thead><tr><th>Atividade</th><th class="r">Esta semana</th><th class="r">Meta semanal</th><th>Ritmo da semana</th><th class="r">No ciclo</th><th class="r">Meta do ciclo</th></tr></thead><tbody>${RITMO.map(r => {
+    let sem, ciclo, metaCiclo = null, origem = '';
+    if (r.pl){
+      sem = soma(r.pl, k.iniSem, hoje); ciclo = soma(r.pl, c.inicio, c.fim);
+      const metas = r.pl.map(id => Number(S.plMetas[id]) || 0), temMeta = metas.some(Boolean);
+      if (temMeta){ metaCiclo = metas.reduce((a, b) => a + b, 0); origem = 'meta do Pulso'; }
+      else if (r.proj !== null){ metaCiclo = porSem(r.proj) * diasCiclo / 7; origem = 'pela projeção'; }
+    } else {
+      const meus = S.leads.filter(doDono);
+      sem = meus.filter(l => { const d = l.marcos?.[r.crm]; return d && d >= k.iniSem && d <= hoje; }).length;
+      ciclo = propKR ? propKR.atual : 0; metaCiclo = propKR?.meta || porSem(r.proj) * diasCiclo / 7; origem = propKR?.meta ? 'meta do OKR' : 'pela projeção';
+    }
+    const mt = metaCiclo !== null ? metaCiclo * 7 / diasCiclo : null, esp = mt !== null ? mt * diaSem / 7 : null;
+    const pct = mt ? Math.min(100, sem / mt * 100) : 0;
+    const f1 = v => v === null ? '—' : NUM.format(Math.round(v * 10) / 10);
+    return `<tr><td>${r.nome}<span class="sub">${esc(r.fonte)}${origem ? ' · meta ' + origem.replace('meta ', '') : ''}</span></td><td class="r">${INT.format(sem)}</td><td class="r">${f1(mt)}</td>
+      <td class="bar-c" title="${esp !== null ? 'Esperado até hoje: ' + f1(esp) : 'Sem meta'}"><div class="wbar">${mt ? `<i class="${sem >= esp ? '' : 'low'}" style="width:${pct}%"></i>` : ''}</div></td>
+      <td class="r">${INT.format(ciclo)}</td><td class="r">${metaCiclo !== null ? INT.format(Math.round(metaCiclo)) : '—'}</td></tr>`;
   }).join('')}</tbody>`;
+
   const rc = Number(c.risco) || 70;
   $('m-legend').innerHTML = `<span><em></em>Esperado hoje (KRs de quantidade e receita)</span><span><b>Em dia</b> no esperado ou acima</span><span><b>Em risco</b> entre ${rc}% e 100% do esperado</span><span><b>Atrasado</b> abaixo de ${rc}%</span><span>Taxa de ganho compara direto com a meta</span>`;
 
@@ -1463,9 +1481,7 @@ function preencherCfg(){
       <td><input type="text" id="k-nome-${def.id}" value="${esc(k.nome)}" aria-label="Nome do resultado-chave" autocomplete="off"><span class="sub">${esc(def.como)}</span></td>
       <td class="r"><label class="f"><span>${def.tipo === 'n' ? 'quantidade' : def.tipo === 'brl' ? 'R$' : def.tipo === 'x' ? 'vezes a receita que falta' : '% mínimo'}</span><input type="number" id="k-meta-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : def.tipo === 'x' ? .5 : 1}" inputmode="decimal" value="${Number(k.meta) || 0}" aria-label="Meta"></label></td>
       <td class="r">${aj ? `<label class="f"><span>${def.tipo === 'brl' ? 'R$' : 'quantidade'}</span><input type="number" id="k-aj-${def.id}" min="0" step="${def.tipo === 'brl' ? 10000 : 1}" inputmode="decimal" value="${Number(k.ajuste) || 0}" aria-label="Já feito fora do CRM"></label>` : (def.tipo === 'pct' ? `<div class="grid2"><label class="f"><span>ganhas</span><input type="number" id="k-ajg-${def.id}" min="0" step="1" inputmode="numeric" value="${Number(k.ajGanhas) || 0}" aria-label="Propostas ganhas fora do CRM"></label><label class="f"><span>decididas</span><input type="number" id="k-ajd-${def.id}" min="0" step="1" inputmode="numeric" value="${Number(k.ajDecididas) || 0}" aria-label="Propostas decididas fora do CRM"></label></div>` : '<span class="hint">não se aplica</span>')}</td></tr>`; }).join('')).join('')}
-    <tr><td colspan="3" style="padding-top:18px; border-bottom:0"><span class="eyebrow" style="gap:8px">Atividade<span class="sep">/</span>ritmo da semana</span></td></tr>
-    ${[['contato','Contatos novos'], ['qualificado','Contatos qualificados'], ['agendada','Reuniões agendadas']].map(([m, t]) => `<tr><td>${t}<span class="sub">meta pela capacidade e conversões da aba Projeção</span></td><td class="r"><span class="hint">pela projeção</span></td>
-      <td class="r"><label class="f"><span>quantidade</span><input type="number" id="a-aj-${m}" min="0" step="1" inputmode="numeric" value="${Number(c.atvAjuste?.[m]) || 0}" aria-label="Já feito fora do CRM"></label></td></tr>`).join('')}</tbody>`;
+</tbody>`;
   $('c-probs').innerHTML = ABERTAS.map(e => `<label class="f"><span>${EN[e].nome} (%)</span><input type="number" id="c-p-${e}" min="0" max="100" step="5" inputmode="numeric" value="${Number(c.probs[e])}"></label>`).join('');
 }
 
@@ -1644,7 +1660,6 @@ $('cfg-form').addEventListener('submit', async e => {
     risco:n('c-risco', 70),
     krs:KRS.map(k => ({id:k.id, nome:$('k-nome-'+k.id).value.trim() || k.nome, meta:n('k-meta-'+k.id, 0), ajuste:$('k-aj-'+k.id) ? n('k-aj-'+k.id, 0) : 0, ...($('k-ajg-'+k.id) ? {ajGanhas:n('k-ajg-'+k.id, 0), ajDecididas:n('k-ajd-'+k.id, 0)} : {})})),
     proj:S.cfg.proj,
-    atvAjuste:Object.fromEntries(['contato','qualificado','agendada'].map(m => [m, n('a-aj-' + m, 0)])),
     probs:Object.fromEntries(ABERTAS.map(x => [x, n('c-p-'+x, EN[x].prob)]).concat([['ganho',100],['perdido',0]])),
     atualizadoEm:new Date().toISOString(),
   };
