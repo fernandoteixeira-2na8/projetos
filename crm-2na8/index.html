@@ -316,7 +316,7 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
 /* ---------- kanban ---------- */
 .board{display:grid; grid-auto-flow:column; grid-auto-columns:minmax(250px,1fr); gap:10px; overflow-x:auto; padding-bottom:12px; align-items:stretch; height:calc(100vh - 290px); min-height:440px}
 .col{background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--blue); display:flex; flex-direction:column; min-height:0}
-.col.c-ganho{border-top-color:var(--blue-light)} .col.c-perdido{border-top-color:var(--line-3)}
+.col.c-ganho{border-top-color:var(--blue-light)} .col.c-perdido{border-top-color:var(--line-3)} .col.c-sumiu{border-top-color:var(--warn)}
 .col.empty-col{opacity:.72}
 .col.over{outline:1px dashed var(--blue-light); outline-offset:-5px; opacity:1}
 .col-h{padding:12px 12px 10px; border-bottom:1px solid var(--line); flex:none}
@@ -368,7 +368,9 @@ tfoot td{padding:12px 14px 0 0; font-family:var(--font-mono); font-size:10.5px; 
 .stages button.past i{color:var(--blue-light)}
 .stages button[aria-pressed="true"]{background:var(--blue); color:var(--ink); border-color:var(--blue)}
 .stages button[aria-pressed="true"] i{color:var(--blue-lighter)}
-.stages button[data-e="ganho"]{margin-top:6px}
+.stages button[data-e="sumiu"]{margin-top:6px; border-style:dashed}
+.stages button[data-e="sumiu"][aria-pressed="true"]{background:var(--warn); border-color:var(--warn); border-style:solid; color:var(--bg)}
+.stages button[data-e="sumiu"][aria-pressed="true"] i,.stages button[data-e="ganho"][aria-pressed="true"] i,.stages button[data-e="perdido"][aria-pressed="true"] i{color:var(--bg)}
 .stages button[data-e="ganho"][aria-pressed="true"]{background:var(--blue-light); border-color:var(--blue-light); color:var(--bg)}
 .stages button[data-e="perdido"][aria-pressed="true"]{background:var(--danger); border-color:var(--danger); color:var(--bg)}
 .sheet-f{position:sticky; bottom:0; z-index:2; display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:center; padding:14px max(24px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) 24px; border-top:1px solid var(--line); background:var(--bg)}
@@ -680,6 +682,7 @@ const ETAPAS = [
   {id:'reuniao',    nome:'Reunião qualificada', prob:25},
   {id:'proposta',   nome:'Proposta',            prob:50},
   {id:'negociacao', nome:'Negociação',          prob:75},
+  {id:'sumiu',      nome:'Sumiu',               prob:0},
   {id:'ganho',      nome:'Fechado (ganho)',     prob:100},
   {id:'perdido',    nome:'Perdido',             prob:0},
 ];
@@ -711,6 +714,7 @@ const CRIT = {
   reuniao:'discovery feito, score ≥ 60 e orçamento compatível com o ticket.',
   proposta:'proposta apresentada ao decisor.',
   negociacao:'decisor quer fechar; ajustando escopo, prazo ou preço.',
+  sumiu:'parou de responder; fica estacionado, sem contar no pipeline, até a conversa voltar.',
   ganho:'contrato assinado.',
   perdido:'motivo da perda registrado.',
 };
@@ -1069,6 +1073,7 @@ function renderOKR(k){
   $('m-funnel').innerHTML = !k.abertos.length
     ? `<div class="empty" style="margin-top:14px">Nenhum lead em aberto ainda.<br><button class="btn btn-primary" type="button" data-new>+ Cadastrar o primeiro lead</button></div>`
     : `<div class="funnel">${porEtapa.map(x => `<div class="frow${x.n ? '' : ' zero'}"><span class="lbl">${EN[x.e].nome}</span><div class="b"><i style="width:${x.n/maxN*100}%"></i></div><span class="n">${x.n}</span><span class="val">${x.v ? esc(brlK(x.v)) : '—'}</span></div>`).join('')}</div>`
+      + (() => { const n = S.leads.filter(l => l.etapa === 'sumiu').length; return n ? `<p class="sub-h">Fora do funil</p><div class="funnel"><div class="frow"><span class="lbl">Sumiu</span><div class="b"><i class="l" style="width:${n/maxN*100}%"></i></div><span class="n">${n}</span><span class="val"></span></div></div>` : ''; })()
       + (mot.length ? `<p class="sub-h">Motivos de perda no período</p><div class="funnel">${mot.map(([m,n]) => `<div class="frow"><span class="lbl">${esc(m)}</span><div class="b"><i class="l" style="width:${n/mot[0][1]*100}%"></i></div><span class="n">${n}</span><span class="val"></span></div>`).join('')}</div>` : '');
 }
 
@@ -1393,11 +1398,11 @@ const toqueHTML = n => `<span class="tq" title="Toque ${n} de 4">${[1,2,3,4].map
 
 function renderPipeline(){
   const q = $('pf-q').value.trim(), r = $('pf-resp').value, p = $('pf-prio').value, fc = $('pf-closed').value, hoje = hojeISO();
-  const cols = fc === 'ocultar' ? ABERTAS : ORD;
+  const cols = fc === 'ocultar' ? [...ABERTAS, 'sumiu'] : ORD;
   const peso = {Alta:0, 'Média':1, Baixa:2};
   $('board').innerHTML = cols.map(e => {
     let ls = S.leads.filter(l => l.etapa === e && bate(l, q) && filtroResp(l, r) && filtroPrio(l, p));
-    if (!ABERTAS.includes(e) && fc === 'periodo') ls = ls.filter(l => noPeriodo(l.fechadoEm));
+    if ((e === 'ganho' || e === 'perdido') && fc === 'periodo') ls = ls.filter(l => noPeriodo(l.fechadoEm));
     ls.sort((a,b) => (a.proximoData||'9999').localeCompare(b.proximoData||'9999') || (peso[a.prioridade] ?? 3) - (peso[b.prioridade] ?? 3) || (Number(b.valor)||0) - (Number(a.valor)||0) || a.empresa.localeCompare(b.empresa,'pt'));
     const tot = ls.reduce((s,l) => s + (Number(l.valor)||0), 0);
     const pond = ls.reduce((s,l) => s + (Number(l.valor)||0) * probDe(l) / 100, 0);
@@ -1410,6 +1415,7 @@ function cardHTML(l, hoje){
   const late = aberto(l) && l.proximoData && l.proximoData < hoje;
   const nx = aberto(l)
     ? (l.proximoPasso || l.proximoData ? `<div class="nx${late?' late':''}">${esc(l.proximoPasso || 'Próximo passo')}${l.proximoData ? ' · ' + esc(quando(l.proximoData)) : ''}</div>` : `<div class="nx none">Sem próximo passo</div>`)
+    : l.etapa === 'sumiu' ? `<div class="nx none">Sumiu ${esc(quando(l.etapaDesde || hojeISO()))}${l.proximoPasso ? ' · ' + esc(l.proximoPasso) : ''}</div>`
     : (l.etapa === 'perdido' && l.motivoPerda ? `<div class="nx">${esc(l.motivoPerda)}</div>` : (l.fechadoEm ? `<div class="nx">Fechado em ${esc(dataBR(l.fechadoEm))}</div>` : ''));
   const sub = [l.contato && l.cargo ? l.contato + ', ' + l.cargo : (l.contato || l.cargo), [l.grupo, l.uf].filter(Boolean).join(' · ')].filter(Boolean);
   return `<div class="card" draggable="true" data-id="${esc(l.id)}" tabindex="0" role="button" aria-label="Abrir ${esc(l.empresa)}">
@@ -1451,9 +1457,10 @@ function renderLeads(){
   tbl.innerHTML = `<thead><tr>${COLS.map(c => `<th class="sort${c.r?' r':''}" data-k="${c.k}"${S.sort.k===c.k?` data-dir="${S.sort.dir}"`:''}>${c.t}</th>`).join('')}</tr></thead>
     <tbody>${ls.map(l => {
       const late = aberto(l) && l.proximoData && l.proximoData < hoje;
-      const pc = l.etapa === 'ganho' ? 'p-ok' : l.etapa === 'perdido' ? 'p-gap' : ['proposta','negociacao'].includes(l.etapa) ? 'p-acc' : 'p-mut';
+      const pc = l.etapa === 'ganho' ? 'p-ok' : l.etapa === 'perdido' ? 'p-gap' : l.etapa === 'sumiu' ? 'p-warn' : ['proposta','negociacao'].includes(l.etapa) ? 'p-acc' : 'p-mut';
       const passo = aberto(l)
         ? (l.proximoPasso || l.proximoData ? `<span${late ? ' class="miss"' : ''}>${esc(l.proximoPasso || 'Próximo passo')}</span><span class="sub">${esc(quando(l.proximoData))}</span>` : '<span class="hint">Definir próximo passo</span>')
+        : l.etapa === 'sumiu' ? `<span class="hint">Sumiu ${esc(quando(l.etapaDesde || hoje))}</span>${l.proximoPasso ? `<span class="sub">${esc(l.proximoPasso)}</span>` : ''}`
         : `<span class="sub">${esc(l.motivoPerda || (l.fechadoEm ? 'Fechado em ' + dataBR(l.fechadoEm, true) : ''))}</span>`;
       return `<tr class="click" data-id="${esc(l.id)}" tabindex="0">
         <td><span class="strong">${esc(l.empresa)}</span><span class="sub">${esc([l.contato, l.segmento, l.grupo !== l.empresa ? l.grupo : '', l.uf].filter(Boolean).join(' · '))}</span></td>
@@ -1535,10 +1542,10 @@ function abrirLead(id, etapaForcada){
 function fecharLead(){ $('ov').hidden = true; document.body.style.overflow = ''; atual = null; }
 function renderStages(){
   const iSel = ORD.indexOf(etapaSel);
-  $('s-stages').innerHTML = ETAPAS.map((e, i) => `<button type="button" data-e="${e.id}" aria-pressed="${e.id===etapaSel}" class="${etapaSel !== 'perdido' && i < iSel && ABERTAS.includes(e.id) ? 'past' : ''}"><i>${e.id === 'perdido' ? '×' : e.id === 'ganho' ? '✓' : String(i+1).padStart(2,'0')}</i>${e.nome}</button>`).join('');
+  $('s-stages').innerHTML = ETAPAS.map((e, i) => `<button type="button" data-e="${e.id}" aria-pressed="${e.id===etapaSel}" class="${etapaSel !== 'perdido' && etapaSel !== 'sumiu' && i < iSel && ABERTAS.includes(e.id) ? 'past' : ''}"><i>${e.id === 'perdido' ? '×' : e.id === 'ganho' ? '✓' : e.id === 'sumiu' ? '?' : String(i+1).padStart(2,'0')}</i>${e.nome}</button>`).join('');
   $('s-crit').innerHTML = `<b>Critério:</b> ${esc(CRIT[etapaSel])}`;
   $('s-motivo-w').hidden = etapaSel !== 'perdido';
-  $('s-fech-w').hidden = aberto({etapa:etapaSel});
+  $('s-fech-w').hidden = etapaSel !== 'ganho' && etapaSel !== 'perdido';
   $('s-prob').placeholder = 'padrão ' + (S.cfg.probs[etapaSel] ?? EN[etapaSel].prob) + '%';
 }
 function renderTimeline(){
@@ -1573,15 +1580,15 @@ function aplicarEtapa(l, nova, antes){
   if (nova !== antes){
     l.etapaDesde = hoje;
     (l.atividades = l.atividades || []).push({em:new Date().toISOString(), tipo:'Etapa', texto:(antes ? EN[antes].nome + ' → ' : 'Criado em ') + EN[nova].nome});
-    if (nova !== 'perdido'){
+    if (nova !== 'perdido' && nova !== 'sumiu'){
       l.marcos = l.marcos || {};
       for (const m of MARCOS) if (ORD.indexOf(nova) >= ORD.indexOf(m) && !l.marcos[m]) l.marcos[m] = hoje;
       if (!l.maxEtapa || ORD.indexOf(nova) > ORD.indexOf(l.maxEtapa)) l.maxEtapa = nova;
     }
   }
   l.etapa = nova;
-  if (!aberto(l) && !l.fechadoEm) l.fechadoEm = hoje;
-  if (aberto(l)) { l.fechadoEm = ''; l.motivoPerda = ''; }
+  if (l.etapa === 'ganho' || l.etapa === 'perdido'){ if (!l.fechadoEm) l.fechadoEm = hoje; }
+  else { l.fechadoEm = ''; l.motivoPerda = ''; }
 }
 
 $('s-form').addEventListener('submit', async e => {
@@ -1734,6 +1741,7 @@ function etapaDe(v){
   const n = norm(v); if (!n) return {etapa:'prospeccao'};
   const t = n.match(/toque(\d)/); if (t) return {etapa:'contato', toque:t[1]};
   const e = ETAPAS.find(x => norm(x.nome) === n || x.id === n); if (e) return {etapa:e.id};
+  if (/sumi|ghost|semretorno/.test(n)) return {etapa:'sumiu'};
   if (/ganh|won|assinad/.test(n)) return {etapa:'ganho'}; if (/perd|lost/.test(n)) return {etapa:'perdido'};
   if (/negoc/.test(n)) return {etapa:'negociacao'}; if (/propost|sprint/.test(n)) return {etapa:'proposta'};
   if (/agend|marcad/.test(n)) return {etapa:'agendada'};
@@ -1795,8 +1803,8 @@ $('file-import').addEventListener('change', async e => {
     if (!l.origem) l.origem = origemPadrao;
     l.id = S.mode === 'shared' ? S.db.collection('leads').doc().id : novoId();
     l.criadoEm = new Date().toISOString(); l.etapaDesde = hoje; l.marcos = {};
-    l.maxEtapa = l.etapa === 'perdido' ? 'prospeccao' : l.etapa;
-    if (!aberto(l) && !l.fechadoEm) l.fechadoEm = hoje;
+    l.maxEtapa = l.etapa === 'perdido' || l.etapa === 'sumiu' ? 'prospeccao' : l.etapa;
+    if ((l.etapa === 'ganho' || l.etapa === 'perdido') && !l.fechadoEm) l.fechadoEm = hoje;
     l.atividades = [{em:l.criadoEm, tipo:'Etapa', texto:'Importado de ' + f.name + ' em ' + EN[l.etapa].nome}];
     try { await salvarLead(l, true); ok++; } catch(err){ falha++; if (err?.code === 'quota_exceeded') break; }
   }
