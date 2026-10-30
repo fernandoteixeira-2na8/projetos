@@ -128,8 +128,7 @@ h2.sec small{font-size:10.5px; letter-spacing:.08em; text-transform:none; color:
 .tb-n{display:flex; justify-content:space-between; gap:12px; font-family:var(--font-mono); font-size:10.5px; color:var(--muted)}
 
 /* ---------- cards de KR ---------- */
-.krs{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
-@media (max-width:1180px){.krs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.krs{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
 @media (max-width:600px){.krs{grid-template-columns:minmax(0,1fr)}}
 .kr{background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--line-3); padding:16px 18px 16px; display:grid; gap:12px; align-content:start; min-width:0}
 .kr.st-dia{border-top-color:var(--blue-light)} .kr.st-risco{border-top-color:var(--warn)} .kr.st-atraso{border-top-color:var(--danger)}
@@ -154,7 +153,8 @@ h2.sec small{font-size:10.5px; letter-spacing:.08em; text-transform:none; color:
 .legend em{display:inline-block; width:2px; height:11px; background:var(--ink); vertical-align:-1px; margin-right:6px}
 
 /* objetivos */
-.objs{display:grid; gap:30px}
+.objs{display:grid; gap:30px 28px}
+@media (min-width:1280px){.objs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .obj-h{display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 14px; margin-bottom:12px}
 .obj-h .n{font-family:var(--font-mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--blue-light)}
 .obj-h h2{font-family:var(--font-display); font-weight:400; font-size:clamp(24px,2.6vw,34px); line-height:1}
@@ -613,15 +613,14 @@ const ORIGENS = ['Indicação','Rede Sicredi','Inbound site','LinkedIn','Outboun
 const MARCOS = ['contato','qualificado','agendada','reuniao','proposta'];
 
 /* Os 5 resultados-chave. A medida de cada id é fixa; nome, nível, meta e ajuste vêm da configuração. */
-/* Dois objetivos. Os KRs de quantidade e receita andam no ritmo dos dias úteis; cobertura e taxa de ganho são razões. */
+/* Dois objetivos. Os KRs de quantidade e receita andam no ritmo dos dias úteis; a taxa de ganho é uma razão. */
 const OBJS = [
-  {id:1, nome:'Gerar pipeline qualificado', desc:'Reuniões que viram propostas, e pipeline suficiente para a meta de receita.'},
+  {id:1, nome:'Gerar pipeline qualificado', desc:'Reuniões qualificadas que viram propostas.'},
   {id:2, nome:'Converter em receita', desc:'Contratos assinados no ciclo, sem perder eficiência nas propostas.'},
 ];
 const KRS = [
   {id:'reunioes',  obj:1, tipo:'n',   nome:'Reuniões qualificadas',      meta:15,     marco:'reuniao',  como:'leads que chegaram a Reunião qualificada no período (discovery com score ≥ 60)'},
   {id:'propostas', obj:1, tipo:'n',   nome:'Propostas apresentadas',     meta:15,     marco:'proposta', como:'leads que chegaram a Proposta no período'},
-  {id:'cobertura', obj:1, tipo:'x',   nome:'Cobertura do pipeline',      meta:3,                        como:'pipeline aberto de Reunião qualificada em diante ÷ receita que falta para a meta'},
   {id:'receita',   obj:2, tipo:'brl', nome:'Receita contratada',         meta:320000,                   como:'valor dos contratos fechados no período (sem valor no lead, conta o ticket médio)'},
   {id:'taxa',      obj:2, tipo:'pct', nome:'Taxa de ganho em propostas', meta:27,                       como:'ganhos ÷ propostas decididas (ganhas ou perdidas) no período'},
 ];
@@ -819,14 +818,6 @@ function calc(){
     const atual = crm + ajuste, esperado = def.tipo === 'brl' ? meta * frac : Math.round(meta * frac);
     out[def.id] = {...def, ...k, meta, ajuste, crm, atual, esperado, falta:Math.max(0, meta - atual), status:pace(atual, meta, esperado)};
   }
-  { // cobertura: pipeline aberto qualificado ÷ receita que falta
-    const def = KRS.find(d => d.id === 'cobertura'), k = cfgKR('cobertura'), meta = Number(k.meta) || 0;
-    const rec = out.receita, faltaR = Math.max(0, rec.meta - rec.atual);
-    const pipe = meus.filter(l => aberto(l) && ORD.indexOf(l.etapa) >= ORD.indexOf('reuniao')).reduce((s,l) => s + valorDe(l), 0);
-    const atual = faltaR ? pipe / faltaR : null;
-    out.cobertura = {...def, ...k, meta, atual, pipe, faltaR, aGerar:Math.max(0, meta * faltaR - pipe),
-      status: !rec.meta || !meta ? 'sem' : !faltaR ? 'dia' : ratio(atual, meta)};
-  }
   { // taxa de ganho nas propostas decididas no período
     const def = KRS.find(d => d.id === 'taxa'), k = cfgKR('taxa'), meta = Number(k.meta) || 0;
     const dec = meus.filter(l => (l.etapa === 'ganho' || l.etapa === 'perdido') && noPeriodo(l.fechadoEm) && (l.etapa === 'ganho' || l.marcos?.proposta));
@@ -888,7 +879,6 @@ function cardKR(x, i){
   const mk = temMeta && ritmo ? Math.min(100, x.esperado / x.meta * 100) : null;
   let dl;
   if (ritmo) dl = [['Falta', temMeta ? (x.falta ? fmtKR(x, x.falta) : 'Meta batida') : '—'], ['Esperado hoje', temMeta ? fmtKR(x, x.esperado) : '<a href="#premissas">Definir meta</a>']];
-  else if (x.tipo === 'x') dl = [['Pipeline aberto', brlK(x.pipe)], ['A gerar', !x.faltaR ? 'Meta de receita batida' : x.aGerar ? brlK(x.aGerar) : 'Coberto']];
   else dl = [['Ganhas / decididas', `${x.wins} de ${x.dec}`], ['Meta', '≥ ' + fmtKR(x, x.meta)]];
   const how = ritmo && x.ajuste ? `${fmtKR(x, x.crm)} no CRM + ${fmtKR(x, x.ajuste)} de fora` : x.como;
   return `<article class="kr st-${x.status}">
@@ -940,7 +930,7 @@ function renderOKR(k){
       <td class="r">${INT.format(w.ciclo)}</td><td class="r">${INT.format(mc)}</td></tr>`;
   }).join('')}</tbody>`;
   const rc = Number(c.risco) || 70;
-  $('m-legend').innerHTML = `<span><em></em>Esperado hoje (KRs de quantidade e receita)</span><span><b>Em dia</b> no esperado ou acima</span><span><b>Em risco</b> entre ${rc}% e 100% do esperado</span><span><b>Atrasado</b> abaixo de ${rc}%</span><span>Cobertura e taxa comparam direto com a meta</span>`;
+  $('m-legend').innerHTML = `<span><em></em>Esperado hoje (KRs de quantidade e receita)</span><span><b>Em dia</b> no esperado ou acima</span><span><b>Em risco</b> entre ${rc}% e 100% do esperado</span><span><b>Atrasado</b> abaixo de ${rc}%</span><span>Taxa de ganho compara direto com a meta</span>`;
 
   // números do período
   const fech = k.ganhos.length + k.perdidos.length;

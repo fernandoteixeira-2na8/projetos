@@ -4,7 +4,7 @@ CRM para acompanhar os **OKRs comerciais** do ciclo e os **leads em prospecção
 
 ## Abas
 
-- **OKR** — dois objetivos. *Gerar pipeline qualificado*: reuniões qualificadas, propostas apresentadas e cobertura do pipeline. *Converter em receita*: receita contratada e taxa de ganho em propostas. Cada KR é um card com atual, meta, falta, status e barra com o esperado de hoje. Abaixo: ritmo da semana (contatos novos, qualificados, agendadas, reuniões, propostas: esta semana × meta semanal, e acumulado do ciclo × meta do ciclo), números do período, agenda por situação e funil aberto.
+- **OKR** — dois objetivos. *Gerar pipeline qualificado*: reuniões qualificadas e propostas apresentadas. *Converter em receita*: receita contratada e taxa de ganho em propostas. Cada KR é um card com atual, meta, falta, status e barra com o esperado de hoje. Abaixo: ritmo da semana (contatos novos, qualificados, agendadas, reuniões, propostas: esta semana × meta semanal, e acumulado do ciclo × meta do ciclo), números do período, agenda por situação e funil aberto.
 - **Projeção** — simulador com ticket, ciclo, capacidade semanal de contatos novos, conversões entre etapas e meta mensal opcional. Mostra quanto a operação entrega por mês em três cenários, o funil reverso que uma meta exige (e se cabe na capacidade), a previsão dos próximos 6 meses (já fechado + pipeline ponderado + novos negócios) e a comparação premissa × realidade medida no CRM.
 - **Pipeline** — kanban por etapa (Prospecção → Contato realizado → Contato qualificado → Reunião agendada → Reunião qualificada → Proposta → Negociação → Fechado / Perdido), com filtros por responsável e prioridade. Em Contato realizado o card mostra o toque da cadência (1 a 4). Mover para Perdido pede o motivo.
 - **Leads** — tabela com filtros rápidos por etapa, busca, filtro por situação, responsável e segmento, ordenação por coluna, importação de planilha (.xlsx ou .csv) e exportação em CSV.
@@ -15,10 +15,9 @@ Cada lead tem conta (empresa, segmento, sistema/grupo, UF, origem), contato (nom
 ## Como os OKRs são contados
 
 - **Reuniões qualificadas / Propostas apresentadas**: leads que chegaram pela primeira vez a Reunião qualificada / Proposta dentro do período (pular etapas conta as anteriores).
-- **Cobertura do pipeline**: valor em aberto de Reunião qualificada em diante ÷ receita que ainda falta para a meta. Alvo padrão 3x.
 - **Receita contratada**: valor dos leads ganhos com fechamento no período (sem valor no lead, conta o ticket médio da projeção).
 - **Taxa de ganho**: ganhos ÷ propostas decididas (ganhas ou perdidas) no período; com menos de 3 decididas o status é "Poucos dados".
-- **Esperado hoje** (KRs de quantidade e receita) = meta × dias úteis já passados ÷ dias úteis do período (sem fins de semana e feriados nacionais). Status: *Em dia* no esperado ou acima; *Em risco* entre o limite configurado (padrão 70%) e o esperado; *Atrasado* abaixo. Cobertura e taxa comparam direto com a meta.
+- **Esperado hoje** (KRs de quantidade e receita) = meta × dias úteis já passados ÷ dias úteis do período (sem fins de semana e feriados nacionais). Status: *Em dia* no esperado ou acima; *Em risco* entre o limite configurado (padrão 70%) e o esperado; *Atrasado* abaixo. A taxa de ganho compara direto com a meta.
 - **Ritmo da semana**: metas semanais saem da projeção (capacidade × conversões); "no ciclo" soma o feito fora do CRM.
 - Só contam os leads do responsável configurado em "Negócios de" (vazio = time todo). "Já feito fora do CRM" soma ao que o CRM conta.
 - Cada etapa tem um critério (exibido na ficha do lead e no título da coluna do pipeline), para que a contagem signifique a mesma coisa para todo mundo.
